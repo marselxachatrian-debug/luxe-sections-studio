@@ -29,14 +29,37 @@ export default function AppLayout() {
       <BlockStack gap="400">
         <Card>
           <InlineStack align="space-between" blockAlign="center" gap="400">
-            <BlockStack gap="100">
-              <Text as="h1" variant="headingXl">
-                Luxe Sections Studio
-              </Text>
-              <Text as="p" variant="bodyMd" tone="subdued">
-                Premium admin workspace for sections, pricing, and merchant setup.
-              </Text>
-            </BlockStack>
+            <InlineStack gap="300" blockAlign="center">
+              <div
+                style={{
+                  width: "56px",
+                  height: "56px",
+                  borderRadius: "18px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  background:
+                    "linear-gradient(135deg, #0f172a 0%, #1f2937 55%, #7c5c2b 100%)",
+                  boxShadow: "0 10px 30px rgba(15, 23, 42, 0.18)",
+                  color: "#f8e7b0",
+                  fontWeight: 700,
+                  fontSize: "18px",
+                  letterSpacing: "0.08em",
+                }}
+              >
+                LS
+              </div>
+
+              <BlockStack gap="050">
+                <Text as="h1" variant="headingXl">
+                  Luxe Sections Studio
+                </Text>
+                <Text as="p" variant="bodyMd" tone="subdued">
+                  Luxury storefront controls for merchants who want a cleaner,
+                  sharper, and more premium store experience.
+                </Text>
+              </BlockStack>
+            </InlineStack>
 
             <InlineStack gap="200">
               {navigationItems.map((item) => {
