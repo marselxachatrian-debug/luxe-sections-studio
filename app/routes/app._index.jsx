@@ -45,6 +45,7 @@ export async function loader({ request }) {
   const onboardingLinks = getThemeEditorOnboardingLinks(
     activeThemeStatus.shop,
     activeThemeStatus.themeId,
+    process.env.SHOPIFY_API_KEY,
   );
 
   return {
