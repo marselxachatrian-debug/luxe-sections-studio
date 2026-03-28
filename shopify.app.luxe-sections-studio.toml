@@ -1,8 +1,8 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "491f98d3a9c8ed4bd5f116a48b6ea30e"
-name = "luxe-sections-studio"
-application_url = "https://nonoxidizable-ungaping-melva.ngrok-free.dev"
+name = "Luxe Sections Studio"
+application_url = "https://luxe-sections-studio.onrender.com"
 embedded = true
 
 [build]
@@ -16,4 +16,4 @@ api_version = "2026-04"
 scopes = "write_metaobject_definitions,write_metaobjects,write_products,read_themes"
 
 [auth]
-redirect_urls = [ "https://nonoxidizable-ungaping-melva.ngrok-free.dev/api/auth" ]
+redirect_urls = [ "https://luxe-sections-studio.onrender.com/api/auth" ]

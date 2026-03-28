@@ -1,51 +1,46 @@
-import { PassThrough } from "stream";
-import { renderToPipeableStream } from "react-dom/server";
-import { ServerRouter } from "react-router";
-import { createReadableStreamFromReadable } from "@react-router/node";
-import { isbot } from "isbot";
-import { addDocumentResponseHeaders } from "./shopify.server";
+import "@shopify/polaris/build/esm/styles.css";
+import { AppProvider } from "@shopify/polaris";
+import enTranslations from "@shopify/polaris/locales/en.json";
+import {
+  Links,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+  useLoaderData,
+} from "react-router";
 
-export const streamTimeout = 5000;
+export async function loader() {
+  return {
+    shopifyApiKey: process.env.SHOPIFY_API_KEY || "",
+  };
+}
 
-export default async function handleRequest(
-  request,
-  responseStatusCode,
-  responseHeaders,
-  reactRouterContext,
-) {
-  addDocumentResponseHeaders(request, responseHeaders);
-  const userAgent = request.headers.get("user-agent");
-  const callbackName = isbot(userAgent ?? "") ? "onAllReady" : "onShellReady";
+export default function App() {
+  const { shopifyApiKey } = useLoaderData();
 
-  return new Promise((resolve, reject) => {
-    const { pipe, abort } = renderToPipeableStream(
-      <ServerRouter context={reactRouterContext} url={request.url} />,
-      {
-        [callbackName]: () => {
-          const body = new PassThrough();
-          const stream = createReadableStreamFromReadable(body);
-
-          responseHeaders.set("Content-Type", "text/html");
-          resolve(
-            new Response(stream, {
-              headers: responseHeaders,
-              status: responseStatusCode,
-            }),
-          );
-          pipe(body);
-        },
-        onShellError(error) {
-          reject(error);
-        },
-        onError(error) {
-          responseStatusCode = 500;
-          console.error(error);
-        },
-      },
-    );
-
-    // Automatically timeout the React renderer after 6 seconds, which ensures
-    // React has enough time to flush down the rejected boundary contents
-    setTimeout(abort, streamTimeout + 1000);
-  });
+  return (
+    <html lang="en">
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="shopify-api-key" content={shopifyApiKey} />
+        <script src="https://cdn.shopify.com/shopifycloud/app-bridge.js"></script>
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <link rel="preconnect" href="https://cdn.shopify.com/" />
+        <link
+          rel="stylesheet"
+          href="https://cdn.shopify.com/static/fonts/inter/v4/styles.css"
+        />
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        <AppProvider i18n={enTranslations}>
+          <Outlet />
+        </AppProvider>
+        <ScrollRestoration />
+        <Scripts />
+      </body>
+    </html>
+  );
 }

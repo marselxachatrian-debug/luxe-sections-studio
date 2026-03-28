@@ -1,6 +1,9 @@
+import dns from "node:dns";
 import { reactRouter } from "@react-router/dev/vite";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
+
+dns.setDefaultResultOrder("verbatim");
 
 // Related: https://github.com/remix-run/remix/issues/2835#issuecomment-1144102176
 // Replace the HOST env var with SHOPIFY_APP_URL so that it doesn't break the Vite server.
@@ -17,6 +20,7 @@ if (
 
 const host = new URL(process.env.SHOPIFY_APP_URL || "http://localhost")
   .hostname;
+
 let hmrConfig;
 
 if (host === "localhost") {
@@ -29,7 +33,7 @@ if (host === "localhost") {
 } else {
   hmrConfig = {
     protocol: "wss",
-    host: host,
+    host,
     port: parseInt(process.env.FRONTEND_PORT) || 8002,
     clientPort: 443,
   };
@@ -37,6 +41,7 @@ if (host === "localhost") {
 
 export default defineConfig({
   server: {
+    host: "127.0.0.1",
     allowedHosts: [host],
     cors: {
       preflightContinue: true,
@@ -44,7 +49,6 @@ export default defineConfig({
     port: Number(process.env.PORT || 3000),
     hmr: hmrConfig,
     fs: {
-      // See https://vitejs.dev/config/server-options.html#server-fs-allow for more information
       allow: ["app", "node_modules"],
     },
   },

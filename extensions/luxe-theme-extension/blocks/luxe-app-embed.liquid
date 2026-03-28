@@ -1,0 +1,22 @@
+{% if block.settings.enable_app %}
+  <script>
+    window.LuxeSectionsStudio = window.LuxeSectionsStudio || {};
+    window.LuxeSectionsStudio.enabled = true;
+    document.documentElement.setAttribute("data-luxe-sections-studio", "enabled");
+  </script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Luxe Studio Embed",
+  "target": "body",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_app",
+      "label": "Enable Luxe Sections Studio",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

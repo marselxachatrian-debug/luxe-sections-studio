@@ -1,4 +1,4 @@
-import { Form, useLoaderData, useSearchParams } from "react-router";
+import { Form, Link, useLoaderData, useSearchParams } from "react-router";
 import {
   Badge,
   Banner,
@@ -8,6 +8,7 @@ import {
   Divider,
   InlineGrid,
   InlineStack,
+  List,
   Page,
   Text,
 } from "@shopify/polaris";
@@ -30,31 +31,36 @@ const featureGroups = [
   {
     title: "Premium Hero Banner",
     blockKey: BLOCK_KEYS.LUXE_HERO,
-    helperText: "Hero block for first impressions, CTA control, and premium storefront storytelling.",
+    helperText:
+      "Hero block for stronger first impressions, clearer messaging, and premium storefront presentation.",
     features: getBlockFeatureCatalog(BLOCK_KEYS.LUXE_HERO),
   },
   {
     title: "Store Trust Highlights",
     blockKey: BLOCK_KEYS.TRUST_BAR,
-    helperText: "Trust section for reassurance messaging, layout control, icons, and merchant-friendly proof blocks.",
+    helperText:
+      "Trust section for reassurance messaging, layout control, icons, and merchant-friendly proof blocks.",
     features: getBlockFeatureCatalog(BLOCK_KEYS.TRUST_BAR),
   },
   {
     title: "Feature Highlights Grid",
     blockKey: BLOCK_KEYS.PREMIUM_FEATURES,
-    helperText: "Feature grid for value communication, icons, links, and clean product presentation.",
+    helperText:
+      "Feature grid for benefit communication, cleaner structure, icons, and premium visual clarity.",
     features: getBlockFeatureCatalog(BLOCK_KEYS.PREMIUM_FEATURES),
   },
   {
     title: "Trust & Payment Showcase",
     blockKey: BLOCK_KEYS.TRUST_PAYMENTS_SHOWCASE,
-    helperText: "Planned next block for trust messaging, reviews, payment systems, and delivery partners.",
+    helperText:
+      "Planned next block for trust messaging, reviews, payment systems, and delivery partners.",
     features: getBlockFeatureCatalog(BLOCK_KEYS.TRUST_PAYMENTS_SHOWCASE),
   },
   {
     title: "Vertical Video Showcase",
     blockKey: BLOCK_KEYS.VIDEO_SHOWCASE,
-    helperText: "Planned next block for 9:16 product videos, CTA links, and premium video presentation.",
+    helperText:
+      "Planned next block for 9:16 product videos, CTA links, and premium video presentation.",
     features: getBlockFeatureCatalog(BLOCK_KEYS.VIDEO_SHOWCASE),
   },
 ];
@@ -65,7 +71,7 @@ function getPlanBadgeText(planKey, currentPlanKey) {
   }
 
   if (planKey === PLAN_KEYS.STANDARD) {
-    return "Best value";
+    return "Main plan";
   }
 
   if (planKey === PLAN_KEYS.PREMIUM) {
@@ -85,6 +91,18 @@ function getPlanBadgeTone(planKey, currentPlanKey) {
   }
 
   return "info";
+}
+
+function getPlanSummary(planKey) {
+  if (planKey === PLAN_KEYS.FREE) {
+    return "Best for merchants who want a strong starting point without paying upfront.";
+  }
+
+  if (planKey === PLAN_KEYS.STANDARD) {
+    return "Best for stores that want deeper control and a more polished storefront result.";
+  }
+
+  return "Best for brands that want premium visual control, stronger effects, and luxury-level presentation.";
 }
 
 function FeatureRow({ label, isAvailable }) {
@@ -107,6 +125,18 @@ function FeatureRow({ label, isAvailable }) {
         {isAvailable ? "✓" : "—"}
       </span>
     </InlineStack>
+  );
+}
+
+function countAvailableFeatures(planKey, blockKey, features) {
+  return features.filter((feature) =>
+    canAccessBlockFeature(planKey, blockKey, feature.key),
+  ).length;
+}
+
+function getAvailableFeatures(planKey, blockKey, features) {
+  return features.filter((feature) =>
+    canAccessBlockFeature(planKey, blockKey, feature.key),
   );
 }
 
@@ -142,18 +172,34 @@ export default function PricingRoute() {
   const hasRealBillingReturn =
     transitionSource === "real-billing" && Boolean(transitionPlan);
 
+  const appEditingPoints = [
+    "Main visual editing inside the app",
+    "Preview-driven editing flow",
+    "Desktop and mobile tuning",
+    "Cleaner merchant onboarding",
+    "Stronger premium upgrade path",
+  ];
+
+  const shopifyEditingPoints = [
+    "Add the app block to the theme",
+    "Turn the block or embed on",
+    "Place the block in the right template",
+    "Keep only minimal fallback fields",
+    "Avoid overloaded theme-side settings",
+  ];
+
   return (
     <Page
-      title="Tariffs"
-      subtitle="Choose the level of control your storefront needs. Every plan supports mobile editing and unlimited color selection."
+      title="Pricing"
+      subtitle="Choose the level of control your storefront needs. Every plan supports mobile-ready editing and unlimited color selection."
     >
       <BlockStack gap="500">
         {hasMockBillingTransition ? (
           <Banner title="Mock billing transition detected" tone="info">
             <p>
-              Requested action: {transitionAction}. Target plan:{" "}
-              {transitionPlan}. This is still a mock-first flow and no real
-              Shopify billing charge has been created.
+              Requested action: {transitionAction}. Target plan: {transitionPlan}.
+              This is still a mock-first flow and no real Shopify billing charge
+              has been created.
             </p>
           </Banner>
         ) : null}
@@ -169,19 +215,23 @@ export default function PricingRoute() {
         ) : null}
 
         <Card>
-          <BlockStack gap="200">
-            <Text as="h2" variant="headingLg">
-              Tariffs
-            </Text>
+          <BlockStack gap="300">
+            <InlineStack align="space-between" blockAlign="center">
+              <BlockStack gap="100">
+                <Text as="h2" variant="headingLg">
+                  Merchant-first pricing
+                </Text>
+                <Text as="p" variant="bodyMd" tone="subdued">
+                  Start with a strong free plan, grow into deeper editing
+                  control, and upgrade only when your storefront needs more
+                  premium presentation.
+                </Text>
+              </BlockStack>
 
-            <Text as="p" variant="bodyMd" tone="subdued">
-              Start free, build a professional result without code, and upgrade
-              only when you need stronger layout control, custom icons, or
-              premium visual effects.
-            </Text>
+              <Badge tone="success">{currentPlanLabel}</Badge>
+            </InlineStack>
 
             <InlineStack gap="300">
-              <Badge tone="success">{currentPlanLabel}</Badge>
               <Text as="span" variant="bodySm" tone="subdued">
                 Plan source: {currentPlanSource}
               </Text>
@@ -189,8 +239,76 @@ export default function PricingRoute() {
                 Active paid billing: {hasActivePayment ? "Yes" : "No"}
               </Text>
             </InlineStack>
+
+            <InlineStack gap="200">
+              <Link to="/app/blocks" style={{ textDecoration: "none" }}>
+                <Button variant="primary">Open Blocks Studio</Button>
+              </Link>
+
+              <Link to="/app" style={{ textDecoration: "none" }}>
+                <Button>Back to Dashboard</Button>
+              </Link>
+            </InlineStack>
           </BlockStack>
         </Card>
+
+        <InlineGrid columns={{ xs: 1, md: 4 }} gap="400">
+          <Card>
+            <BlockStack gap="150">
+              <Text as="h3" variant="headingSm">
+                Current plan
+              </Text>
+              <Text as="p" variant="headingLg">
+                {currentPlanLabel}
+              </Text>
+              <Text as="p" variant="bodySm" tone="subdued">
+                Your current storefront editing level
+              </Text>
+            </BlockStack>
+          </Card>
+
+          <Card>
+            <BlockStack gap="150">
+              <Text as="h3" variant="headingSm">
+                Unlimited colors
+              </Text>
+              <Text as="p" variant="headingLg">
+                Yes
+              </Text>
+              <Text as="p" variant="bodySm" tone="subdued">
+                Available across all plans
+              </Text>
+            </BlockStack>
+          </Card>
+
+          <Card>
+            <BlockStack gap="150">
+              <Text as="h3" variant="headingSm">
+                Mobile-ready
+              </Text>
+              <Text as="p" variant="headingLg">
+                Yes
+              </Text>
+              <Text as="p" variant="bodySm" tone="subdued">
+                Supported on every plan
+              </Text>
+            </BlockStack>
+          </Card>
+
+          <Card>
+            <BlockStack gap="150">
+              <Text as="h3" variant="headingSm">
+                Next planned blocks
+              </Text>
+              <Text as="p" variant="headingLg">
+                2
+              </Text>
+              <Text as="p" variant="bodySm" tone="subdued">
+                Trust & Payment + Video Showcase
+              </Text>
+            </BlockStack>
+          </Card>
+        </InlineGrid>
 
         <InlineGrid columns={{ xs: 1, md: 3 }} gap="400">
           {BILLING_PLANS.map((plan) => {
@@ -202,7 +320,7 @@ export default function PricingRoute() {
 
             return (
               <Card key={plan.key} roundedAbove="sm">
-                <BlockStack gap="400">
+                <BlockStack gap="350">
                   <InlineStack align="space-between" blockAlign="center">
                     <Text as="h3" variant="headingLg">
                       {plan.name}
@@ -226,6 +344,10 @@ export default function PricingRoute() {
                         : `${plan.intervalLabel} • ${trialDays} day trial`}
                     </Text>
                   </BlockStack>
+
+                  <Text as="p" variant="bodySm" tone="subdued">
+                    {getPlanSummary(plan.key)}
+                  </Text>
 
                   <BlockStack gap="100">
                     {plan.highlights.map((item) => (
@@ -255,42 +377,155 @@ export default function PricingRoute() {
                       {actionLabel}
                     </Button>
                   )}
-
-                  <Divider />
-
-                  <BlockStack gap="350">
-                    {featureGroups.map((group) => (
-                      <BlockStack key={group.blockKey} gap="200">
-                        <BlockStack gap="050">
-                          <Text as="h4" variant="headingSm">
-                            {group.title}
-                          </Text>
-                          <Text as="p" variant="bodySm" tone="subdued">
-                            {group.helperText}
-                          </Text>
-                        </BlockStack>
-
-                        <BlockStack gap="150">
-                          {group.features.map((feature) => (
-                            <FeatureRow
-                              key={`${plan.key}-${group.blockKey}-${feature.key}`}
-                              label={feature.label}
-                              isAvailable={canAccessBlockFeature(
-                                plan.key,
-                                group.blockKey,
-                                feature.key,
-                              )}
-                            />
-                          ))}
-                        </BlockStack>
-                      </BlockStack>
-                    ))}
-                  </BlockStack>
                 </BlockStack>
               </Card>
             );
           })}
         </InlineGrid>
+
+        <InlineGrid columns={{ xs: 1, md: 2 }} gap="400">
+          <Card>
+            <BlockStack gap="300">
+              <Text as="h2" variant="headingMd">
+                What merchants edit inside the app
+              </Text>
+
+              <List>
+                {appEditingPoints.map((item) => (
+                  <List.Item key={item}>{item}</List.Item>
+                ))}
+              </List>
+            </BlockStack>
+          </Card>
+
+          <Card>
+            <BlockStack gap="300">
+              <Text as="h2" variant="headingMd">
+                What stays minimal in Shopify
+              </Text>
+
+              <List>
+                {shopifyEditingPoints.map((item) => (
+                  <List.Item key={item}>{item}</List.Item>
+                ))}
+              </List>
+            </BlockStack>
+          </Card>
+        </InlineGrid>
+
+        <Card>
+          <BlockStack gap="400">
+            <Text as="h2" variant="headingMd">
+              Plan-aware block access
+            </Text>
+
+            <Text as="p" variant="bodyMd" tone="subdued">
+              Free should already be useful, Standard should be the main working
+              plan, and Premium should unlock stronger luxury-level visual
+              control.
+            </Text>
+
+            <BlockStack gap="400">
+              {featureGroups.map((group) => (
+                <Card key={group.blockKey} roundedAbove="sm">
+                  <BlockStack gap="300">
+                    <BlockStack gap="050">
+                      <Text as="h3" variant="headingMd">
+                        {group.title}
+                      </Text>
+                      <Text as="p" variant="bodyMd" tone="subdued">
+                        {group.helperText}
+                      </Text>
+                    </BlockStack>
+
+                    <InlineGrid columns={{ xs: 1, md: 3 }} gap="300">
+                      {[PLAN_KEYS.FREE, PLAN_KEYS.STANDARD, PLAN_KEYS.PREMIUM].map(
+                        (planKey) => {
+                          const availableFeatures = getAvailableFeatures(
+                            planKey,
+                            group.blockKey,
+                            group.features,
+                          );
+
+                          return (
+                            <Card key={`${group.blockKey}-${planKey}`} roundedAbove="sm">
+                              <BlockStack gap="250">
+                                <InlineStack
+                                  align="space-between"
+                                  blockAlign="center"
+                                >
+                                  <Text as="h4" variant="headingSm">
+                                    {PLAN_LABELS[planKey]}
+                                  </Text>
+                                  <Badge
+                                    tone={planKey === currentPlanKey ? "success" : "info"}
+                                  >
+                                    {countAvailableFeatures(
+                                      planKey,
+                                      group.blockKey,
+                                      group.features,
+                                    )}
+                                    /{group.features.length}
+                                  </Badge>
+                                </InlineStack>
+
+                                {availableFeatures.length > 0 ? (
+                                  <BlockStack gap="100">
+                                    {group.features.map((feature) => (
+                                      <FeatureRow
+                                        key={`${planKey}-${group.blockKey}-${feature.key}`}
+                                        label={feature.label}
+                                        isAvailable={canAccessBlockFeature(
+                                          planKey,
+                                          group.blockKey,
+                                          feature.key,
+                                        )}
+                                      />
+                                    ))}
+                                  </BlockStack>
+                                ) : (
+                                  <Text as="p" variant="bodySm" tone="subdued">
+                                    No mapped features for this tier yet.
+                                  </Text>
+                                )}
+                              </BlockStack>
+                            </Card>
+                          );
+                        },
+                      )}
+                    </InlineGrid>
+                  </BlockStack>
+                </Card>
+              ))}
+            </BlockStack>
+          </BlockStack>
+        </Card>
+
+        <Card>
+          <BlockStack gap="300">
+            <Text as="h2" variant="headingMd">
+              Pricing philosophy
+            </Text>
+
+            <List>
+              <List.Item>
+                Free should deliver a real visual upgrade, not an empty trial.
+              </List.Item>
+              <List.Item>
+                Standard should feel like the main working plan for growing
+                merchants.
+              </List.Item>
+              <List.Item>
+                Premium should add clearly stronger visual control and premium
+                effects.
+              </List.Item>
+              <List.Item>
+                Merchants should upgrade because the value is obvious, not
+                because the free plan feels broken.
+              </List.Item>
+            </List>
+          </BlockStack>
+        </Card>
       </BlockStack>
     </Page>
   );

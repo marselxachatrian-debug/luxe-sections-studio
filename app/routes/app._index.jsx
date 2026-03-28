@@ -1,4 +1,4 @@
-import { useLoaderData } from "react-router";
+import { Link, useLoaderData } from "react-router";
 import {
   Badge,
   BlockStack,
@@ -87,29 +87,50 @@ export default function DashboardRoute() {
     },
   ];
 
-  const pageGuide = [
+  const studioGuide = [
     {
       name: "Dashboard",
-      description: "Start here for setup guidance, quick actions, and plan visibility.",
+      description:
+        "Use this page as your starting point for setup, plan visibility, and quick actions.",
     },
     {
-      name: "Blocks Library",
-      description: "See which storefront blocks are available for your current plan.",
+      name: "Blocks",
+      description:
+        "Open the block studio, choose a block, and move toward app-based editing with preview.",
     },
     {
       name: "Pricing",
-      description: "Compare all plans side by side and upgrade only when you need more control.",
+      description:
+        "Compare plans clearly and upgrade only when you want more control or premium visuals.",
     },
     {
       name: "Settings",
-      description: "Review plan-based controls and preview what each plan unlocks.",
+      description:
+        "Review app-level controls and future studio configuration areas.",
     },
   ];
+
+  const merchantFlow = [
+    "Open the theme editor and add the app block to the correct template.",
+    "Come back to Luxe Sections Studio and use block-specific editing flows.",
+    "Preview visual changes more clearly inside the app.",
+    "Keep Shopify theme settings minimal and merchant-friendly.",
+  ];
+
+  const appValuePoints = [
+    "Main editing should happen inside the app.",
+    "Theme Editor should stay focused on placement and activation.",
+    "Every plan should remain mobile-ready.",
+    "Premium plans should feel meaningfully stronger, not artificially restricted.",
+  ];
+
+  const primaryThemeEditorUrl =
+    onboardingLinks.find((step) => step.url)?.url ?? null;
 
   return (
     <Page
       title="Dashboard"
-      subtitle="A guided starting point for merchants who want a clearer and more premium Shopify storefront."
+      subtitle="A merchant-first studio home for setup, guidance, and the next best action."
     >
       <BlockStack gap="500">
         <Card>
@@ -120,20 +141,38 @@ export default function DashboardRoute() {
                   Welcome to Luxe Sections Studio
                 </Text>
                 <Text as="p" variant="bodyMd" tone="subdued">
-                  Start with your theme, follow the setup steps in order, and
-                  build a cleaner, stronger storefront without guessing what to
-                  do next.
+                  Build a cleaner, sharper, and more premium storefront with a
+                  simpler editing flow for merchants.
                 </Text>
               </BlockStack>
 
               <Badge tone="success">{currentPlanLabel}</Badge>
             </InlineStack>
 
-            <Text as="p" variant="bodySm" tone="subdued">
-              Use the checklist below in order. Open the first step, complete it
-              in Theme Editor, then come back here and continue with the next
-              one.
+            <Text as="p" variant="bodyMd" tone="subdued">
+              Your active theme is {activeThemeName ?? "not found"}
+              {activeThemeId ? ` (ID: ${activeThemeId})` : ""}. Start with the
+              checklist below, then continue into Blocks Studio for a more
+              guided editing experience.
             </Text>
+
+            <InlineStack gap="200">
+              <Link to="/app/blocks" style={{ textDecoration: "none" }}>
+                <Button variant="primary">Open Blocks Studio</Button>
+              </Link>
+
+              {primaryThemeEditorUrl ? (
+                <Button onClick={() => openInTopWindow(primaryThemeEditorUrl)}>
+                  Open Theme Editor
+                </Button>
+              ) : (
+                <Button disabled>Open Theme Editor</Button>
+              )}
+
+              <Link to="/app/pricing" style={{ textDecoration: "none" }}>
+                <Button variant="secondary">View Pricing</Button>
+              </Link>
+            </InlineStack>
           </BlockStack>
         </Card>
 
@@ -249,14 +288,12 @@ export default function DashboardRoute() {
           <Card>
             <BlockStack gap="300">
               <Text as="h2" variant="headingMd">
-                What each page is for
+                Start here inside the app
               </Text>
 
-              <List>
-                {pageGuide.map((item) => (
-                  <List.Item key={item.name}>
-                    <strong>{item.name}:</strong> {item.description}
-                  </List.Item>
+              <List type="number">
+                {merchantFlow.map((item) => (
+                  <List.Item key={item}>{item}</List.Item>
                 ))}
               </List>
             </BlockStack>
@@ -283,6 +320,38 @@ export default function DashboardRoute() {
           <Card>
             <BlockStack gap="300">
               <Text as="h2" variant="headingMd">
+                Studio navigation guide
+              </Text>
+
+              <List>
+                {studioGuide.map((item) => (
+                  <List.Item key={item.name}>
+                    <strong>{item.name}:</strong> {item.description}
+                  </List.Item>
+                ))}
+              </List>
+            </BlockStack>
+          </Card>
+
+          <Card>
+            <BlockStack gap="300">
+              <Text as="h2" variant="headingMd">
+                Product direction
+              </Text>
+
+              <List>
+                {appValuePoints.map((item) => (
+                  <List.Item key={item}>{item}</List.Item>
+                ))}
+              </List>
+            </BlockStack>
+          </Card>
+        </InlineGrid>
+
+        <InlineGrid columns={{ xs: 1, md: 2 }} gap="400">
+          <Card>
+            <BlockStack gap="300">
+              <Text as="h2" variant="headingMd">
                 Upgrade when it helps your store
               </Text>
 
@@ -297,10 +366,14 @@ export default function DashboardRoute() {
                     : "None"}
                 </List.Item>
                 <List.Item>
-                  Upgrade only when you need more layout control, stronger
-                  visuals, or a more premium storefront presentation.
+                  Upgrade when you want stronger visual control, richer
+                  presentation, or more premium effects.
                 </List.Item>
               </List>
+
+              <Link to="/app/pricing" style={{ textDecoration: "none" }}>
+                <Button>Compare plans</Button>
+              </Link>
             </BlockStack>
           </Card>
 
@@ -317,6 +390,10 @@ export default function DashboardRoute() {
                   </List.Item>
                 ))}
               </List>
+
+              <Link to="/app/blocks" style={{ textDecoration: "none" }}>
+                <Button variant="primary">Go to Blocks Studio</Button>
+              </Link>
             </BlockStack>
           </Card>
         </InlineGrid>
