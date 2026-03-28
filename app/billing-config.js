@@ -10,11 +10,12 @@ export const BILLING_PLANS = [
     billingModel: "mock",
     priceLabel: "$0",
     intervalLabel: "forever",
-    description: "Starter access for core theme block usage.",
+    description:
+      "A strong no-code starting plan for merchants who want a clean storefront result without coding.",
     highlights: [
-      "Safe starting point for new merchants",
-      "No live Shopify billing call yet",
-      "Works with current mock plan source",
+      "Mobile-ready editing foundation",
+      "Unlimited color selection across supported controls",
+      "Core text, spacing, layout, and link controls",
     ],
     shopifyBilling: null,
   },
@@ -27,11 +28,12 @@ export const BILLING_PLANS = [
     billingModel: "app_subscription",
     priceLabel: "$9.50",
     intervalLabel: "30 days",
-    description: "Mid-tier plan for stronger section flexibility.",
+    description:
+      "The working plan for merchants who need more layout control, stronger typography, and richer block customization.",
     highlights: [
-      "Prepared for recurring Shopify billing",
-      "Good target for first paid upgrade path",
-      "Keeps UI ready before real billing goes live",
+      "Everything in Free plus stronger layout flexibility",
+      "Custom icon upload and extended content structure",
+      "Better control for trust, feature, and showcase sections",
     ],
     shopifyBilling: {
       planName: "Luxe Sections Studio Standard",
@@ -53,11 +55,12 @@ export const BILLING_PLANS = [
     billingModel: "app_subscription",
     priceLabel: "$24.50",
     intervalLabel: "30 days",
-    description: "Top-tier plan for advanced premium block controls.",
+    description:
+      "Luxury storefront control with premium visual polish, advanced motion, and high-end presentation tools.",
     highlights: [
-      "Prepared for advanced feature unlock flow",
-      "Matches premium merchandising direction",
-      "Ready for future real billing wiring",
+      "Everything in Standard plus premium visual effects",
+      "Glow, shimmer, hover, and animated border upgrades",
+      "Maximum presentation power for premium storefronts",
     ],
     shopifyBilling: {
       planName: "Luxe Sections Studio Premium",

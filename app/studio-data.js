@@ -1,82 +1,114 @@
 export const dashboardItems = [
   {
     title: "Project status",
-    value: "Core build in progress",
+    value: "Merchant-first expansion",
     description:
-      "Embedded admin app, theme app extension, mock plan logic, and synced admin routes are already in place.",
+      "The app is moving from a simple block starter into a no-code premium storefront builder for Shopify merchants.",
   },
   {
     title: "Live blocks count",
     value: "3",
     description:
-      "Luxe Hero, Trust Bar, and Premium Features are implemented inside the theme app extension.",
+      "Premium Hero Banner, Store Trust Highlights, and Feature Highlights Grid are already live inside the theme app extension.",
   },
   {
-    title: "Admin pages count",
-    value: "4",
+    title: "Planned next blocks",
+    value: "2",
     description:
-      "Dashboard, Blocks Library, Pricing, and Settings are active in the embedded admin UI.",
+      "Trust & Payment Showcase and Vertical Video Showcase are the next high-value merchant blocks in the roadmap.",
   },
   {
     title: "Current build scope",
-    value: "UI + extension + plan architecture",
+    value: "Onboarding + pricing + block expansion",
     description:
-      "Current focus stays on block quality, admin sync, and billing architecture preparation.",
+      "Current focus stays on merchant onboarding, stronger plan value, and richer block controls for desktop and mobile.",
   },
 ];
 
 export const blockLibraryItems = [
   {
-    name: "Luxe Hero",
+    name: "Premium Hero Banner",
     handle: "luxe-hero",
-    status: "Expanded",
+    status: "Live",
     description:
-      "Premium storefront hero block for luxury-first brands with layered media and plan-aware feature growth.",
+      "Luxury-first hero banner for strong first impressions with layered media, CTA controls, mobile sizing, and a premium visual foundation.",
     features: [
       "Heading and subheading",
       "Background image",
-      "Shopify-hosted video background",
-      "Content alignment",
+      "Optional video background path",
       "Primary and secondary buttons",
-      "Top and bottom padding",
-      "Mobile top and bottom padding",
-      "Overlay opacity",
       "Desktop and mobile section height",
-      "Glow effects",
-      "Animation presets",
+      "Desktop and mobile padding",
+      "Overlay opacity",
+      "Content alignment",
+      "Premium growth path for motion and glow effects",
     ],
   },
   {
-    name: "Trust Bar",
+    name: "Store Trust Highlights",
     handle: "trust-bar",
-    status: "Expanded",
+    status: "Live",
     description:
-      "Compact trust-proof section for reassurance messaging, grid layout control, and cleaner spacing management.",
+      "Merchant-friendly trust block for reassurance messaging, trust points, spacing control, and a cleaner premium storefront presentation.",
     features: [
       "Heading",
+      "Trust items",
       "Heading alignment",
       "Section style",
       "Desktop columns",
-      "Top padding",
-      "Bottom padding",
-      "Four trust items",
+      "Top and bottom padding",
+      "Expandable roadmap for icons, links, and richer trust presentation",
     ],
   },
   {
-    name: "Premium Features",
+    name: "Feature Highlights Grid",
     handle: "premium-features",
-    status: "Expanded",
+    status: "Live",
     description:
-      "Feature grid section for premium offer communication with flexible layout controls and stronger merchandising structure.",
+      "Premium feature grid built to explain product value, brand advantages, and premium offer positioning with a clean card layout.",
     features: [
       "Heading and subheading",
+      "Feature cards",
+      "Card icons",
       "Section style",
       "Heading alignment",
       "Desktop columns",
-      "Top padding",
-      "Bottom padding",
-      "Feature card icons",
-      "Four feature cards",
+      "Top and bottom padding",
+      "Expandable roadmap for links, richer icon control, and stronger card styling",
+    ],
+  },
+];
+
+export const roadmapBlockItems = [
+  {
+    name: "Trust & Payment Showcase",
+    handle: "trust-payments-showcase",
+    status: "Planned next",
+    description:
+      "Large two-column conversion block that combines trust messaging, review links, payment methods, and delivery partner presentation in one premium section.",
+    plannedFeatures: [
+      "Left and right layout direction",
+      "Trust text and review link",
+      "Payment systems with official icons",
+      "Delivery partners with icon links",
+      "Editable text, colors, spacing, and icon sizes",
+      "Desktop and mobile layouts",
+      "Premium hover, glow, and luxury motion effects",
+    ],
+  },
+  {
+    name: "Vertical Video Showcase",
+    handle: "video-showcase",
+    status: "Planned next",
+    description:
+      "9:16 video product showcase for premium visual storytelling, stronger product attention, and richer storefront merchandising.",
+    plannedFeatures: [
+      "Vertical product video cards",
+      "Title, subtitle, CTA, and destination link",
+      "Desktop and mobile card control",
+      "Active and inactive card styling",
+      "Spacing, colors, overlays, and typography",
+      "Premium spotlight motion and luxury carousel polish",
     ],
   },
 ];
@@ -86,35 +118,39 @@ export const planTiers = [
     key: "free",
     label: "Free",
     priceLabel: "$0",
-    summary: "Core section controls for initial storefront setup.",
+    summary:
+      "A strong no-code foundation for merchants who want a professional result without touching code.",
     includes: [
-      "Basic hero content controls",
-      "Starter admin visibility",
-      "Merchant-safe mock plan flow",
+      "Mobile-ready editing foundation",
+      "Unlimited color selection across supported controls",
+      "Core text, background, spacing, and layout controls",
+      "Starter links, buttons, and merchant-safe customization flow",
     ],
   },
   {
     key: "standard",
     label: "Standard",
-    priceLabel: "Planned",
+    priceLabel: "$9.50",
     summary:
-      "Mid-tier controls for stronger layout flexibility and richer content options.",
+      "The working plan for merchants who need more control, stronger layouts, and richer customization.",
     includes: [
-      "Expanded spacing and alignment controls",
-      "Additional CTA flexibility",
-      "More polished section customization",
+      "Everything in Free",
+      "More layout flexibility and typography control",
+      "Custom icon upload and extended content structure",
+      "Better merchandising control for trust, feature, and showcase sections",
     ],
   },
   {
     key: "premium",
     label: "Premium",
-    priceLabel: "Planned",
+    priceLabel: "$24.50",
     summary:
-      "Full premium section experience with advanced presentation controls.",
+      "Luxury storefront control with premium visual polish, advanced motion, and high-end presentation tools.",
     includes: [
-      "Advanced mobile controls",
-      "Video and visual effects",
-      "Premium motion and merchandising options",
+      "Everything in Standard",
+      "Glow, shimmer, hover, and animated border effects",
+      "Premium showcase motion and luxury visual presets",
+      "Maximum presentation power for premium-brand storefronts",
     ],
   },
 ];

@@ -11,7 +11,12 @@ import {
   Page,
   Text,
 } from "@shopify/polaris";
-import { BLOCK_KEYS, PLAN_KEYS, canAccessBlockFeature } from "../plan-rules";
+import {
+  BLOCK_KEYS,
+  PLAN_KEYS,
+  PLAN_LABELS,
+  canAccessBlockFeature,
+} from "../plan-rules";
 import { BILLING_PLANS } from "../billing-config";
 import { getBlockFeatureCatalog } from "../block-feature-catalog";
 import { getCurrentPlanFromRequest } from "../current-plan.server";
@@ -23,19 +28,34 @@ import {
 
 const featureGroups = [
   {
-    title: "Luxe Hero",
+    title: "Premium Hero Banner",
     blockKey: BLOCK_KEYS.LUXE_HERO,
+    helperText: "Hero block for first impressions, CTA control, and premium storefront storytelling.",
     features: getBlockFeatureCatalog(BLOCK_KEYS.LUXE_HERO),
   },
   {
-    title: "Trust Bar",
+    title: "Store Trust Highlights",
     blockKey: BLOCK_KEYS.TRUST_BAR,
+    helperText: "Trust section for reassurance messaging, layout control, icons, and merchant-friendly proof blocks.",
     features: getBlockFeatureCatalog(BLOCK_KEYS.TRUST_BAR),
   },
   {
-    title: "Premium Features",
+    title: "Feature Highlights Grid",
     blockKey: BLOCK_KEYS.PREMIUM_FEATURES,
+    helperText: "Feature grid for value communication, icons, links, and clean product presentation.",
     features: getBlockFeatureCatalog(BLOCK_KEYS.PREMIUM_FEATURES),
+  },
+  {
+    title: "Trust & Payment Showcase",
+    blockKey: BLOCK_KEYS.TRUST_PAYMENTS_SHOWCASE,
+    helperText: "Planned next block for trust messaging, reviews, payment systems, and delivery partners.",
+    features: getBlockFeatureCatalog(BLOCK_KEYS.TRUST_PAYMENTS_SHOWCASE),
+  },
+  {
+    title: "Vertical Video Showcase",
+    blockKey: BLOCK_KEYS.VIDEO_SHOWCASE,
+    helperText: "Planned next block for 9:16 product videos, CTA links, and premium video presentation.",
+    features: getBlockFeatureCatalog(BLOCK_KEYS.VIDEO_SHOWCASE),
   },
 ];
 
@@ -49,10 +69,10 @@ function getPlanBadgeText(planKey, currentPlanKey) {
   }
 
   if (planKey === PLAN_KEYS.PREMIUM) {
-    return "All included";
+    return "Most premium";
   }
 
-  return "Start free";
+  return "Start here";
 }
 
 function getPlanBadgeTone(planKey, currentPlanKey) {
@@ -60,21 +80,28 @@ function getPlanBadgeTone(planKey, currentPlanKey) {
     return "success";
   }
 
+  if (planKey === PLAN_KEYS.STANDARD) {
+    return "attention";
+  }
+
   return "info";
 }
 
 function FeatureRow({ label, isAvailable }) {
   return (
-    <InlineStack align="space-between" blockAlign="center">
+    <InlineStack align="space-between" blockAlign="center" gap="200">
       <Text as="span" variant="bodyMd" tone={isAvailable ? undefined : "subdued"}>
         {label}
       </Text>
+
       <span
         style={{
           color: isAvailable ? "#008060" : "#8c9196",
           fontWeight: 700,
           fontSize: "16px",
           lineHeight: 1,
+          minWidth: "18px",
+          textAlign: "center",
         }}
       >
         {isAvailable ? "✓" : "—"}
@@ -88,7 +115,7 @@ export async function loader({ request }) {
 
   return {
     currentPlanKey: currentPlanStatus.planKey,
-    currentPlanLabel: currentPlanStatus.planLabel,
+    currentPlanLabel: PLAN_LABELS[currentPlanStatus.planKey],
     currentPlanSource: currentPlanStatus.source,
     hasActivePayment: currentPlanStatus.hasActivePayment,
   };
@@ -117,8 +144,8 @@ export default function PricingRoute() {
 
   return (
     <Page
-      title="Pricing"
-      subtitle="Choose the plan that fits your store and unlock the controls you need."
+      title="Tariffs"
+      subtitle="Choose the level of control your storefront needs. Every plan supports mobile editing and unlimited color selection."
     >
       <BlockStack gap="500">
         {hasMockBillingTransition ? (
@@ -144,12 +171,15 @@ export default function PricingRoute() {
         <Card>
           <BlockStack gap="200">
             <Text as="h2" variant="headingLg">
-              Plans
+              Tariffs
             </Text>
+
             <Text as="p" variant="bodyMd" tone="subdued">
-              Every plan is mobile-ready. Start free, upgrade only when you need
-              more control, and keep your store easy to manage.
+              Start free, build a professional result without code, and upgrade
+              only when you need stronger layout control, custom icons, or
+              premium visual effects.
             </Text>
+
             <InlineStack gap="300">
               <Badge tone="success">{currentPlanLabel}</Badge>
               <Text as="span" variant="bodySm" tone="subdued">
@@ -197,6 +227,16 @@ export default function PricingRoute() {
                     </Text>
                   </BlockStack>
 
+                  <BlockStack gap="100">
+                    {plan.highlights.map((item) => (
+                      <FeatureRow
+                        key={`${plan.key}-${item}`}
+                        label={item}
+                        isAvailable
+                      />
+                    ))}
+                  </BlockStack>
+
                   {isActionable ? (
                     <Form method="post" action="/app/billing">
                       <input type="hidden" name="plan" value={plan.key} />
@@ -218,12 +258,17 @@ export default function PricingRoute() {
 
                   <Divider />
 
-                  <BlockStack gap="300">
+                  <BlockStack gap="350">
                     {featureGroups.map((group) => (
                       <BlockStack key={group.blockKey} gap="200">
-                        <Text as="h4" variant="headingSm">
-                          {group.title}
-                        </Text>
+                        <BlockStack gap="050">
+                          <Text as="h4" variant="headingSm">
+                            {group.title}
+                          </Text>
+                          <Text as="p" variant="bodySm" tone="subdued">
+                            {group.helperText}
+                          </Text>
+                        </BlockStack>
 
                         <BlockStack gap="150">
                           {group.features.map((feature) => (
