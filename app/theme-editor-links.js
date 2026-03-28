@@ -50,19 +50,7 @@ export function buildThemeEditorEnableAppLink(
   apiKey,
   template = "index",
 ) {
-  const appsUrl = buildThemeEditorAppsUrl(shop, themeId, template);
-
-  if (!appsUrl || !apiKey) {
-    return null;
-  }
-
-  const url = new URL(appsUrl);
-  url.searchParams.set(
-    "activateAppId",
-    `${apiKey}/${THEME_EMBED_HANDLES.APP_EMBED}`,
-  );
-
-  return url.toString();
+  return buildThemeEditorAppsUrl(shop, themeId, template);
 }
 
 export function buildThemeEditorAppBlockLink(
@@ -93,7 +81,7 @@ export function getThemeEditorOnboardingLinks(shop, themeId, apiKey) {
       key: THEME_ONBOARDING_KEYS.ENABLE_APP,
       label: "Enable app in Theme Editor",
       description:
-        "Open the App embeds panel and turn Luxe Sections Studio on.",
+        "Open the App embeds panel and turn Luxe Sections Studio on manually.",
       url: buildThemeEditorEnableAppLink(shop, themeId, apiKey),
     },
     {
