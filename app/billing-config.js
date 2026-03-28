@@ -25,7 +25,7 @@ export const BILLING_PLANS = [
     isFree: false,
     status: "planned",
     billingModel: "app_subscription",
-    priceLabel: "$19",
+    priceLabel: "$9.50",
     intervalLabel: "30 days",
     description: "Mid-tier plan for stronger section flexibility.",
     highlights: [
@@ -36,7 +36,7 @@ export const BILLING_PLANS = [
     shopifyBilling: {
       planName: "Luxe Sections Studio Standard",
       interval: "EVERY_30_DAYS",
-      amount: 19,
+      amount: 9.5,
       currencyCode: "USD",
       trialDays: 7,
       replacementBehavior: "STANDARD",
@@ -51,7 +51,7 @@ export const BILLING_PLANS = [
     isFree: false,
     status: "planned",
     billingModel: "app_subscription",
-    priceLabel: "$49",
+    priceLabel: "$24.50",
     intervalLabel: "30 days",
     description: "Top-tier plan for advanced premium block controls.",
     highlights: [
@@ -62,7 +62,7 @@ export const BILLING_PLANS = [
     shopifyBilling: {
       planName: "Luxe Sections Studio Premium",
       interval: "EVERY_30_DAYS",
-      amount: 49,
+      amount: 24.5,
       currencyCode: "USD",
       trialDays: 7,
       replacementBehavior: "STANDARD",

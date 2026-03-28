@@ -29,15 +29,15 @@ export const LUXE_HERO_FEATURE_RULES = {
   primaryButton: PLAN_KEYS.FREE,
   overlayOpacity: PLAN_KEYS.FREE,
   desktopSectionHeight: PLAN_KEYS.FREE,
+  mobileSectionHeight: PLAN_KEYS.FREE,
+  mobilePaddingTop: PLAN_KEYS.FREE,
+  mobilePaddingBottom: PLAN_KEYS.FREE,
 
   contentAlignment: PLAN_KEYS.STANDARD,
   secondaryButton: PLAN_KEYS.STANDARD,
   paddingTop: PLAN_KEYS.STANDARD,
   paddingBottom: PLAN_KEYS.STANDARD,
 
-  mobileSectionHeight: PLAN_KEYS.PREMIUM,
-  mobilePaddingTop: PLAN_KEYS.PREMIUM,
-  mobilePaddingBottom: PLAN_KEYS.PREMIUM,
   videoBackground: PLAN_KEYS.PREMIUM,
   glowEffects: PLAN_KEYS.PREMIUM,
   advancedAnimations: PLAN_KEYS.PREMIUM,
