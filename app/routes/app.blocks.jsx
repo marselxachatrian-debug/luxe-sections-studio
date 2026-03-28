@@ -49,15 +49,47 @@ function getBlockEditorPath(handle) {
     return "/app/blocks/luxe-hero";
   }
 
+  if (handle === "trust-bar") {
+    return "/app/blocks/trust-bar";
+  }
+
+  if (handle === "premium-features") {
+    return "/app/blocks/premium-features";
+  }
+
   return `/app/blocks?block=${handle}`;
 }
 
+function hasDedicatedEditor(handle) {
+  return (
+    handle === "luxe-hero" ||
+    handle === "trust-bar" ||
+    handle === "premium-features"
+  );
+}
+
 function getBlockEditorButtonLabel(handle, isSelected) {
-  if (handle === "luxe-hero") {
+  if (hasDedicatedEditor(handle)) {
     return "Open editor page";
   }
 
   return isSelected ? "Selected" : "Open editor";
+}
+
+function getBlockStatusLabel(handle, isSelected, fallbackStatus) {
+  if (handle === "luxe-hero") {
+    return "Dedicated editor ready";
+  }
+
+  if (handle === "trust-bar") {
+    return "Dedicated editor ready";
+  }
+
+  if (handle === "premium-features") {
+    return "Dedicated editor ready";
+  }
+
+  return isSelected ? "Open" : fallbackStatus;
 }
 
 function renderHeroPreview(device) {
@@ -545,14 +577,16 @@ export default function BlocksLibraryRoute() {
                 </InlineStack>
 
                 <Text as="p" variant="bodyMd" tone="subdued">
-                  Open a block editor from the list below. Premium Hero Banner
-                  already has its first dedicated editor page with settings on
-                  the left and live preview on the right.
+                  Open a block editor from the list below. Premium Hero Banner,
+                  Store Trust Highlights, and Feature Highlights Grid already
+                  have dedicated editor pages with settings on the left and live
+                  preview on the right.
                 </Text>
 
                 <BlockStack gap="200">
                   {blockLibraryItems.map((block) => {
                     const isSelected = selectedBlock?.handle === block.handle;
+                    const dedicatedEditorReady = hasDedicatedEditor(block.handle);
 
                     return (
                       <Card key={block.handle} roundedAbove="sm">
@@ -563,11 +597,11 @@ export default function BlocksLibraryRoute() {
                                 {block.name}
                               </Text>
                               <Badge tone={isSelected ? "success" : "info"}>
-                                {block.handle === "luxe-hero"
-                                  ? "Dedicated editor ready"
-                                  : isSelected
-                                    ? "Open"
-                                    : block.status}
+                                {getBlockStatusLabel(
+                                  block.handle,
+                                  isSelected,
+                                  block.status,
+                                )}
                               </Badge>
                             </InlineStack>
 
@@ -582,7 +616,7 @@ export default function BlocksLibraryRoute() {
                           >
                             <Button
                               variant={
-                                block.handle === "luxe-hero" || isSelected
+                                dedicatedEditorReady || isSelected
                                   ? "primary"
                                   : "secondary"
                               }
@@ -606,15 +640,15 @@ export default function BlocksLibraryRoute() {
                       {selectedBlock.name}
                     </Text>
                     <Badge tone="success">
-                      {selectedBlock.handle === "luxe-hero"
+                      {hasDedicatedEditor(selectedBlock.handle)
                         ? "Dedicated editor ready"
                         : "App editor target"}
                     </Badge>
                   </InlineStack>
 
                   <Text as="p" variant="bodyMd" tone="subdued">
-                    {selectedBlock.handle === "luxe-hero"
-                      ? "This block already has its first dedicated editor page inside Luxe Sections Studio."
+                    {hasDedicatedEditor(selectedBlock.handle)
+                      ? "This block already has its own dedicated editor page inside Luxe Sections Studio."
                       : "This block will be edited mainly inside Luxe Sections Studio. Theme Editor stays minimal and is used mostly for placement and activation."}
                   </Text>
 
@@ -651,7 +685,7 @@ export default function BlocksLibraryRoute() {
                           style={{ textDecoration: "none" }}
                         >
                           <Button variant="primary">
-                            {selectedBlock.handle === "luxe-hero"
+                            {hasDedicatedEditor(selectedBlock.handle)
                               ? "Open dedicated editor"
                               : "Open block"}
                           </Button>
@@ -734,9 +768,9 @@ export default function BlocksLibraryRoute() {
                 </Box>
 
                 <Text as="p" variant="bodySm" tone="subdued">
-                  This studio page now links Premium Hero Banner to its own
-                  dedicated editor. Next we can build the same editor pattern for
-                  Store Trust Highlights.
+                  This studio page now links all current live blocks to their
+                  own dedicated editors. Next we can polish the dashboard flow
+                  and then move into the next planned blocks.
                 </Text>
               </BlockStack>
             </Card>
