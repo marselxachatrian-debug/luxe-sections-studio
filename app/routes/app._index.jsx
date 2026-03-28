@@ -60,49 +60,42 @@ export default function DashboardRoute() {
 
   const currentPlanSnapshots = [
     {
-      name: "Luxe Hero",
+      name: "Premium Hero Banner",
       value: `${countAccessibleFeatures(currentPlanKey, BLOCK_KEYS.LUXE_HERO)}/${getBlockFeatureCatalog(BLOCK_KEYS.LUXE_HERO).length}`,
     },
     {
-      name: "Trust Bar",
+      name: "Store Trust Highlights",
       value: `${countAccessibleFeatures(currentPlanKey, BLOCK_KEYS.TRUST_BAR)}/${getBlockFeatureCatalog(BLOCK_KEYS.TRUST_BAR).length}`,
     },
     {
-      name: "Premium Features",
+      name: "Feature Highlights Grid",
       value: `${countAccessibleFeatures(currentPlanKey, BLOCK_KEYS.PREMIUM_FEATURES)}/${getBlockFeatureCatalog(BLOCK_KEYS.PREMIUM_FEATURES).length}`,
     },
-  ];
-
-  const setupSteps = [
-    "Install the app and confirm it opens inside Shopify admin.",
-    "Open the Theme Editor and add the blocks you want to use.",
-    "Adjust content, spacing, style, and mobile presentation.",
-    "Upgrade only when your store needs more control or premium visuals.",
   ];
 
   const pageGuide = [
     {
       name: "Dashboard",
-      description: "Start here for setup guidance, current plan visibility, and quick actions.",
+      description: "Start here for setup guidance, quick actions, and plan visibility.",
     },
     {
       name: "Blocks Library",
-      description: "See which storefront blocks are ready to use in your theme.",
+      description: "See which storefront blocks are available for your current plan.",
     },
     {
       name: "Pricing",
-      description: "Compare plans side by side and upgrade only when it makes sense.",
+      description: "Compare all plans side by side and upgrade only when you need more control.",
     },
     {
       name: "Settings",
-      description: "Check plan-based controls and preview what each plan unlocks.",
+      description: "Review plan-based controls and preview what each plan unlocks.",
     },
   ];
 
   return (
     <Page
       title="Dashboard"
-      subtitle="A clear starting point for merchants who want a more premium Shopify storefront."
+      subtitle="A guided starting point for merchants who want a clearer and more premium Shopify storefront."
     >
       <BlockStack gap="500">
         <Card>
@@ -113,27 +106,69 @@ export default function DashboardRoute() {
                   Welcome to Luxe Sections Studio
                 </Text>
                 <Text as="p" variant="bodyMd" tone="subdued">
-                  Use this page as your guide. Start with your theme, add the
-                  right blocks, adjust your design, and upgrade only when your
-                  store needs more control.
+                  Start with your theme, follow the setup steps in order, and
+                  build a cleaner, stronger storefront without guessing what to
+                  do next.
                 </Text>
               </BlockStack>
 
               <Badge tone="success">{currentPlanLabel}</Badge>
             </InlineStack>
 
-            <InlineGrid columns={{ xs: 1, md: 3 }} gap="300">
-              {onboardingLinks.map((link) =>
-                link.url ? (
-                  <Button key={link.key} url={link.url} variant="primary">
-                    Open {link.label}
-                  </Button>
-                ) : (
-                  <Button key={link.key} disabled>
-                    Open {link.label}
-                  </Button>
-                ),
-              )}
+            <Text as="p" variant="bodySm" tone="subdued">
+              Use the checklist below in order. Open the first step, complete it
+              in Theme Editor, then come back here and continue with the next
+              one.
+            </Text>
+          </BlockStack>
+        </Card>
+
+        <Card>
+          <BlockStack gap="400">
+            <InlineStack align="space-between" blockAlign="center">
+              <Text as="h2" variant="headingMd">
+                Setup checklist
+              </Text>
+              <Badge tone="info">Start here</Badge>
+            </InlineStack>
+
+            <InlineGrid columns={{ xs: 1, md: 2 }} gap="300">
+              {onboardingLinks.map((step, index) => (
+                <Card key={step.key} roundedAbove="sm">
+                  <BlockStack gap="250">
+                    <InlineStack align="space-between" blockAlign="center">
+                      <Text as="h3" variant="headingSm">
+                        Step {index + 1}
+                      </Text>
+                      <Badge tone={index === 0 ? "success" : "info"}>
+                        {index === 0 ? "Do this first" : "Next step"}
+                      </Badge>
+                    </InlineStack>
+
+                    <BlockStack gap="100">
+                      <Text as="p" variant="headingMd">
+                        {step.label}
+                      </Text>
+                      <Text as="p" variant="bodyMd" tone="subdued">
+                        {step.description}
+                      </Text>
+                    </BlockStack>
+
+                    {step.url ? (
+                      <Button
+                        url={step.url}
+                        variant={index === 0 ? "primary" : "secondary"}
+                      >
+                        {index === 0 ? "Open Theme Editor" : "Open this step"}
+                      </Button>
+                    ) : (
+                      <Button disabled>
+                        {index === 0 ? "Open Theme Editor" : "Open this step"}
+                      </Button>
+                    )}
+                  </BlockStack>
+                </Card>
+              ))}
             </InlineGrid>
           </BlockStack>
         </Card>
@@ -200,20 +235,6 @@ export default function DashboardRoute() {
           <Card>
             <BlockStack gap="300">
               <Text as="h2" variant="headingMd">
-                Start here
-              </Text>
-
-              <List type="number">
-                {setupSteps.map((step) => (
-                  <List.Item key={step}>{step}</List.Item>
-                ))}
-              </List>
-            </BlockStack>
-          </Card>
-
-          <Card>
-            <BlockStack gap="300">
-              <Text as="h2" variant="headingMd">
                 What each page is for
               </Text>
 
@@ -226,9 +247,7 @@ export default function DashboardRoute() {
               </List>
             </BlockStack>
           </Card>
-        </InlineGrid>
 
-        <InlineGrid columns={{ xs: 1, md: 2 }} gap="400">
           <Card>
             <BlockStack gap="300">
               <Text as="h2" variant="headingMd">
@@ -244,7 +263,9 @@ export default function DashboardRoute() {
               </List>
             </BlockStack>
           </Card>
+        </InlineGrid>
 
+        <InlineGrid columns={{ xs: 1, md: 2 }} gap="400">
           <Card>
             <BlockStack gap="300">
               <Text as="h2" variant="headingMd">
@@ -262,29 +283,29 @@ export default function DashboardRoute() {
                     : "None"}
                 </List.Item>
                 <List.Item>
-                  Upgrade only when you need more layout control or stronger
-                  premium visuals
+                  Upgrade only when you need more layout control, stronger
+                  visuals, or a more premium storefront presentation.
                 </List.Item>
               </List>
             </BlockStack>
           </Card>
+
+          <Card>
+            <BlockStack gap="300">
+              <Text as="h2" variant="headingMd">
+                Ready blocks for your store
+              </Text>
+
+              <List>
+                {blockLibraryItems.map((block) => (
+                  <List.Item key={block.handle}>
+                    {block.name} — {block.status}
+                  </List.Item>
+                ))}
+              </List>
+            </BlockStack>
+          </Card>
         </InlineGrid>
-
-        <Card>
-          <BlockStack gap="300">
-            <Text as="h2" variant="headingMd">
-              Ready blocks for your store
-            </Text>
-
-            <List>
-              {blockLibraryItems.map((block) => (
-                <List.Item key={block.handle}>
-                  {block.name} — {block.status}
-                </List.Item>
-              ))}
-            </List>
-          </BlockStack>
-        </Card>
       </BlockStack>
     </Page>
   );
