@@ -1,0 +1,421 @@
+{% liquid
+  assign section_heading = block.settings.heading
+  assign section_subheading = block.settings.subheading
+  assign section_style = block.settings.section_style | default: 'light'
+  assign heading_alignment = block.settings.heading_alignment | default: 'center'
+  assign desktop_columns = block.settings.desktop_columns | default: '3'
+  assign padding_top = block.settings.padding_top | default: 40
+  assign padding_bottom = block.settings.padding_bottom | default: 40
+
+  case section_style
+    when 'dark'
+      assign section_background = '#0F172A'
+      assign section_heading_color = '#F8FAFC'
+      assign section_text_color = 'rgba(248,250,252,0.72)'
+      assign card_background = 'rgba(255,255,255,0.06)'
+      assign card_border = 'rgba(255,255,255,0.12)'
+      assign icon_background = 'rgba(255,255,255,0.08)'
+      assign icon_color = '#F8FAFC'
+    else
+      assign section_background = '#FFFFFF'
+      assign section_heading_color = '#111827'
+      assign section_text_color = 'rgba(17,24,39,0.72)'
+      assign card_background = '#F8F5F0'
+      assign card_border = 'rgba(17,24,39,0.08)'
+      assign icon_background = '#FFFFFF'
+      assign icon_color = '#111827'
+  endcase
+%}
+
+{% style %}
+  .luxe-premium-features-{{ block.id }} {
+    background: {{ section_background }};
+    padding-top: {{ padding_top }}px;
+    padding-bottom: {{ padding_bottom }}px;
+  }
+
+  .luxe-premium-features__inner-{{ block.id }} {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .luxe-premium-features__header-{{ block.id }} {
+    margin-bottom: 28px;
+    text-align: {{ heading_alignment }};
+  }
+
+  .luxe-premium-features__heading-{{ block.id }} {
+    margin: 0;
+    color: {{ section_heading_color }};
+    font-size: 32px;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+  }
+
+  .luxe-premium-features__subheading-{{ block.id }} {
+    margin: 12px 0 0;
+    color: {{ section_text_color }};
+    font-size: 16px;
+    line-height: 1.6;
+    max-width: 720px;
+    {% if heading_alignment == 'center' %}
+      margin-left: auto;
+      margin-right: auto;
+    {% endif %}
+  }
+
+  .luxe-premium-features__grid-{{ block.id }} {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .luxe-premium-features__card-{{ block.id }} {
+    background: {{ card_background }};
+    border: 1px solid {{ card_border }};
+    border-radius: 24px;
+    padding: 24px;
+  }
+
+  .luxe-premium-features__icon-wrap-{{ block.id }} {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: {{ icon_background }};
+    color: {{ icon_color }};
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 18px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  }
+
+  .luxe-premium-features__icon-{{ block.id }} {
+    width: 22px;
+    height: 22px;
+    display: block;
+  }
+
+  .luxe-premium-features__card-title-{{ block.id }} {
+    margin: 0 0 10px;
+    color: {{ section_heading_color }};
+    font-size: 20px;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+  }
+
+  .luxe-premium-features__card-text-{{ block.id }} {
+    margin: 0;
+    color: {{ section_text_color }};
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  @media screen and (min-width: 750px) {
+    .luxe-premium-features__grid-{{ block.id }} {
+      grid-template-columns: repeat({{ desktop_columns }}, minmax(0, 1fr));
+    }
+  }
+{% endstyle %}
+
+{% capture icon_check %}
+  <svg viewBox="0 0 24 24" fill="none" class="luxe-premium-features__icon-{{ block.id }}" aria-hidden="true">
+    <path d="M20 7L10 17L5 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+  </svg>
+{% endcapture %}
+
+{% capture icon_star %}
+  <svg viewBox="0 0 24 24" fill="none" class="luxe-premium-features__icon-{{ block.id }}" aria-hidden="true">
+    <path d="M12 3L14.78 8.63L21 9.54L16.5 13.93L17.56 20.14L12 17.22L6.44 20.14L7.5 13.93L3 9.54L9.22 8.63L12 3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
+  </svg>
+{% endcapture %}
+
+{% capture icon_shield %}
+  <svg viewBox="0 0 24 24" fill="none" class="luxe-premium-features__icon-{{ block.id }}" aria-hidden="true">
+    <path d="M12 3L19 6V11.5C19 16.2 16.1 20.45 12 21.8C7.9 20.45 5 16.2 5 11.5V6L12 3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
+  </svg>
+{% endcapture %}
+
+{% capture icon_sparkles %}
+  <svg viewBox="0 0 24 24" fill="none" class="luxe-premium-features__icon-{{ block.id }}" aria-hidden="true">
+    <path d="M12 3L13.8 8.2L19 10L13.8 11.8L12 17L10.2 11.8L5 10L10.2 8.2L12 3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
+    <path d="M19 3L19.6 4.4L21 5L19.6 5.6L19 7L18.4 5.6L17 5L18.4 4.4L19 3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
+  </svg>
+{% endcapture %}
+
+{% capture icon_leaf %}
+  <svg viewBox="0 0 24 24" fill="none" class="luxe-premium-features__icon-{{ block.id }}" aria-hidden="true">
+    <path d="M19 5C11.5 5 7 9.5 7 17C14.5 17 19 12.5 19 5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
+    <path d="M5 19C7 15.5 10 12.5 14 10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+  </svg>
+{% endcapture %}
+
+{% capture icon_crown %}
+  <svg viewBox="0 0 24 24" fill="none" class="luxe-premium-features__icon-{{ block.id }}" aria-hidden="true">
+    <path d="M4 18L6.2 8L12 13L17.8 8L20 18H4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
+    <path d="M6.5 18H17.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+    <circle cx="6" cy="7" r="1.2" fill="currentColor"></circle>
+    <circle cx="12" cy="5" r="1.2" fill="currentColor"></circle>
+    <circle cx="18" cy="7" r="1.2" fill="currentColor"></circle>
+  </svg>
+{% endcapture %}
+
+<div class="luxe-premium-features-{{ block.id }}" {{ block.shopify_attributes }}>
+  <div class="luxe-premium-features__inner-{{ block.id }}">
+    {% if section_heading != blank or section_subheading != blank %}
+      <div class="luxe-premium-features__header-{{ block.id }}">
+        {% if section_heading != blank %}
+          <h2 class="luxe-premium-features__heading-{{ block.id }}">
+            {{ section_heading | escape }}
+          </h2>
+        {% endif %}
+
+        {% if section_subheading != blank %}
+          <p class="luxe-premium-features__subheading-{{ block.id }}">
+            {{ section_subheading | escape }}
+          </p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="luxe-premium-features__grid-{{ block.id }}">
+      {% for index in (1..4) %}
+        {% liquid
+          assign title_key = 'feature_' | append: index | append: '_title'
+          assign text_key = 'feature_' | append: index | append: '_text'
+          assign icon_key = 'feature_' | append: index | append: '_icon'
+
+          assign feature_title = block.settings[title_key]
+          assign feature_text = block.settings[text_key]
+          assign feature_icon = block.settings[icon_key] | default: 'check'
+        %}
+
+        {% if feature_title != blank or feature_text != blank %}
+          <div class="luxe-premium-features__card-{{ block.id }}">
+            <div class="luxe-premium-features__icon-wrap-{{ block.id }}">
+              {% case feature_icon %}
+                {% when 'star' %}
+                  {{ icon_star }}
+                {% when 'shield' %}
+                  {{ icon_shield }}
+                {% when 'sparkles' %}
+                  {{ icon_sparkles }}
+                {% when 'leaf' %}
+                  {{ icon_leaf }}
+                {% when 'crown' %}
+                  {{ icon_crown }}
+                {% else %}
+                  {{ icon_check }}
+              {% endcase %}
+            </div>
+
+            {% if feature_title != blank %}
+              <h3 class="luxe-premium-features__card-title-{{ block.id }}">
+                {{ feature_title | escape }}
+              </h3>
+            {% endif %}
+
+            {% if feature_text != blank %}
+              <p class="luxe-premium-features__card-text-{{ block.id }}">
+                {{ feature_text | escape }}
+              </p>
+            {% endif %}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Premium Features",
+  "target": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Designed for premium storefront growth"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Use this section to present the value behind your premium offer with polished feature cards."
+    },
+    {
+      "type": "select",
+      "id": "section_style",
+      "label": "Section style",
+      "default": "light",
+      "options": [
+        { "value": "light", "label": "Light" },
+        { "value": "dark", "label": "Dark" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "Heading alignment",
+      "default": "center",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "desktop_columns",
+      "label": "Desktop columns",
+      "default": "3",
+      "options": [
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 140,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 140,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Feature card 1"
+    },
+    {
+      "type": "select",
+      "id": "feature_1_icon",
+      "label": "Icon",
+      "default": "check",
+      "options": [
+        { "value": "check", "label": "Check" },
+        { "value": "star", "label": "Star" },
+        { "value": "shield", "label": "Shield" },
+        { "value": "sparkles", "label": "Sparkles" },
+        { "value": "leaf", "label": "Leaf" },
+        { "value": "crown", "label": "Crown" }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "feature_1_title",
+      "label": "Title",
+      "default": "Luxury-first presentation"
+    },
+    {
+      "type": "textarea",
+      "id": "feature_1_text",
+      "label": "Text",
+      "default": "Showcase premium positioning with cleaner layout structure and more refined visual hierarchy."
+    },
+    {
+      "type": "header",
+      "content": "Feature card 2"
+    },
+    {
+      "type": "select",
+      "id": "feature_2_icon",
+      "label": "Icon",
+      "default": "star",
+      "options": [
+        { "value": "check", "label": "Check" },
+        { "value": "star", "label": "Star" },
+        { "value": "shield", "label": "Shield" },
+        { "value": "sparkles", "label": "Sparkles" },
+        { "value": "leaf", "label": "Leaf" },
+        { "value": "crown", "label": "Crown" }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "feature_2_title",
+      "label": "Title",
+      "default": "Flexible merchandising"
+    },
+    {
+      "type": "textarea",
+      "id": "feature_2_text",
+      "label": "Text",
+      "default": "Structure your value props into a cleaner grid that supports premium product storytelling."
+    },
+    {
+      "type": "header",
+      "content": "Feature card 3"
+    },
+    {
+      "type": "select",
+      "id": "feature_3_icon",
+      "label": "Icon",
+      "default": "shield",
+      "options": [
+        { "value": "check", "label": "Check" },
+        { "value": "star", "label": "Star" },
+        { "value": "shield", "label": "Shield" },
+        { "value": "sparkles", "label": "Sparkles" },
+        { "value": "leaf", "label": "Leaf" },
+        { "value": "crown", "label": "Crown" }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "feature_3_title",
+      "label": "Title",
+      "default": "Confident buyer messaging"
+    },
+    {
+      "type": "textarea",
+      "id": "feature_3_text",
+      "label": "Text",
+      "default": "Highlight quality, trust, and differentiation in a format that feels premium and easy to scan."
+    },
+    {
+      "type": "header",
+      "content": "Feature card 4"
+    },
+    {
+      "type": "select",
+      "id": "feature_4_icon",
+      "label": "Icon",
+      "default": "crown",
+      "options": [
+        { "value": "check", "label": "Check" },
+        { "value": "star", "label": "Star" },
+        { "value": "shield", "label": "Shield" },
+        { "value": "sparkles", "label": "Sparkles" },
+        { "value": "leaf", "label": "Leaf" },
+        { "value": "crown", "label": "Crown" }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "feature_4_title",
+      "label": "Title",
+      "default": "Premium visual polish"
+    },
+    {
+      "type": "textarea",
+      "id": "feature_4_text",
+      "label": "Text",
+      "default": "Add subtle icon-led card styling that helps the section feel more intentional and high-end."
+    }
+  ]
+}
+{% endschema %}

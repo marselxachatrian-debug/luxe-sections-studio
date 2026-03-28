@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+    container_name: luxe-sections-studio-app
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/luxe_sections_studio?schema=public
+      SHOPIFY_APP_URL: https://YOUR_PUBLIC_APP_URL
+      SHOPIFY_API_KEY: ${SHOPIFY_API_KEY}
+      SHOPIFY_API_SECRET: ${SHOPIFY_API_SECRET}
+      SCOPES: ${SCOPES}
+
+  db:
+    image: postgres:16-alpine
+    container_name: luxe-sections-studio-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: luxe_sections_studio
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - luxe_sections_studio_db_data:/var/lib/postgresql/data
+
+volumes:
+  luxe_sections_studio_db_data:

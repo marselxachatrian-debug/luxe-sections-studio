@@ -1,0 +1,33 @@
+# Keep your current real values for client_id, application_url, and redirect_urls.
+# Keep your current existing scopes and add read_themes.
+
+name = "Luxe Sections Studio"
+client_id = "KEEP_YOUR_CURRENT_CLIENT_ID"
+application_url = "KEEP_YOUR_CURRENT_APPLICATION_URL"
+embedded = true
+handle = "luxe-sections-studio"
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "casabloom-552.myshopify.com"
+include_config_on_deploy = true
+
+[access_scopes]
+scopes = "KEEP_YOUR_CURRENT_SCOPES,read_themes"
+
+[access.admin]
+embedded_app_direct_api_access = true
+direct_api_mode = "online"
+
+[auth]
+redirect_urls = [
+  "KEEP_YOUR_CURRENT_APPLICATION_URL/auth/callback",
+  "KEEP_YOUR_CURRENT_APPLICATION_URL/auth/shopify/callback",
+  "KEEP_YOUR_CURRENT_APPLICATION_URL/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2025-10"
+
+[pos]
+embedded = false
