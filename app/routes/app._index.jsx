@@ -26,6 +26,19 @@ function countAccessibleFeatures(planKey, blockKey) {
   ).length;
 }
 
+function openInTopWindow(url) {
+  if (!url || typeof window === "undefined") {
+    return;
+  }
+
+  if (window.top) {
+    window.top.location.href = url;
+    return;
+  }
+
+  window.location.href = url;
+}
+
 export async function loader({ request }) {
   const currentPlanStatus = await getCurrentPlanFromRequest(request);
   const activeThemeStatus = await getActiveThemeFromRequest(request);
@@ -156,7 +169,7 @@ export default function DashboardRoute() {
 
                     {step.url ? (
                       <Button
-                        url={step.url}
+                        onClick={() => openInTopWindow(step.url)}
                         variant={index === 0 ? "primary" : "secondary"}
                       >
                         {index === 0 ? "Open Theme Editor" : "Open this step"}
