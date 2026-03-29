@@ -5,7 +5,6 @@ import {
   BlockStack,
   Button,
   Card,
-  Divider,
   InlineGrid,
   InlineStack,
   List,
