@@ -187,201 +187,301 @@ export default function PremiumFeaturesEditorRoute() {
   return (
     <Page
       title="Feature Highlights Grid"
-      subtitle="Dedicated feature grid editor with left-side controls and live preview on the right."
+      subtitle="Short setup on top, editor on the left, stable preview on the right."
     >
-      <BlockStack gap="500">
+      <BlockStack gap="400">
         <Card>
-          <InlineStack align="space-between" blockAlign="center">
-            <BlockStack gap="100">
-              <Text as="h2" variant="headingLg">
-                Feature Highlights Grid editor
-              </Text>
-              <Text as="p" variant="bodyMd" tone="subdued">
-                Build a cleaner feature grid inside the app and keep Shopify
-                Theme Editor focused on placement and activation.
-              </Text>
-              <Text as="p" variant="bodySm" tone="subdued">
-                Active theme: {activeThemeName ?? "Not found"}
-                {activeThemeId ? ` (ID: ${activeThemeId})` : ""}
-              </Text>
+          <InlineGrid columns={{ xs: 1, lg: "1.25fr auto" }} gap="300">
+            <BlockStack gap="200">
+              <BlockStack gap="100">
+                <InlineStack gap="200" blockAlign="center" wrap>
+                  <Text as="h1" variant="headingLg">
+                    Feature Highlights Grid
+                  </Text>
+                  <Badge tone="success">{currentPlanLabel}</Badge>
+                </InlineStack>
+
+                <Text as="p" variant="bodyMd" tone="subdued">
+                  Two actions only: connect the block in Shopify, then edit the
+                  feature grid inside Luxe Sections Studio.
+                </Text>
+              </BlockStack>
+
+              <InlineStack gap="200" wrap>
+                {themeEditorUrl ? (
+                  <Button
+                    variant="primary"
+                    onClick={() => openInTopWindow(themeEditorUrl)}
+                  >
+                    Connect in Shopify
+                  </Button>
+                ) : (
+                  <Button variant="primary" disabled>
+                    Connect in Shopify
+                  </Button>
+                )}
+
+                <Link to="/app/blocks" style={{ textDecoration: "none" }}>
+                  <Button>Back to Blocks</Button>
+                </Link>
+              </InlineStack>
             </BlockStack>
 
-            <Badge tone="success">{currentPlanLabel}</Badge>
-          </InlineStack>
+            <BlockStack gap="150">
+              <Box
+                padding="300"
+                borderRadius="300"
+                background="bg-surface-secondary"
+              >
+                <BlockStack gap="050">
+                  <Text as="p" variant="bodySm" fontWeight="semibold">
+                    1 · Connect in Shopify
+                  </Text>
+                  <Text as="p" variant="bodySm" tone="subdued">
+                    Add the block to the template and turn it on.
+                  </Text>
+                </BlockStack>
+              </Box>
+
+              <Box
+                padding="300"
+                borderRadius="300"
+                background="bg-surface-secondary"
+              >
+                <BlockStack gap="050">
+                  <Text as="p" variant="bodySm" fontWeight="semibold">
+                    2 · Edit inside Luxe Sections Studio
+                  </Text>
+                  <Text as="p" variant="bodySm" tone="subdued">
+                    Content, card structure, spacing, and responsive polish stay
+                    here.
+                  </Text>
+                </BlockStack>
+              </Box>
+
+              <Text as="p" variant="bodySm" tone="subdued">
+                Theme: {activeThemeName ?? "Not found"}{" "}
+                {activeThemeId ? `(ID: ${activeThemeId})` : ""}
+              </Text>
+            </BlockStack>
+          </InlineGrid>
         </Card>
 
-        <InlineGrid columns={{ xs: 1, lg: "0.95fr 1.05fr" }} gap="400">
-          <BlockStack gap="400">
-            <Card>
-              <BlockStack gap="300">
-                <Text as="h2" variant="headingMd">
-                  Content
+        <InlineGrid columns={{ xs: 1, lg: "minmax(0, 1fr) 460px" }} gap="400">
+          <Card>
+            <BlockStack gap="300">
+              <BlockStack gap="050">
+                <InlineStack align="space-between" blockAlign="center" wrap>
+                  <Text as="h2" variant="headingMd">
+                    Editor controls
+                  </Text>
+                  <Badge tone="success">Editor ready</Badge>
+                </InlineStack>
+
+                <Text as="p" variant="bodySm" tone="subdued">
+                  Keep the feature grid simple: heading, cards, layout, spacing,
+                  and premium visual polish in one editor panel.
                 </Text>
-
-                <TextField
-                  label="Heading"
-                  value={heading}
-                  onChange={setHeading}
-                  autoComplete="off"
-                />
-
-                <TextField
-                  label="Subheading"
-                  value={subheading}
-                  onChange={setSubheading}
-                  multiline={3}
-                  autoComplete="off"
-                />
               </BlockStack>
-            </Card>
 
+              <Box
+                padding="300"
+                borderRadius="300"
+                background="bg-surface-secondary"
+              >
+                <BlockStack gap="250">
+                  <Text as="h3" variant="headingSm">
+                    Section content
+                  </Text>
+
+                  <TextField
+                    label="Heading"
+                    value={heading}
+                    onChange={setHeading}
+                    autoComplete="off"
+                  />
+
+                  <TextField
+                    label="Subheading"
+                    value={subheading}
+                    onChange={setSubheading}
+                    multiline={3}
+                    autoComplete="off"
+                  />
+                </BlockStack>
+              </Box>
+
+              <Box
+                padding="300"
+                borderRadius="300"
+                background="bg-surface-secondary"
+              >
+                <BlockStack gap="250">
+                  <Text as="h3" variant="headingSm">
+                    Feature cards
+                  </Text>
+
+                  <TextField
+                    label="Card 1 title"
+                    value={cardOneTitle}
+                    onChange={setCardOneTitle}
+                    autoComplete="off"
+                  />
+
+                  <TextField
+                    label="Card 1 text"
+                    value={cardOneText}
+                    onChange={setCardOneText}
+                    multiline={3}
+                    autoComplete="off"
+                  />
+
+                  <TextField
+                    label="Card 2 title"
+                    value={cardTwoTitle}
+                    onChange={setCardTwoTitle}
+                    autoComplete="off"
+                  />
+
+                  <TextField
+                    label="Card 2 text"
+                    value={cardTwoText}
+                    onChange={setCardTwoText}
+                    multiline={3}
+                    autoComplete="off"
+                  />
+
+                  <TextField
+                    label="Card 3 title"
+                    value={cardThreeTitle}
+                    onChange={setCardThreeTitle}
+                    autoComplete="off"
+                  />
+
+                  <TextField
+                    label="Card 3 text"
+                    value={cardThreeText}
+                    onChange={setCardThreeText}
+                    multiline={3}
+                    autoComplete="off"
+                  />
+                </BlockStack>
+              </Box>
+
+              <Box
+                padding="300"
+                borderRadius="300"
+                background="bg-surface-secondary"
+              >
+                <BlockStack gap="250">
+                  <Text as="h3" variant="headingSm">
+                    Layout and style
+                  </Text>
+
+                  <Select
+                    label="Heading alignment"
+                    options={[
+                      { label: "Left", value: "left" },
+                      { label: "Center", value: "center" },
+                      { label: "Right", value: "right" },
+                    ]}
+                    value={headingAlignment}
+                    onChange={setHeadingAlignment}
+                  />
+
+                  <Select
+                    label="Section style"
+                    options={[
+                      { label: "Minimal", value: "minimal" },
+                      { label: "Soft card", value: "soft" },
+                      { label: "Luxe highlight", value: "luxe" },
+                    ]}
+                    value={sectionStyle}
+                    onChange={setSectionStyle}
+                  />
+
+                  <Select
+                    label="Desktop columns"
+                    options={[
+                      { label: "2 columns", value: "2" },
+                      { label: "3 columns", value: "3" },
+                    ]}
+                    value={desktopColumns}
+                    onChange={setDesktopColumns}
+                  />
+
+                  <Select
+                    label="Icon tone"
+                    options={[
+                      { label: "Soft gold", value: "gold" },
+                      { label: "Midnight gold", value: "midnight" },
+                      { label: "Charcoal", value: "charcoal" },
+                    ]}
+                    value={iconTone}
+                    onChange={setIconTone}
+                  />
+                </BlockStack>
+              </Box>
+
+              <Box
+                padding="300"
+                borderRadius="300"
+                background="bg-surface-secondary"
+              >
+                <BlockStack gap="250">
+                  <Text as="h3" variant="headingSm">
+                    Responsive spacing
+                  </Text>
+
+                  <RangeSlider
+                    label="Top padding"
+                    value={topPadding}
+                    onChange={setTopPadding}
+                    min={12}
+                    max={72}
+                    step={2}
+                    output
+                  />
+
+                  <RangeSlider
+                    label="Bottom padding"
+                    value={bottomPadding}
+                    onChange={setBottomPadding}
+                    min={12}
+                    max={72}
+                    step={2}
+                    output
+                  />
+                </BlockStack>
+              </Box>
+
+              <InlineStack gap="200" wrap>
+                <Link to="/app/blocks" style={{ textDecoration: "none" }}>
+                  <Button>Back to Blocks</Button>
+                </Link>
+
+                {themeEditorUrl ? (
+                  <Button onClick={() => openInTopWindow(themeEditorUrl)}>
+                    Open Theme Editor
+                  </Button>
+                ) : (
+                  <Button disabled>Open Theme Editor</Button>
+                )}
+              </InlineStack>
+            </BlockStack>
+          </Card>
+
+          <div style={{ position: "sticky", top: "24px" }}>
             <Card>
               <BlockStack gap="300">
-                <Text as="h2" variant="headingMd">
-                  Feature card 1
-                </Text>
+                <InlineStack align="space-between" blockAlign="center">
+                  <Text as="h2" variant="headingMd">
+                    Live preview
+                  </Text>
+                  <Badge tone="attention">{device}</Badge>
+                </InlineStack>
 
-                <TextField
-                  label="Card title"
-                  value={cardOneTitle}
-                  onChange={setCardOneTitle}
-                  autoComplete="off"
-                />
-
-                <TextField
-                  label="Card text"
-                  value={cardOneText}
-                  onChange={setCardOneText}
-                  multiline={3}
-                  autoComplete="off"
-                />
-              </BlockStack>
-            </Card>
-
-            <Card>
-              <BlockStack gap="300">
-                <Text as="h2" variant="headingMd">
-                  Feature card 2
-                </Text>
-
-                <TextField
-                  label="Card title"
-                  value={cardTwoTitle}
-                  onChange={setCardTwoTitle}
-                  autoComplete="off"
-                />
-
-                <TextField
-                  label="Card text"
-                  value={cardTwoText}
-                  onChange={setCardTwoText}
-                  multiline={3}
-                  autoComplete="off"
-                />
-              </BlockStack>
-            </Card>
-
-            <Card>
-              <BlockStack gap="300">
-                <Text as="h2" variant="headingMd">
-                  Feature card 3
-                </Text>
-
-                <TextField
-                  label="Card title"
-                  value={cardThreeTitle}
-                  onChange={setCardThreeTitle}
-                  autoComplete="off"
-                />
-
-                <TextField
-                  label="Card text"
-                  value={cardThreeText}
-                  onChange={setCardThreeText}
-                  multiline={3}
-                  autoComplete="off"
-                />
-              </BlockStack>
-            </Card>
-
-            <Card>
-              <BlockStack gap="300">
-                <Text as="h2" variant="headingMd">
-                  Layout and style
-                </Text>
-
-                <Select
-                  label="Heading alignment"
-                  options={[
-                    { label: "Left", value: "left" },
-                    { label: "Center", value: "center" },
-                    { label: "Right", value: "right" },
-                  ]}
-                  value={headingAlignment}
-                  onChange={setHeadingAlignment}
-                />
-
-                <Select
-                  label="Section style"
-                  options={[
-                    { label: "Minimal", value: "minimal" },
-                    { label: "Soft card", value: "soft" },
-                    { label: "Luxe highlight", value: "luxe" },
-                  ]}
-                  value={sectionStyle}
-                  onChange={setSectionStyle}
-                />
-
-                <Select
-                  label="Desktop columns"
-                  options={[
-                    { label: "2 columns", value: "2" },
-                    { label: "3 columns", value: "3" },
-                  ]}
-                  value={desktopColumns}
-                  onChange={setDesktopColumns}
-                />
-
-                <Select
-                  label="Icon tone"
-                  options={[
-                    { label: "Soft gold", value: "gold" },
-                    { label: "Midnight gold", value: "midnight" },
-                    { label: "Charcoal", value: "charcoal" },
-                  ]}
-                  value={iconTone}
-                  onChange={setIconTone}
-                />
-
-                <RangeSlider
-                  label="Top padding"
-                  value={topPadding}
-                  onChange={setTopPadding}
-                  min={12}
-                  max={72}
-                  step={2}
-                  output
-                />
-
-                <RangeSlider
-                  label="Bottom padding"
-                  value={bottomPadding}
-                  onChange={setBottomPadding}
-                  min={12}
-                  max={72}
-                  step={2}
-                  output
-                />
-              </BlockStack>
-            </Card>
-
-            <Card>
-              <BlockStack gap="300">
-                <Text as="h2" variant="headingMd">
-                  Preview device
-                </Text>
-
-                <InlineStack gap="200">
+                <InlineStack gap="200" wrap>
                   <Button
                     variant={device === "desktop" ? "primary" : "secondary"}
                     onClick={() => setDevice("desktop")}
@@ -403,186 +503,144 @@ export default function PremiumFeaturesEditorRoute() {
                     Mobile
                   </Button>
                 </InlineStack>
-              </BlockStack>
-            </Card>
 
-            <Card>
-              <BlockStack gap="250">
-                <Text as="h2" variant="headingMd">
-                  Theme connection
-                </Text>
-
-                <Text as="p" variant="bodyMd" tone="subdued">
-                  Use this editor for the main feature grid setup. Open Shopify
-                  Theme Editor only to place the block in the correct template
-                  and turn it on.
-                </Text>
-
-                <InlineStack gap="200">
-                  <Link to="/app/blocks" style={{ textDecoration: "none" }}>
-                    <Button>Back to Blocks</Button>
-                  </Link>
-
-                  {themeEditorUrl ? (
-                    <Button
-                      variant="primary"
-                      onClick={() => openInTopWindow(themeEditorUrl)}
-                    >
-                      Open Theme Editor
-                    </Button>
-                  ) : (
-                    <Button disabled variant="primary">
-                      Open Theme Editor
-                    </Button>
-                  )}
-                </InlineStack>
-              </BlockStack>
-            </Card>
-          </BlockStack>
-
-          <Card>
-            <BlockStack gap="300">
-              <InlineStack align="space-between" blockAlign="center">
-                <Text as="h2" variant="headingMd">
-                  Live preview
-                </Text>
-                <Badge tone="attention">{device}</Badge>
-              </InlineStack>
-
-              <Box
-                padding="300"
-                background="bg-surface-secondary"
-                borderRadius="300"
-              >
-                <div
-                  style={{
-                    width: "100%",
-                    display: "flex",
-                    justifyContent: "center",
-                  }}
+                <Box
+                  padding="300"
+                  background="bg-surface-secondary"
+                  borderRadius="300"
                 >
                   <div
                     style={{
-                      width: previewWidth,
-                      maxWidth: "100%",
-                      transition: "all 160ms ease",
+                      width: "100%",
+                      minHeight: "760px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "flex-start",
+                      overflow: "hidden",
                     }}
                   >
                     <div
                       style={{
-                        borderRadius: "28px",
-                        paddingTop: `${topPadding}px`,
-                        paddingBottom: `${bottomPadding}px`,
-                        paddingLeft: isMobile ? "18px" : "28px",
-                        paddingRight: isMobile ? "18px" : "28px",
-                        ...sectionSurface,
+                        width: previewWidth,
+                        maxWidth: "100%",
+                        transition: "width 160ms ease",
                       }}
                     >
                       <div
                         style={{
-                          display: "flex",
-                          justifyContent: contentJustify,
-                          marginBottom: "10px",
+                          borderRadius: "28px",
+                          paddingTop: `${topPadding}px`,
+                          paddingBottom: `${bottomPadding}px`,
+                          paddingLeft: isMobile ? "18px" : "28px",
+                          paddingRight: isMobile ? "18px" : "28px",
+                          ...sectionSurface,
                         }}
                       >
                         <div
                           style={{
-                            fontSize: isMobile ? "24px" : "32px",
-                            lineHeight: 1.15,
-                            fontWeight: 700,
-                            color: "#111827",
-                            textAlign,
-                            maxWidth: isMobile ? "100%" : "680px",
+                            display: "flex",
+                            justifyContent: contentJustify,
+                            marginBottom: "10px",
                           }}
                         >
-                          {heading || "Feature highlights your customers can scan fast"}
-                        </div>
-                      </div>
-
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: contentJustify,
-                          marginBottom: "22px",
-                        }}
-                      >
-                        <div
-                          style={{
-                            fontSize: isMobile ? "14px" : "15px",
-                            lineHeight: 1.65,
-                            color: "#6b7280",
-                            textAlign,
-                            maxWidth: isMobile ? "100%" : "700px",
-                          }}
-                        >
-                          {subheading ||
-                            "Present the strongest benefits of your products in a cleaner feature grid."}
-                        </div>
-                      </div>
-
-                      <div
-                        style={{
-                          display: "grid",
-                          gridTemplateColumns: previewColumns,
-                          gap: "14px",
-                        }}
-                      >
-                        {cards.map((card, index) => (
                           <div
-                            key={`${card.title}-${index}`}
                             style={{
-                              borderRadius: "20px",
-                              padding: isMobile ? "16px" : "20px",
-                              ...cardSurface,
+                              fontSize: isMobile ? "24px" : "32px",
+                              lineHeight: 1.15,
+                              fontWeight: 700,
+                              color: "#111827",
+                              textAlign,
+                              maxWidth: isMobile ? "100%" : "680px",
                             }}
                           >
-                            <div
-                              style={{
-                                width: "42px",
-                                height: "42px",
-                                borderRadius: "14px",
-                                background: getIconBackground(iconTone),
-                                marginBottom: "14px",
-                              }}
-                            />
-
-                            <div
-                              style={{
-                                fontSize: "15px",
-                                lineHeight: 1.4,
-                                color: "#111827",
-                                fontWeight: 700,
-                                marginBottom: "8px",
-                              }}
-                            >
-                              {card.title || "Feature title"}
-                            </div>
-
-                            <div
-                              style={{
-                                fontSize: "13px",
-                                lineHeight: 1.65,
-                                color: "#6b7280",
-                              }}
-                            >
-                              {card.text || "Feature description"}
-                            </div>
+                            {heading ||
+                              "Feature highlights your customers can scan fast"}
                           </div>
-                        ))}
+                        </div>
+
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: contentJustify,
+                            marginBottom: "22px",
+                          }}
+                        >
+                          <div
+                            style={{
+                              fontSize: isMobile ? "14px" : "15px",
+                              lineHeight: 1.65,
+                              color: "#6b7280",
+                              textAlign,
+                              maxWidth: isMobile ? "100%" : "700px",
+                            }}
+                          >
+                            {subheading ||
+                              "Present the strongest benefits of your products in a cleaner feature grid."}
+                          </div>
+                        </div>
+
+                        <div
+                          style={{
+                            display: "grid",
+                            gridTemplateColumns: previewColumns,
+                            gap: "14px",
+                          }}
+                        >
+                          {cards.map((card, index) => (
+                            <div
+                              key={`${card.title}-${index}`}
+                              style={{
+                                borderRadius: "20px",
+                                padding: isMobile ? "16px" : "20px",
+                                ...cardSurface,
+                              }}
+                            >
+                              <div
+                                style={{
+                                  width: "42px",
+                                  height: "42px",
+                                  borderRadius: "14px",
+                                  background: getIconBackground(iconTone),
+                                  marginBottom: "14px",
+                                }}
+                              />
+
+                              <div
+                                style={{
+                                  fontSize: "15px",
+                                  lineHeight: 1.4,
+                                  color: "#111827",
+                                  fontWeight: 700,
+                                  marginBottom: "8px",
+                                }}
+                              >
+                                {card.title || "Feature title"}
+                              </div>
+
+                              <div
+                                style={{
+                                  fontSize: "13px",
+                                  lineHeight: 1.65,
+                                  color: "#6b7280",
+                                }}
+                              >
+                                {card.text || "Feature description"}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </Box>
+                </Box>
 
-              <Text as="p" variant="bodySm" tone="subdued">
-                This is the third dedicated editor shell. After connecting this
-                page in Blocks Studio, all current live blocks will have their
-                own editor pages with left-side controls and preview on the
-                right.
-              </Text>
-            </BlockStack>
-          </Card>
+                <Text as="p" variant="bodySm" tone="subdued">
+                  Preview stays fixed on the right so device switching feels
+                  stable while the merchant edits the feature grid.
+                </Text>
+              </BlockStack>
+            </Card>
+          </div>
         </InlineGrid>
       </BlockStack>
     </Page>
