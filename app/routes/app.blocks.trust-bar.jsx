@@ -171,153 +171,263 @@ export default function TrustBarEditorRoute() {
   return (
     <Page
       title="Store Trust Highlights"
-      subtitle="Dedicated trust block editor with left-side controls and live preview on the right."
+      subtitle="Short setup on top, editor on the left, stable preview on the right."
     >
-      <BlockStack gap="500">
+      <BlockStack gap="400">
         <Card>
-          <InlineStack align="space-between" blockAlign="center">
-            <BlockStack gap="100">
-              <Text as="h2" variant="headingLg">
-                Store Trust Highlights editor
-              </Text>
-              <Text as="p" variant="bodyMd" tone="subdued">
-                Build a cleaner reassurance section inside the app and keep
-                Shopify Theme Editor focused on placement and activation.
-              </Text>
-              <Text as="p" variant="bodySm" tone="subdued">
-                Active theme: {activeThemeName ?? "Not found"}
-                {activeThemeId ? ` (ID: ${activeThemeId})` : ""}
-              </Text>
+          <InlineGrid columns={{ xs: 1, lg: "1.25fr auto" }} gap="300">
+            <BlockStack gap="200">
+              <BlockStack gap="100">
+                <InlineStack gap="200" blockAlign="center" wrap>
+                  <Text as="h1" variant="headingLg">
+                    Store Trust Highlights
+                  </Text>
+                  <Badge tone="success">{currentPlanLabel}</Badge>
+                </InlineStack>
+
+                <Text as="p" variant="bodyMd" tone="subdued">
+                  Two actions only: connect the block in Shopify, then edit the
+                  trust section inside Luxe Sections Studio.
+                </Text>
+              </BlockStack>
+
+              <InlineStack gap="200" wrap>
+                {themeEditorUrl ? (
+                  <Button
+                    variant="primary"
+                    onClick={() => openInTopWindow(themeEditorUrl)}
+                  >
+                    Connect in Shopify
+                  </Button>
+                ) : (
+                  <Button variant="primary" disabled>
+                    Connect in Shopify
+                  </Button>
+                )}
+
+                <Link to="/app/blocks" style={{ textDecoration: "none" }}>
+                  <Button>Edit inside app</Button>
+                </Link>
+              </InlineStack>
             </BlockStack>
 
-            <Badge tone="success">{currentPlanLabel}</Badge>
-          </InlineStack>
+            <BlockStack gap="150">
+              <Box
+                padding="300"
+                borderRadius="300"
+                background="bg-surface-secondary"
+              >
+                <BlockStack gap="050">
+                  <Text as="p" variant="bodySm" fontWeight="semibold">
+                    1 · Connect in Shopify
+                  </Text>
+                  <Text as="p" variant="bodySm" tone="subdued">
+                    Add the block to the template and turn it on.
+                  </Text>
+                </BlockStack>
+              </Box>
+
+              <Box
+                padding="300"
+                borderRadius="300"
+                background="bg-surface-secondary"
+              >
+                <BlockStack gap="050">
+                  <Text as="p" variant="bodySm" fontWeight="semibold">
+                    2 · Edit inside Luxe Sections Studio
+                  </Text>
+                  <Text as="p" variant="bodySm" tone="subdued">
+                    Content, layout, spacing, and responsive polish stay here.
+                  </Text>
+                </BlockStack>
+              </Box>
+
+              <Text as="p" variant="bodySm" tone="subdued">
+                Theme: {activeThemeName ?? "Not found"}{" "}
+                {activeThemeId ? `(ID: ${activeThemeId})` : ""}
+              </Text>
+            </BlockStack>
+          </InlineGrid>
         </Card>
 
-        <InlineGrid columns={{ xs: 1, lg: "0.95fr 1.05fr" }} gap="400">
-          <BlockStack gap="400">
-            <Card>
-              <BlockStack gap="300">
-                <Text as="h2" variant="headingMd">
-                  Content
+        <InlineGrid columns={{ xs: 1, lg: "minmax(0, 1fr) 460px" }} gap="400">
+          <Card>
+            <BlockStack gap="300">
+              <BlockStack gap="050">
+                <InlineStack align="space-between" blockAlign="center" wrap>
+                  <Text as="h2" variant="headingMd">
+                    Editor controls
+                  </Text>
+                  <Badge tone="success">Editor ready</Badge>
+                </InlineStack>
+
+                <Text as="p" variant="bodySm" tone="subdued">
+                  Keep the trust block simple: message, layout, spacing, and visual polish in one editor panel.
                 </Text>
-
-                <TextField
-                  label="Heading"
-                  value={heading}
-                  onChange={setHeading}
-                  autoComplete="off"
-                />
-
-                <TextField
-                  label="Subheading"
-                  value={subheading}
-                  onChange={setSubheading}
-                  multiline={3}
-                  autoComplete="off"
-                />
-
-                <TextField
-                  label="Trust item 1"
-                  value={itemOne}
-                  onChange={setItemOne}
-                  autoComplete="off"
-                />
-
-                <TextField
-                  label="Trust item 2"
-                  value={itemTwo}
-                  onChange={setItemTwo}
-                  autoComplete="off"
-                />
-
-                <TextField
-                  label="Trust item 3"
-                  value={itemThree}
-                  onChange={setItemThree}
-                  autoComplete="off"
-                />
               </BlockStack>
-            </Card>
 
+              <Box
+                padding="300"
+                borderRadius="300"
+                background="bg-surface-secondary"
+              >
+                <BlockStack gap="250">
+                  <Text as="h3" variant="headingSm">
+                    Content
+                  </Text>
+
+                  <TextField
+                    label="Heading"
+                    value={heading}
+                    onChange={setHeading}
+                    autoComplete="off"
+                  />
+
+                  <TextField
+                    label="Subheading"
+                    value={subheading}
+                    onChange={setSubheading}
+                    multiline={3}
+                    autoComplete="off"
+                  />
+
+                  <TextField
+                    label="Trust item 1"
+                    value={itemOne}
+                    onChange={setItemOne}
+                    autoComplete="off"
+                  />
+
+                  <TextField
+                    label="Trust item 2"
+                    value={itemTwo}
+                    onChange={setItemTwo}
+                    autoComplete="off"
+                  />
+
+                  <TextField
+                    label="Trust item 3"
+                    value={itemThree}
+                    onChange={setItemThree}
+                    autoComplete="off"
+                  />
+                </BlockStack>
+              </Box>
+
+              <Box
+                padding="300"
+                borderRadius="300"
+                background="bg-surface-secondary"
+              >
+                <BlockStack gap="250">
+                  <Text as="h3" variant="headingSm">
+                    Layout and style
+                  </Text>
+
+                  <Select
+                    label="Heading alignment"
+                    options={[
+                      { label: "Left", value: "left" },
+                      { label: "Center", value: "center" },
+                      { label: "Right", value: "right" },
+                    ]}
+                    value={headingAlignment}
+                    onChange={setHeadingAlignment}
+                  />
+
+                  <Select
+                    label="Section style"
+                    options={[
+                      { label: "Minimal", value: "minimal" },
+                      { label: "Soft card", value: "soft" },
+                      { label: "Luxe highlight", value: "luxe" },
+                    ]}
+                    value={sectionStyle}
+                    onChange={setSectionStyle}
+                  />
+
+                  <Select
+                    label="Desktop columns"
+                    options={[
+                      { label: "2 columns", value: "2" },
+                      { label: "3 columns", value: "3" },
+                    ]}
+                    value={desktopColumns}
+                    onChange={setDesktopColumns}
+                  />
+
+                  <Select
+                    label="Icon tone"
+                    options={[
+                      { label: "Midnight gold", value: "midnight" },
+                      { label: "Soft gold", value: "gold" },
+                      { label: "Charcoal", value: "charcoal" },
+                    ]}
+                    value={iconTone}
+                    onChange={setIconTone}
+                  />
+                </BlockStack>
+              </Box>
+
+              <Box
+                padding="300"
+                borderRadius="300"
+                background="bg-surface-secondary"
+              >
+                <BlockStack gap="250">
+                  <Text as="h3" variant="headingSm">
+                    Responsive spacing
+                  </Text>
+
+                  <RangeSlider
+                    label="Top padding"
+                    value={topPadding}
+                    onChange={setTopPadding}
+                    min={12}
+                    max={72}
+                    step={2}
+                    output
+                  />
+
+                  <RangeSlider
+                    label="Bottom padding"
+                    value={bottomPadding}
+                    onChange={setBottomPadding}
+                    min={12}
+                    max={72}
+                    step={2}
+                    output
+                  />
+                </BlockStack>
+              </Box>
+
+              <InlineStack gap="200" wrap>
+                <Link to="/app/blocks" style={{ textDecoration: "none" }}>
+                  <Button>Back to Blocks</Button>
+                </Link>
+
+                {themeEditorUrl ? (
+                  <Button onClick={() => openInTopWindow(themeEditorUrl)}>
+                    Open Theme Editor
+                  </Button>
+                ) : (
+                  <Button disabled>Open Theme Editor</Button>
+                )}
+              </InlineStack>
+            </BlockStack>
+          </Card>
+
+          <div style={{ position: "sticky", top: "24px" }}>
             <Card>
               <BlockStack gap="300">
-                <Text as="h2" variant="headingMd">
-                  Layout and style
-                </Text>
+                <InlineStack align="space-between" blockAlign="center">
+                  <Text as="h2" variant="headingMd">
+                    Live preview
+                  </Text>
+                  <Badge tone="attention">{device}</Badge>
+                </InlineStack>
 
-                <Select
-                  label="Heading alignment"
-                  options={[
-                    { label: "Left", value: "left" },
-                    { label: "Center", value: "center" },
-                    { label: "Right", value: "right" },
-                  ]}
-                  value={headingAlignment}
-                  onChange={setHeadingAlignment}
-                />
-
-                <Select
-                  label="Section style"
-                  options={[
-                    { label: "Minimal", value: "minimal" },
-                    { label: "Soft card", value: "soft" },
-                    { label: "Luxe highlight", value: "luxe" },
-                  ]}
-                  value={sectionStyle}
-                  onChange={setSectionStyle}
-                />
-
-                <Select
-                  label="Desktop columns"
-                  options={[
-                    { label: "2 columns", value: "2" },
-                    { label: "3 columns", value: "3" },
-                  ]}
-                  value={desktopColumns}
-                  onChange={setDesktopColumns}
-                />
-
-                <Select
-                  label="Icon tone"
-                  options={[
-                    { label: "Midnight gold", value: "midnight" },
-                    { label: "Soft gold", value: "gold" },
-                    { label: "Charcoal", value: "charcoal" },
-                  ]}
-                  value={iconTone}
-                  onChange={setIconTone}
-                />
-
-                <RangeSlider
-                  label="Top padding"
-                  value={topPadding}
-                  onChange={setTopPadding}
-                  min={12}
-                  max={72}
-                  step={2}
-                  output
-                />
-
-                <RangeSlider
-                  label="Bottom padding"
-                  value={bottomPadding}
-                  onChange={setBottomPadding}
-                  min={12}
-                  max={72}
-                  step={2}
-                  output
-                />
-              </BlockStack>
-            </Card>
-
-            <Card>
-              <BlockStack gap="300">
-                <Text as="h2" variant="headingMd">
-                  Preview device
-                </Text>
-
-                <InlineStack gap="200">
+                <InlineStack gap="200" wrap>
                   <Button
                     variant={device === "desktop" ? "primary" : "secondary"}
                     onClick={() => setDevice("desktop")}
@@ -339,174 +449,132 @@ export default function TrustBarEditorRoute() {
                     Mobile
                   </Button>
                 </InlineStack>
-              </BlockStack>
-            </Card>
 
-            <Card>
-              <BlockStack gap="250">
-                <Text as="h2" variant="headingMd">
-                  Theme connection
-                </Text>
-
-                <Text as="p" variant="bodyMd" tone="subdued">
-                  Use this editor for the main trust block setup. Open Shopify
-                  Theme Editor only to place the block in the correct template
-                  and turn it on.
-                </Text>
-
-                <InlineStack gap="200">
-                  <Link to="/app/blocks" style={{ textDecoration: "none" }}>
-                    <Button>Back to Blocks</Button>
-                  </Link>
-
-                  {themeEditorUrl ? (
-                    <Button
-                      variant="primary"
-                      onClick={() => openInTopWindow(themeEditorUrl)}
-                    >
-                      Open Theme Editor
-                    </Button>
-                  ) : (
-                    <Button disabled variant="primary">
-                      Open Theme Editor
-                    </Button>
-                  )}
-                </InlineStack>
-              </BlockStack>
-            </Card>
-          </BlockStack>
-
-          <Card>
-            <BlockStack gap="300">
-              <InlineStack align="space-between" blockAlign="center">
-                <Text as="h2" variant="headingMd">
-                  Live preview
-                </Text>
-                <Badge tone="attention">{device}</Badge>
-              </InlineStack>
-
-              <Box
-                padding="300"
-                background="bg-surface-secondary"
-                borderRadius="300"
-              >
-                <div
-                  style={{
-                    width: "100%",
-                    display: "flex",
-                    justifyContent: "center",
-                  }}
+                <Box
+                  padding="300"
+                  background="bg-surface-secondary"
+                  borderRadius="300"
                 >
                   <div
                     style={{
-                      width: previewWidth,
-                      maxWidth: "100%",
-                      transition: "all 160ms ease",
+                      width: "100%",
+                      minHeight: "760px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "flex-start",
+                      overflow: "hidden",
                     }}
                   >
                     <div
                       style={{
-                        borderRadius: "28px",
-                        paddingTop: `${topPadding}px`,
-                        paddingBottom: `${bottomPadding}px`,
-                        paddingLeft: isMobile ? "18px" : "28px",
-                        paddingRight: isMobile ? "18px" : "28px",
-                        ...sectionSurface,
+                        width: previewWidth,
+                        maxWidth: "100%",
+                        transition: "width 160ms ease",
                       }}
                     >
                       <div
                         style={{
-                          display: "flex",
-                          justifyContent: contentAlignment,
-                          marginBottom: "10px",
+                          borderRadius: "28px",
+                          paddingTop: `${topPadding}px`,
+                          paddingBottom: `${bottomPadding}px`,
+                          paddingLeft: isMobile ? "18px" : "28px",
+                          paddingRight: isMobile ? "18px" : "28px",
+                          ...sectionSurface,
                         }}
                       >
                         <div
                           style={{
-                            fontSize: isMobile ? "24px" : "30px",
-                            lineHeight: 1.15,
-                            fontWeight: 700,
-                            color: "#111827",
-                            textAlign,
-                            maxWidth: isMobile ? "100%" : "620px",
+                            display: "flex",
+                            justifyContent: contentAlignment,
+                            marginBottom: "10px",
                           }}
                         >
-                          {heading || "Why customers trust your store"}
-                        </div>
-                      </div>
-
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: contentAlignment,
-                          marginBottom: "22px",
-                        }}
-                      >
-                        <div
-                          style={{
-                            fontSize: isMobile ? "14px" : "15px",
-                            lineHeight: 1.65,
-                            color: "#6b7280",
-                            textAlign,
-                            maxWidth: isMobile ? "100%" : "640px",
-                          }}
-                        >
-                          {subheading ||
-                            "Add reassurance messaging that helps shoppers feel more confident."}
-                        </div>
-                      </div>
-
-                      <div
-                        style={{
-                          display: "grid",
-                          gridTemplateColumns: previewColumns,
-                          gap: "14px",
-                        }}
-                      >
-                        {trustItems.map((item, index) => (
                           <div
-                            key={`${item}-${index}`}
                             style={{
-                              borderRadius: "20px",
-                              padding: isMobile ? "16px" : "18px",
-                              ...cardSurface,
+                              fontSize: isMobile ? "24px" : "30px",
+                              lineHeight: 1.15,
+                              fontWeight: 700,
+                              color: "#111827",
+                              textAlign,
+                              maxWidth: isMobile ? "100%" : "620px",
                             }}
                           >
-                            <div
-                              style={{
-                                width: "40px",
-                                height: "40px",
-                                borderRadius: "12px",
-                                background: getIconBackground(iconTone),
-                                marginBottom: "12px",
-                              }}
-                            />
+                            {heading || "Why customers trust your store"}
+                          </div>
+                        </div>
 
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: contentAlignment,
+                            marginBottom: "22px",
+                          }}
+                        >
+                          <div
+                            style={{
+                              fontSize: isMobile ? "14px" : "15px",
+                              lineHeight: 1.65,
+                              color: "#6b7280",
+                              textAlign,
+                              maxWidth: isMobile ? "100%" : "640px",
+                            }}
+                          >
+                            {subheading ||
+                              "Add reassurance messaging that helps shoppers feel more confident."}
+                          </div>
+                        </div>
+
+                        <div
+                          style={{
+                            display: "grid",
+                            gridTemplateColumns: previewColumns,
+                            gap: "14px",
+                          }}
+                        >
+                          {trustItems.map((item, index) => (
                             <div
+                              key={`${item}-${index}`}
                               style={{
-                                fontSize: "14px",
-                                lineHeight: 1.55,
-                                color: "#111827",
-                                fontWeight: 600,
+                                borderRadius: "20px",
+                                padding: isMobile ? "16px" : "18px",
+                                ...cardSurface,
                               }}
                             >
-                              {item}
+                              <div
+                                style={{
+                                  width: "40px",
+                                  height: "40px",
+                                  borderRadius: "12px",
+                                  background: getIconBackground(iconTone),
+                                  marginBottom: "12px",
+                                }}
+                              />
+
+                              <div
+                                style={{
+                                  fontSize: "14px",
+                                  lineHeight: 1.55,
+                                  color: "#111827",
+                                  fontWeight: 600,
+                                }}
+                              >
+                                {item}
+                              </div>
                             </div>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </Box>
+                </Box>
 
-              <Text as="p" variant="bodySm" tone="subdued">
-                This is the second dedicated editor shell. Next we can connect
-                Blocks Studio to this page and continue the same pattern for
-                Feature Highlights Grid.
-              </Text>
-            </BlockStack>
-          </Card>
+                <Text as="p" variant="bodySm" tone="subdued">
+                  Preview stays fixed on the right so device switching feels
+                  stable while the merchant edits the trust block.
+                </Text>
+              </BlockStack>
+            </Card>
+          </div>
         </InlineGrid>
       </BlockStack>
     </Page>
