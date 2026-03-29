@@ -7,17 +7,26 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  useLoaderData,
 } from "react-router";
 
-export async function loader() {
-  return {
-    shopifyApiKey: process.env.SHOPIFY_API_KEY || "",
-  };
+function getShopifyApiKey() {
+  if (typeof document !== "undefined") {
+    return (
+      document
+        .querySelector('meta[name="shopify-api-key"]')
+        ?.getAttribute("content") || ""
+    );
+  }
+
+  if (typeof process !== "undefined") {
+    return process.env.SHOPIFY_API_KEY || "";
+  }
+
+  return "";
 }
 
 export default function App() {
-  const { shopifyApiKey } = useLoaderData();
+  const shopifyApiKey = getShopifyApiKey();
 
   return (
     <html lang="en">
