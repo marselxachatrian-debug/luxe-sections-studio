@@ -891,159 +891,96 @@ export default function BlocksLibraryRoute() {
   const outcomePoints = selectedBlock ? getOutcomePoints(selectedBlock) : [];
 
   return (
-    <Page
-      title="Blocks Studio"
-      subtitle="Professional block setup, app-based editing, and live preview in one merchant-first workspace."
-    >
-      <BlockStack gap="500">
-        <Card>
-          <BlockStack gap="250">
-            <InlineStack align="space-between" blockAlign="center">
-              <BlockStack gap="050">
-                <Text as="h2" variant="headingLg">
-                  Premium block workspace
-                </Text>
-                <Text as="p" variant="bodyMd" tone="subdued">
-                  Choose a block, connect it to the storefront, then do the real
-                  editing inside Luxe Sections Studio.
-                </Text>
-              </BlockStack>
-
-              <Badge tone="success">{currentPlanLabel}</Badge>
-            </InlineStack>
-
-            <InlineStack gap="300" wrap>
-              <Text as="span" variant="bodySm" tone="subdued">
-                Plan source: {currentPlanSource}
-              </Text>
-              <Text as="span" variant="bodySm" tone="subdued">
-                Active paid billing: {hasActivePayment ? "Yes" : "No"}
-              </Text>
-              <Text as="span" variant="bodySm" tone="subdued">
-                Theme: {activeThemeName ?? "Not found"}{" "}
-                {activeThemeId ? `(ID: ${activeThemeId})` : ""}
-              </Text>
-            </InlineStack>
-          </BlockStack>
-        </Card>
-
+    <Page>
+      <BlockStack gap="400">
         {selectedBlock ? (
           <Card>
-            <BlockStack gap="250">
-              <InlineStack align="space-between" blockAlign="center">
-                <BlockStack gap="050">
-                  <Text as="h2" variant="headingMd">
-                    Quick setup for {selectedBlock.name}
+            <InlineGrid columns={{ xs: 1, lg: "1.25fr auto" }} gap="300">
+              <BlockStack gap="150">
+                <InlineStack gap="200" blockAlign="center" wrap>
+                  <Text as="h1" variant="headingLg">
+                    Blocks Studio
                   </Text>
-                  <Text as="p" variant="bodySm" tone="subdued">
-                    Two actions only: connect the block in Shopify, then edit it
-                    inside the app.
-                  </Text>
-                </BlockStack>
+                  <Badge tone={getAvailabilityTone(selectedBlock.availability)}>
+                    {getAvailabilityLabel(selectedBlock)}
+                  </Badge>
+                  <Badge tone="success">{currentPlanLabel}</Badge>
+                </InlineStack>
 
-                <Badge tone={getAvailabilityTone(selectedBlock.availability)}>
-                  {selectedBlock.availability === "live"
-                    ? "Ready to use"
-                    : "Planned next"}
-                </Badge>
-              </InlineStack>
+                <Text as="p" variant="bodyMd" tone="subdued">
+                  Two actions only: connect <b>{selectedBlock.name}</b> in
+                  Shopify, then edit it inside Luxe Sections Studio.
+                </Text>
 
-              <InlineGrid columns={{ xs: 1, md: 2 }} gap="300">
-                <Card roundedAbove="sm">
-                  <BlockStack gap="200">
-                    <InlineStack gap="200" blockAlign="center">
-                      <Badge tone="info">Step 1</Badge>
-                      <Text as="h3" variant="headingSm">
-                        Connect block in Shopify
-                      </Text>
-                    </InlineStack>
+                <InlineStack gap="200" wrap>
+                  {selectedBlock.availability === "live" && addBlockUrl ? (
+                    <Button onClick={() => openInTopWindow(addBlockUrl)}>
+                      Connect in Shopify
+                    </Button>
+                  ) : (
+                    <Button disabled>Connect in Shopify</Button>
+                  )}
 
-                    <Text as="p" variant="bodyMd" tone="subdued">
-                      Add the block to the correct theme template. Shopify should
-                      only handle placement and activation.
-                    </Text>
+                  {hasDedicatedEditor(selectedBlock.handle) ? (
+                    <Link
+                      to={getBlockEditorPath(selectedBlock.handle)}
+                      style={{ textDecoration: "none" }}
+                    >
+                      <Button variant="primary">Edit inside app</Button>
+                    </Link>
+                  ) : (
+                    <Button disabled>Editor coming next</Button>
+                  )}
 
-                    <InlineStack gap="200">
-                      {selectedBlock.availability === "live" && addBlockUrl ? (
-                        <Button onClick={() => openInTopWindow(addBlockUrl)}>
-                          Add block
-                        </Button>
-                      ) : (
-                        <Button disabled>Add block</Button>
-                      )}
+                  {appEmbedUrl ? (
+                    <Button
+                      variant="secondary"
+                      onClick={() => openInTopWindow(appEmbedUrl)}
+                    >
+                      App embeds
+                    </Button>
+                  ) : (
+                    <Button disabled>App embeds</Button>
+                  )}
+                </InlineStack>
+              </BlockStack>
 
-                      {appEmbedUrl ? (
-                        <Button
-                          variant="secondary"
-                          onClick={() => openInTopWindow(appEmbedUrl)}
-                        >
-                          App embeds
-                        </Button>
-                      ) : (
-                        <Button disabled>App embeds</Button>
-                      )}
-                    </InlineStack>
-                  </BlockStack>
-                </Card>
-
-                <Card roundedAbove="sm">
-                  <BlockStack gap="200">
-                    <InlineStack gap="200" blockAlign="center">
-                      <Badge tone="success">Step 2</Badge>
-                      <Text as="h3" variant="headingSm">
-                        Edit inside Luxe Sections Studio
-                      </Text>
-                    </InlineStack>
-
-                    <Text as="p" variant="bodyMd" tone="subdued">
-                      Use the app for colors, spacing, layout, mobile tuning,
-                      effects, and premium presentation controls.
-                    </Text>
-
-                    {hasDedicatedEditor(selectedBlock.handle) ? (
-                      <Link
-                        to={getBlockEditorPath(selectedBlock.handle)}
-                        style={{ textDecoration: "none" }}
-                      >
-                        <Button variant="primary">Open full editor</Button>
-                      </Link>
-                    ) : (
-                      <Button disabled>Editor coming next</Button>
-                    )}
-                  </BlockStack>
-                </Card>
-              </InlineGrid>
-            </BlockStack>
+              <BlockStack gap="100">
+                <Text as="p" variant="bodySm" tone="subdued">
+                  Theme: {activeThemeName ?? "Not found"}{" "}
+                  {activeThemeId ? `(ID: ${activeThemeId})` : ""}
+                </Text>
+                <Text as="p" variant="bodySm" tone="subdued">
+                  Billing: {hasActivePayment ? "Active paid plan" : "Free plan"}
+                </Text>
+                <Text as="p" variant="bodySm" tone="subdued">
+                  Plan source: {currentPlanSource}
+                </Text>
+              </BlockStack>
+            </InlineGrid>
           </Card>
         ) : null}
 
-        <InlineGrid columns={{ xs: 1, lg: "250px 1fr 420px" }} gap="400">
+        <InlineGrid columns={{ xs: 1, lg: "280px minmax(0,1fr) 430px" }} gap="400">
           <BlockStack gap="300">
             <Card>
-              <BlockStack gap="200">
+              <BlockStack gap="250">
                 <InlineStack align="space-between" blockAlign="center">
                   <Text as="h2" variant="headingMd">
-                    Block catalog
+                    Block editors
                   </Text>
                   <Badge tone="info">{catalogBlocks.length}</Badge>
                 </InlineStack>
 
                 <Text as="p" variant="bodySm" tone="subdued">
-                  Live blocks are ready now. Planned blocks show the next premium
-                  expansion path.
-                </Text>
-              </BlockStack>
-            </Card>
-
-            <Card>
-              <BlockStack gap="200">
-                <Text as="h3" variant="headingSm">
-                  Live now
+                  Select a block on the left, then use the workspace and preview
+                  on the right.
                 </Text>
 
                 <BlockStack gap="150">
-                  {liveCatalogBlocks.map((block) => {
+                  {catalogBlocks.map((block) => {
                     const isSelected = selectedBlock?.handle === block.handle;
+                    const isLive = block.availability === "live";
 
                     return (
                       <Link
@@ -1067,62 +1004,24 @@ export default function BlocksLibraryRoute() {
                               <Text as="p" variant="bodyMd" fontWeight="semibold">
                                 {block.name}
                               </Text>
-                              <Badge tone="success">Live</Badge>
-                            </InlineStack>
 
-                            <InlineStack gap="150" blockAlign="center">
-                              <Badge tone="success">
-                                {hasDedicatedEditor(block.handle)
-                                  ? "Editor ready"
-                                  : "Theme only"}
+                              <Badge tone={isLive ? "success" : "attention"}>
+                                {isLive ? "Live" : "Planned"}
                               </Badge>
                             </InlineStack>
-                          </BlockStack>
-                        </Box>
-                      </Link>
-                    );
-                  })}
-                </BlockStack>
-              </BlockStack>
-            </Card>
 
-            <Card>
-              <BlockStack gap="200">
-                <Text as="h3" variant="headingSm">
-                  Planned next
-                </Text>
-
-                <BlockStack gap="150">
-                  {plannedCatalogBlocks.map((block) => {
-                    const isSelected = selectedBlock?.handle === block.handle;
-
-                    return (
-                      <Link
-                        key={block.handle}
-                        to={`/app/blocks?block=${block.handle}`}
-                        style={{ textDecoration: "none" }}
-                      >
-                        <Box
-                          padding="300"
-                          borderWidth="025"
-                          borderRadius="300"
-                          background={
-                            isSelected ? "bg-surface-secondary" : "bg-surface"
-                          }
-                        >
-                          <BlockStack gap="100">
-                            <InlineStack
-                              align="space-between"
-                              blockAlign="center"
-                            >
-                              <Text as="p" variant="bodyMd" fontWeight="semibold">
-                                {block.name}
-                              </Text>
-                              <Badge tone="attention">Planned</Badge>
+                            <InlineStack gap="150" wrap>
+                              <Badge tone={isLive ? "success" : "attention"}>
+                                {isLive
+                                  ? hasDedicatedEditor(block.handle)
+                                    ? "Editor ready"
+                                    : "Live block"
+                                  : "Coming next"}
+                              </Badge>
                             </InlineStack>
 
                             <Text as="p" variant="bodySm" tone="subdued">
-                              {block.status}
+                              {block.description}
                             </Text>
                           </BlockStack>
                         </Box>
@@ -1138,9 +1037,9 @@ export default function BlocksLibraryRoute() {
             {selectedBlock ? (
               <Card>
                 <BlockStack gap="250">
-                  <InlineStack align="space-between" blockAlign="center">
+                  <InlineStack align="space-between" blockAlign="center" wrap>
                     <BlockStack gap="050">
-                      <InlineStack gap="200" blockAlign="center">
+                      <InlineStack gap="200" blockAlign="center" wrap>
                         <Text as="h2" variant="headingLg">
                           {selectedBlock.name}
                         </Text>
@@ -1153,27 +1052,19 @@ export default function BlocksLibraryRoute() {
                         {selectedBlock.description}
                       </Text>
                     </BlockStack>
-                  </InlineStack>
 
-                  <InlineStack gap="200">
-                    {hasDedicatedEditor(selectedBlock.handle) ? (
-                      <Link
-                        to={getBlockEditorPath(selectedBlock.handle)}
-                        style={{ textDecoration: "none" }}
-                      >
-                        <Button variant="primary">Open block editor</Button>
-                      </Link>
-                    ) : (
-                      <Button disabled>Editor coming next</Button>
-                    )}
-
-                    {selectedBlock.availability === "live" && addBlockUrl ? (
-                      <Button onClick={() => openInTopWindow(addBlockUrl)}>
-                        Add in Theme Editor
-                      </Button>
-                    ) : (
-                      <Button disabled>Add in Theme Editor</Button>
-                    )}
+                    <InlineStack gap="200" wrap>
+                      {hasDedicatedEditor(selectedBlock.handle) ? (
+                        <Link
+                          to={getBlockEditorPath(selectedBlock.handle)}
+                          style={{ textDecoration: "none" }}
+                        >
+                          <Button variant="primary">Open block editor</Button>
+                        </Link>
+                      ) : (
+                        <Button disabled>Editor coming next</Button>
+                      )}
+                    </InlineStack>
                   </InlineStack>
                 </BlockStack>
               </Card>
@@ -1182,13 +1073,25 @@ export default function BlocksLibraryRoute() {
             {selectedBlock ? (
               <Card>
                 <BlockStack gap="250">
-                  <Text as="h2" variant="headingMd">
-                    Editor workspace
-                  </Text>
+                  <BlockStack gap="050">
+                    <Text as="h2" variant="headingMd">
+                      Editor workspace
+                    </Text>
+                    <Text as="p" variant="bodySm" tone="subdued">
+                      Clean editing structure for merchants: content, layout,
+                      responsive control, and premium styling.
+                    </Text>
+                  </BlockStack>
 
                   <InlineGrid columns={{ xs: 1, md: 2 }} gap="200">
                     {editorSections.map((section) => (
-                      <Card key={section.title} roundedAbove="sm">
+                      <Box
+                        key={section.title}
+                        padding="300"
+                        borderWidth="025"
+                        borderRadius="300"
+                        background="bg-surface-secondary"
+                      >
                         <BlockStack gap="150">
                           <Text as="h3" variant="headingSm">
                             {section.title}
@@ -1200,7 +1103,7 @@ export default function BlocksLibraryRoute() {
                             ))}
                           </List>
                         </BlockStack>
-                      </Card>
+                      </Box>
                     ))}
                   </InlineGrid>
                 </BlockStack>
@@ -1208,11 +1111,11 @@ export default function BlocksLibraryRoute() {
             ) : null}
 
             {selectedBlock ? (
-              <InlineGrid columns={{ xs: 1, md: 2 }} gap="300">
-                <Card>
+              <Card>
+                <InlineGrid columns={{ xs: 1, md: 2 }} gap="300">
                   <BlockStack gap="200">
                     <Text as="h3" variant="headingSm">
-                      What the merchant controls
+                      Merchant controls
                     </Text>
 
                     <List>
@@ -1221,9 +1124,7 @@ export default function BlocksLibraryRoute() {
                       ))}
                     </List>
                   </BlockStack>
-                </Card>
 
-                <Card>
                   <BlockStack gap="200">
                     <Text as="h3" variant="headingSm">
                       Storefront result
@@ -1235,8 +1136,8 @@ export default function BlocksLibraryRoute() {
                       ))}
                     </List>
                   </BlockStack>
-                </Card>
-              </InlineGrid>
+                </InlineGrid>
+              </Card>
             ) : null}
           </BlockStack>
 
@@ -1250,7 +1151,7 @@ export default function BlocksLibraryRoute() {
                   <Badge tone="attention">{device}</Badge>
                 </InlineStack>
 
-                <InlineStack gap="200">
+                <InlineStack gap="200" wrap>
                   <Button
                     variant={device === "desktop" ? "primary" : "secondary"}
                     onClick={() => setDevice("desktop")}
@@ -1279,7 +1180,7 @@ export default function BlocksLibraryRoute() {
                   <div
                     style={{
                       width: "100%",
-                      minHeight: "700px",
+                      minHeight: "760px",
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "flex-start",
@@ -1290,7 +1191,7 @@ export default function BlocksLibraryRoute() {
                       style={{
                         width: getPreviewWidth(device),
                         maxWidth: "100%",
-                        transition: "all 160ms ease",
+                        transition: "width 160ms ease",
                       }}
                     >
                       {selectedBlock
@@ -1306,7 +1207,7 @@ export default function BlocksLibraryRoute() {
 
                 <Text as="p" variant="bodySm" tone="subdued">
                   Preview stays fixed on the right so device switching feels
-                  stable and professional while the merchant edits the block.
+                  stable while the merchant edits the block.
                 </Text>
               </BlockStack>
             </Card>
