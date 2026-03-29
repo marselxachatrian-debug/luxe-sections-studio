@@ -39,6 +39,22 @@ function openInTopWindow(url) {
   window.location.href = url;
 }
 
+function getBlockEditorPath(handle) {
+  if (handle === "luxe-hero") {
+    return "/app/blocks/luxe-hero";
+  }
+
+  if (handle === "trust-bar") {
+    return "/app/blocks/trust-bar";
+  }
+
+  if (handle === "premium-features") {
+    return "/app/blocks/premium-features";
+  }
+
+  return `/app/blocks?block=${handle}`;
+}
+
 export async function loader({ request }) {
   const currentPlanStatus = await getCurrentPlanFromRequest(request);
   const activeThemeStatus = await getActiveThemeFromRequest(request);
@@ -75,15 +91,24 @@ export default function DashboardRoute() {
   const currentPlanSnapshots = [
     {
       name: "Premium Hero Banner",
+      handle: "luxe-hero",
       value: `${countAccessibleFeatures(currentPlanKey, BLOCK_KEYS.LUXE_HERO)}/${getBlockFeatureCatalog(BLOCK_KEYS.LUXE_HERO).length}`,
+      description:
+        "Main hero editor for stronger first impressions, CTA control, and premium storefront storytelling.",
     },
     {
       name: "Store Trust Highlights",
+      handle: "trust-bar",
       value: `${countAccessibleFeatures(currentPlanKey, BLOCK_KEYS.TRUST_BAR)}/${getBlockFeatureCatalog(BLOCK_KEYS.TRUST_BAR).length}`,
+      description:
+        "Trust editor for reassurance messaging, spacing control, and cleaner shopper confidence sections.",
     },
     {
       name: "Feature Highlights Grid",
+      handle: "premium-features",
       value: `${countAccessibleFeatures(currentPlanKey, BLOCK_KEYS.PREMIUM_FEATURES)}/${getBlockFeatureCatalog(BLOCK_KEYS.PREMIUM_FEATURES).length}`,
+      description:
+        "Feature grid editor for product benefits, icon-led cards, and stronger visual structure.",
     },
   ];
 
@@ -96,7 +121,7 @@ export default function DashboardRoute() {
     {
       name: "Blocks",
       description:
-        "Open the block studio, choose a block, and move toward app-based editing with preview.",
+        "Open the block studio, choose a block, and move into dedicated block editors.",
     },
     {
       name: "Pricing",
@@ -112,8 +137,8 @@ export default function DashboardRoute() {
 
   const merchantFlow = [
     "Open the theme editor and add the app block to the correct template.",
-    "Come back to Luxe Sections Studio and use block-specific editing flows.",
-    "Preview visual changes more clearly inside the app.",
+    "Come back to Luxe Sections Studio and open the right block editor page.",
+    "Adjust the block inside the app and review the live preview.",
     "Keep Shopify theme settings minimal and merchant-friendly.",
   ];
 
@@ -152,8 +177,8 @@ export default function DashboardRoute() {
             <Text as="p" variant="bodyMd" tone="subdued">
               Your active theme is {activeThemeName ?? "not found"}
               {activeThemeId ? ` (ID: ${activeThemeId})` : ""}. Start with the
-              checklist below, then continue into Blocks Studio for a more
-              guided editing experience.
+              checklist below, then continue into Blocks Studio or jump directly
+              into one of the live block editors.
             </Text>
 
             <InlineStack gap="200">
@@ -264,7 +289,7 @@ export default function DashboardRoute() {
                 {blockLibraryItems.length}
               </Text>
               <Text as="p" variant="bodySm" tone="subdued">
-                Ready for storefront use
+                All live blocks now have dedicated editors
               </Text>
             </BlockStack>
           </Card>
@@ -284,6 +309,43 @@ export default function DashboardRoute() {
           </Card>
         </InlineGrid>
 
+        <Card>
+          <BlockStack gap="300">
+            <InlineStack align="space-between" blockAlign="center">
+              <Text as="h2" variant="headingMd">
+                Open a live block editor
+              </Text>
+              <Badge tone="success">3 ready now</Badge>
+            </InlineStack>
+
+            <InlineGrid columns={{ xs: 1, md: 3 }} gap="300">
+              {currentPlanSnapshots.map((item) => (
+                <Card key={item.handle} roundedAbove="sm">
+                  <BlockStack gap="200">
+                    <InlineStack align="space-between" blockAlign="center">
+                      <Text as="h3" variant="headingSm">
+                        {item.name}
+                      </Text>
+                      <Badge tone="info">{item.value}</Badge>
+                    </InlineStack>
+
+                    <Text as="p" variant="bodyMd" tone="subdued">
+                      {item.description}
+                    </Text>
+
+                    <Link
+                      to={getBlockEditorPath(item.handle)}
+                      style={{ textDecoration: "none" }}
+                    >
+                      <Button variant="primary">Open editor</Button>
+                    </Link>
+                  </BlockStack>
+                </Card>
+              ))}
+            </InlineGrid>
+          </BlockStack>
+        </Card>
+
         <InlineGrid columns={{ xs: 1, md: 2 }} gap="400">
           <Card>
             <BlockStack gap="300">
@@ -302,14 +364,12 @@ export default function DashboardRoute() {
           <Card>
             <BlockStack gap="300">
               <Text as="h2" variant="headingMd">
-                Included in your current plan
+                Product direction
               </Text>
 
               <List>
-                {currentPlanSnapshots.map((item) => (
-                  <List.Item key={item.name}>
-                    {item.name}: {item.value} controls available
-                  </List.Item>
+                {appValuePoints.map((item) => (
+                  <List.Item key={item}>{item}</List.Item>
                 ))}
               </List>
             </BlockStack>
@@ -336,22 +396,6 @@ export default function DashboardRoute() {
           <Card>
             <BlockStack gap="300">
               <Text as="h2" variant="headingMd">
-                Product direction
-              </Text>
-
-              <List>
-                {appValuePoints.map((item) => (
-                  <List.Item key={item}>{item}</List.Item>
-                ))}
-              </List>
-            </BlockStack>
-          </Card>
-        </InlineGrid>
-
-        <InlineGrid columns={{ xs: 1, md: 2 }} gap="400">
-          <Card>
-            <BlockStack gap="300">
-              <Text as="h2" variant="headingMd">
                 Upgrade when it helps your store
               </Text>
 
@@ -373,26 +417,6 @@ export default function DashboardRoute() {
 
               <Link to="/app/pricing" style={{ textDecoration: "none" }}>
                 <Button>Compare plans</Button>
-              </Link>
-            </BlockStack>
-          </Card>
-
-          <Card>
-            <BlockStack gap="300">
-              <Text as="h2" variant="headingMd">
-                Ready blocks for your store
-              </Text>
-
-              <List>
-                {blockLibraryItems.map((block) => (
-                  <List.Item key={block.handle}>
-                    {block.name} — {block.status}
-                  </List.Item>
-                ))}
-              </List>
-
-              <Link to="/app/blocks" style={{ textDecoration: "none" }}>
-                <Button variant="primary">Go to Blocks Studio</Button>
               </Link>
             </BlockStack>
           </Card>
