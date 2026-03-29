@@ -1,4 +1,4 @@
-import { Link, useLoaderData } from "react-router";
+import { Form, Link, useFetcher, useLoaderData } from "react-router";
 import {
   Badge,
   BlockStack,
@@ -15,8 +15,19 @@ import { BLOCK_KEYS, PLAN_LABELS, canAccessBlockFeature } from "../plan-rules";
 import { getBlockFeatureCatalog } from "../block-feature-catalog";
 import { getCurrentPlanFromRequest } from "../current-plan.server";
 import { getActiveThemeFromRequest } from "../active-theme.server";
-import { getThemeEditorOnboardingLinks } from "../theme-editor-links";
+import {
+  THEME_ONBOARDING_KEYS,
+  getThemeEditorOnboardingLinks,
+} from "../theme-editor-links";
 import { getMockBillingStatus } from "../billing-helpers";
+import { getShopSetupState } from "../shop-setup-state.server";
+
+const SETUP_STEP_FIELD_MAP = {
+  [THEME_ONBOARDING_KEYS.ENABLE_APP]: "appEmbedConfirmed",
+  [THEME_ONBOARDING_KEYS.LUXE_HERO]: "heroBlockConfirmed",
+  [THEME_ONBOARDING_KEYS.TRUST_BAR]: "trustBlockConfirmed",
+  [THEME_ONBOARDING_KEYS.PREMIUM_FEATURES]: "featuresBlockConfirmed",
+};
 
 function countAccessibleFeatures(planKey, blockKey) {
   const features = getBlockFeatureCatalog(blockKey);
@@ -55,6 +66,16 @@ function getBlockEditorPath(handle) {
   return `/app/blocks?block=${handle}`;
 }
 
+function getOnboardingCompletionMap(shopSetupState) {
+  return {
+    [THEME_ONBOARDING_KEYS.ENABLE_APP]: shopSetupState.appEmbedConfirmed,
+    [THEME_ONBOARDING_KEYS.LUXE_HERO]: shopSetupState.heroBlockConfirmed,
+    [THEME_ONBOARDING_KEYS.TRUST_BAR]: shopSetupState.trustBlockConfirmed,
+    [THEME_ONBOARDING_KEYS.PREMIUM_FEATURES]:
+      shopSetupState.featuresBlockConfirmed,
+  };
+}
+
 export async function loader({ request }) {
   const currentPlanStatus = await getCurrentPlanFromRequest(request);
   const activeThemeStatus = await getActiveThemeFromRequest(request);
@@ -63,6 +84,7 @@ export async function loader({ request }) {
     activeThemeStatus.themeId,
     process.env.SHOPIFY_API_KEY,
   );
+  const shopSetupState = await getShopSetupState(activeThemeStatus.shop);
 
   return {
     currentPlanKey: currentPlanStatus.planKey,
@@ -72,6 +94,7 @@ export async function loader({ request }) {
     activeThemeName: activeThemeStatus.theme?.name ?? null,
     activeThemeId: activeThemeStatus.themeId,
     onboardingLinks,
+    shopSetupState,
   };
 }
 
@@ -84,7 +107,11 @@ export default function DashboardRoute() {
     activeThemeName,
     activeThemeId,
     onboardingLinks,
+    shopSetupState,
   } = useLoaderData();
+
+  const setupFetcher = useFetcher();
+  const resetFetcher = useFetcher();
 
   const billingStatus = getMockBillingStatus(currentPlanKey);
 
@@ -149,6 +176,22 @@ export default function DashboardRoute() {
     "Premium plans should feel meaningfully stronger, not artificially restricted.",
   ];
 
+  const completionMap = getOnboardingCompletionMap(shopSetupState);
+  const onboardingSteps = onboardingLinks.map((step) => ({
+    ...step,
+    stepFieldKey: SETUP_STEP_FIELD_MAP[step.key],
+    isCompleted: Boolean(completionMap[step.key]),
+  }));
+
+  const completedStepsCount = onboardingSteps.filter(
+    (step) => step.isCompleted,
+  ).length;
+  const totalStepsCount = onboardingSteps.length;
+  const allStepsCompleted = completedStepsCount === totalStepsCount;
+  const nextIncompleteStepIndex = onboardingSteps.findIndex(
+    (step) => !step.isCompleted,
+  );
+
   const primaryThemeEditorUrl =
     onboardingLinks.find((step) => step.url)?.url ?? null;
 
@@ -171,7 +214,12 @@ export default function DashboardRoute() {
                 </Text>
               </BlockStack>
 
-              <Badge tone="success">{currentPlanLabel}</Badge>
+              <InlineStack gap="200">
+                <Badge tone="success">{currentPlanLabel}</Badge>
+                <Badge tone={allStepsCompleted ? "success" : "info"}>
+                  Setup {completedStepsCount}/{totalStepsCount}
+                </Badge>
+              </InlineStack>
             </InlineStack>
 
             <Text as="p" variant="bodyMd" tone="subdued">
@@ -207,46 +255,115 @@ export default function DashboardRoute() {
               <Text as="h2" variant="headingMd">
                 Setup checklist
               </Text>
-              <Badge tone="info">Start here</Badge>
+              <InlineStack gap="200">
+                <Badge tone={allStepsCompleted ? "success" : "info"}>
+                  {allStepsCompleted
+                    ? "All steps completed"
+                    : `${completedStepsCount}/${totalStepsCount} completed`}
+                </Badge>
+
+                <resetFetcher.Form method="post" action="/app/setup-status">
+                  <input type="hidden" name="intent" value="reset_setup" />
+                  <Button
+                    submit
+                    disabled={resetFetcher.state !== "idle"}
+                    variant="secondary"
+                  >
+                    Reset checklist
+                  </Button>
+                </resetFetcher.Form>
+              </InlineStack>
             </InlineStack>
 
             <InlineGrid columns={{ xs: 1, md: 2 }} gap="300">
-              {onboardingLinks.map((step, index) => (
-                <Card key={step.key} roundedAbove="sm">
-                  <BlockStack gap="250">
-                    <InlineStack align="space-between" blockAlign="center">
-                      <Text as="h3" variant="headingSm">
-                        Step {index + 1}
-                      </Text>
-                      <Badge tone={index === 0 ? "success" : "info"}>
-                        {index === 0 ? "Do this first" : "Next step"}
-                      </Badge>
-                    </InlineStack>
+              {onboardingSteps.map((step, index) => {
+                const isNextStep =
+                  !step.isCompleted && index === nextIncompleteStepIndex;
 
-                    <BlockStack gap="100">
-                      <Text as="p" variant="headingMd">
-                        {step.label}
-                      </Text>
-                      <Text as="p" variant="bodyMd" tone="subdued">
-                        {step.description}
-                      </Text>
+                return (
+                  <Card key={step.key} roundedAbove="sm">
+                    <BlockStack gap="250">
+                      <InlineStack align="space-between" blockAlign="center">
+                        <Text as="h3" variant="headingSm">
+                          Step {index + 1}
+                        </Text>
+                        <Badge
+                          tone={
+                            step.isCompleted
+                              ? "success"
+                              : isNextStep
+                                ? "attention"
+                                : "info"
+                          }
+                        >
+                          {step.isCompleted
+                            ? "Completed"
+                            : isNextStep
+                              ? "Do this next"
+                              : "Upcoming"}
+                        </Badge>
+                      </InlineStack>
+
+                      <BlockStack gap="100">
+                        <Text as="p" variant="headingMd">
+                          {step.label}
+                        </Text>
+                        <Text as="p" variant="bodyMd" tone="subdued">
+                          {step.description}
+                        </Text>
+                      </BlockStack>
+
+                      <InlineStack gap="200">
+                        {step.url ? (
+                          <Button
+                            onClick={() => openInTopWindow(step.url)}
+                            variant={isNextStep ? "primary" : "secondary"}
+                          >
+                            {step.isCompleted
+                              ? "Review step"
+                              : index === 0
+                                ? "Open Theme Editor"
+                                : "Open this step"}
+                          </Button>
+                        ) : (
+                          <Button disabled>
+                            {index === 0 ? "Open Theme Editor" : "Open this step"}
+                          </Button>
+                        )}
+
+                        {step.stepFieldKey ? (
+                          <setupFetcher.Form method="post" action="/app/setup-status">
+                            <input
+                              type="hidden"
+                              name="intent"
+                              value="confirm_step"
+                            />
+                            <input
+                              type="hidden"
+                              name="stepKey"
+                              value={step.stepFieldKey}
+                            />
+                            <input
+                              type="hidden"
+                              name="value"
+                              value={step.isCompleted ? "false" : "true"}
+                            />
+                            <Button
+                              submit
+                              variant="secondary"
+                              disabled={setupFetcher.state !== "idle"}
+                            >
+                              {step.isCompleted
+                                ? "Mark as not completed"
+                                : "Mark as completed"}
+                            </Button>
+                          </setupFetcher.Form>
+                        ) : null}
+                      </InlineStack>
                     </BlockStack>
-
-                    {step.url ? (
-                      <Button
-                        onClick={() => openInTopWindow(step.url)}
-                        variant={index === 0 ? "primary" : "secondary"}
-                      >
-                        {index === 0 ? "Open Theme Editor" : "Open this step"}
-                      </Button>
-                    ) : (
-                      <Button disabled>
-                        {index === 0 ? "Open Theme Editor" : "Open this step"}
-                      </Button>
-                    )}
-                  </BlockStack>
-                </Card>
-              ))}
+                  </Card>
+                );
+              })}
             </InlineGrid>
           </BlockStack>
         </Card>
@@ -283,13 +400,13 @@ export default function DashboardRoute() {
           <Card>
             <BlockStack gap="150">
               <Text as="h3" variant="headingSm">
-                Live blocks
+                Setup progress
               </Text>
               <Text as="p" variant="headingLg">
-                {blockLibraryItems.length}
+                {completedStepsCount}/{totalStepsCount}
               </Text>
               <Text as="p" variant="bodySm" tone="subdued">
-                All live blocks now have dedicated editors
+                Stored per shop in onboarding state
               </Text>
             </BlockStack>
           </Card>
