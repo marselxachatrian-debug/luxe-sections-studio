@@ -9,7 +9,6 @@ import {
   Card,
   InlineGrid,
   InlineStack,
-  List,
   Page,
   Select,
   Text,
@@ -29,18 +28,11 @@ import {
   MOCK_BILLING_SOURCE,
   getBillingActionLabel,
   getBillingActionState,
-  getMockBillingStatus,
 } from "../billing-helpers";
 
 function getAccessibleFeatures(planKey, features, blockKey) {
   return features.filter((feature) =>
     canAccessBlockFeature(planKey, blockKey, feature.key),
-  );
-}
-
-function getLockedFeatures(planKey, features, blockKey) {
-  return features.filter(
-    (feature) => !canAccessBlockFeature(planKey, blockKey, feature.key),
   );
 }
 
@@ -106,8 +98,6 @@ export default function SettingsRoute() {
 
   const [previewPlan, setPreviewPlan] = useState(currentPlanKey);
 
-  const billingStatus = getMockBillingStatus(currentPlanKey);
-
   const transitionPlan = searchParams.get("plan");
   const transitionAction = searchParams.get("action");
   const transitionSource = searchParams.get("source");
@@ -126,48 +116,36 @@ export default function SettingsRoute() {
     BLOCK_KEYS.PREMIUM_FEATURES,
   );
 
-  const availableLuxeHeroFeatures = getAccessibleFeatures(
-    previewPlan,
-    luxeHeroFeatures,
-    BLOCK_KEYS.LUXE_HERO,
-  );
-
-  const lockedLuxeHeroFeatures = getLockedFeatures(
-    previewPlan,
-    luxeHeroFeatures,
-    BLOCK_KEYS.LUXE_HERO,
-  );
-
-  const trustBarAvailable = getAccessibleFeatures(
-    previewPlan,
-    trustBarFeatures,
-    BLOCK_KEYS.TRUST_BAR,
-  );
-
-  const premiumFeaturesAvailable = getAccessibleFeatures(
-    previewPlan,
-    premiumFeaturesFeatures,
-    BLOCK_KEYS.PREMIUM_FEATURES,
-  );
-
   const blockSnapshots = [
     {
       name: "Premium Hero Banner",
-      availableCount: availableLuxeHeroFeatures.length,
+      availableCount: getAccessibleFeatures(
+        previewPlan,
+        luxeHeroFeatures,
+        BLOCK_KEYS.LUXE_HERO,
+      ).length,
       totalCount: luxeHeroFeatures.length,
-      helperText: "Main premium storytelling block with layered visual control.",
+      helperText: "Premium hero editing access for the selected preview plan.",
     },
     {
       name: "Store Trust Highlights",
-      availableCount: trustBarAvailable.length,
+      availableCount: getAccessibleFeatures(
+        previewPlan,
+        trustBarFeatures,
+        BLOCK_KEYS.TRUST_BAR,
+      ).length,
       totalCount: trustBarFeatures.length,
-      helperText: "Reassurance block with clean structure and spacing control.",
+      helperText: "Trust section access and control visibility by plan tier.",
     },
     {
       name: "Feature Highlights Grid",
-      availableCount: premiumFeaturesAvailable.length,
+      availableCount: getAccessibleFeatures(
+        previewPlan,
+        premiumFeaturesFeatures,
+        BLOCK_KEYS.PREMIUM_FEATURES,
+      ).length,
       totalCount: premiumFeaturesFeatures.length,
-      helperText: "Feature grid block with icon support and premium layout depth.",
+      helperText: "Feature grid access snapshot for the selected plan.",
     },
   ];
 
@@ -187,26 +165,12 @@ export default function SettingsRoute() {
   const primaryThemeEditorUrl =
     onboardingLinks.find((item) => item.url)?.url ?? null;
 
-  const appOwnedSettings = [
-    "Main visual editing should happen inside the app.",
-    "Preview plan switching is for admin-side testing only.",
-    "Desktop and mobile control should stay consistent across plans.",
-    "Feature visibility should follow the shared plan rules architecture.",
-  ];
-
-  const shopifyMinimalSettings = [
-    "Add the app block to the theme.",
-    "Turn the block or embed on.",
-    "Place the block in the correct template.",
-    "Keep theme-side settings minimal and easy to understand.",
-  ];
-
   return (
     <Page
       title="Settings"
-      subtitle="Studio-level app state, plan preview, billing visibility, and theme connection guidance."
+      subtitle="Plan, billing, and theme connection in one cleaner studio view."
     >
-      <BlockStack gap="500">
+      <BlockStack gap="400">
         {hasMockBillingTransition ? (
           <Banner title="Mock billing transition detected" tone="info">
             <p>
@@ -228,151 +192,117 @@ export default function SettingsRoute() {
         ) : null}
 
         <Card>
-          <BlockStack gap="300">
-            <InlineStack align="space-between" blockAlign="center">
+          <InlineGrid columns={{ xs: 1, md: "1.35fr auto" }} gap="300">
+            <BlockStack gap="200">
               <BlockStack gap="100">
-                <Text as="h2" variant="headingLg">
-                  Studio settings overview
-                </Text>
+                <InlineStack gap="200" blockAlign="center" wrap>
+                  <Text as="h2" variant="headingLg">
+                    Studio settings
+                  </Text>
+                  <Badge tone="success">{currentPlanLabel}</Badge>
+                  <Badge tone={hasActivePayment ? "success" : "attention"}>
+                    {hasActivePayment ? "Billing active" : "Free plan"}
+                  </Badge>
+                </InlineStack>
+
                 <Text as="p" variant="bodyMd" tone="subdued">
-                  Use this page to review app state, preview plan-based feature
-                  visibility, and keep Shopify-side setup minimal.
+                  Keep Shopify setup light: connect the block in Theme Editor,
+                  then do the main editing inside Luxe Sections Studio.
                 </Text>
               </BlockStack>
 
-              <Badge tone="success">{currentPlanLabel}</Badge>
-            </InlineStack>
+              <InlineStack gap="200" wrap>
+                <Link to="/app/blocks" style={{ textDecoration: "none" }}>
+                  <Button variant="primary">Open Blocks Studio</Button>
+                </Link>
 
-            <Text as="p" variant="bodyMd" tone="subdued">
-              Active theme: {activeThemeName ?? "Not found"}
-              {activeThemeId ? ` (ID: ${activeThemeId})` : ""}. Current plan
-              source: {currentPlanSource}. Active paid billing:{" "}
-              {hasActivePayment ? "Yes" : "No"}.
-            </Text>
+                <Link to="/app/pricing" style={{ textDecoration: "none" }}>
+                  <Button>Pricing</Button>
+                </Link>
 
-            <InlineStack gap="200">
-              <Link to="/app" style={{ textDecoration: "none" }}>
-                <Button>Dashboard</Button>
-              </Link>
+                {primaryThemeEditorUrl ? (
+                  <Button onClick={() => openInTopWindow(primaryThemeEditorUrl)}>
+                    Open Theme Editor
+                  </Button>
+                ) : (
+                  <Button disabled>Open Theme Editor</Button>
+                )}
+              </InlineStack>
+            </BlockStack>
 
-              <Link to="/app/blocks" style={{ textDecoration: "none" }}>
-                <Button variant="primary">Open Blocks Studio</Button>
-              </Link>
-
-              <Link to="/app/pricing" style={{ textDecoration: "none" }}>
-                <Button>Pricing</Button>
-              </Link>
-
-              {primaryThemeEditorUrl ? (
-                <Button onClick={() => openInTopWindow(primaryThemeEditorUrl)}>
-                  Open Theme Editor
-                </Button>
-              ) : (
-                <Button disabled>Open Theme Editor</Button>
-              )}
-            </InlineStack>
-          </BlockStack>
+            <BlockStack gap="150">
+              <Text as="p" variant="bodySm" tone="subdued">
+                Theme: {activeThemeName ?? "Not found"}{" "}
+                {activeThemeId ? `(ID: ${activeThemeId})` : ""}
+              </Text>
+              <Text as="p" variant="bodySm" tone="subdued">
+                Plan source: {currentPlanSource}
+              </Text>
+              <Text as="p" variant="bodySm" tone="subdued">
+                App editing remains the primary merchant workflow.
+              </Text>
+            </BlockStack>
+          </InlineGrid>
         </Card>
 
         <InlineGrid columns={{ xs: 1, md: 2 }} gap="400">
           <Card>
-            <BlockStack gap="300">
-              <Text as="h2" variant="headingMd">
-                What this page controls
-              </Text>
+            <BlockStack gap="250">
+              <BlockStack gap="050">
+                <Text as="h2" variant="headingMd">
+                  Studio direction
+                </Text>
+                <Text as="p" variant="bodySm" tone="subdued">
+                  A simpler settings page for merchants and cleaner internal app
+                  control.
+                </Text>
+              </BlockStack>
 
-              <List>
-                {appOwnedSettings.map((item) => (
-                  <List.Item key={item}>{item}</List.Item>
-                ))}
-              </List>
+              <BlockStack gap="150">
+                <Box
+                  padding="300"
+                  borderRadius="300"
+                  background="bg-surface-secondary"
+                >
+                  <Text as="p" variant="bodyMd">
+                    Edit blocks inside the app
+                  </Text>
+                </Box>
+
+                <Box
+                  padding="300"
+                  borderRadius="300"
+                  background="bg-surface-secondary"
+                >
+                  <Text as="p" variant="bodyMd">
+                    Use Shopify only for placement and activation
+                  </Text>
+                </Box>
+
+                <Box
+                  padding="300"
+                  borderRadius="300"
+                  background="bg-surface-secondary"
+                >
+                  <Text as="p" variant="bodyMd">
+                    Keep plan preview and billing visibility clean and easy to review
+                  </Text>
+                </Box>
+              </BlockStack>
             </BlockStack>
           </Card>
 
           <Card>
-            <BlockStack gap="300">
-              <Text as="h2" variant="headingMd">
-                What stays minimal in Shopify
-              </Text>
-
-              <List>
-                {shopifyMinimalSettings.map((item) => (
-                  <List.Item key={item}>{item}</List.Item>
-                ))}
-              </List>
-            </BlockStack>
-          </Card>
-        </InlineGrid>
-
-        <InlineGrid columns={{ xs: 1, md: 4 }} gap="400">
-          <Card>
-            <BlockStack gap="150">
-              <Text as="h3" variant="headingSm">
-                Current plan
-              </Text>
-              <Text as="p" variant="headingLg">
-                {currentPlanLabel}
-              </Text>
-              <Text as="p" variant="bodySm" tone="subdued">
-                Active storefront access level
-              </Text>
-            </BlockStack>
-          </Card>
-
-          <Card>
-            <BlockStack gap="150">
-              <Text as="h3" variant="headingSm">
-                Preview plan
-              </Text>
-              <Text as="p" variant="headingLg">
-                {PLAN_LABELS[previewPlan]}
-              </Text>
-              <Text as="p" variant="bodySm" tone="subdued">
-                Admin-side simulation only
-              </Text>
-            </BlockStack>
-          </Card>
-
-          <Card>
-            <BlockStack gap="150">
-              <Text as="h3" variant="headingSm">
-                Active theme
-              </Text>
-              <Text as="p" variant="headingLg">
-                {activeThemeName ?? "Not found"}
-              </Text>
-              <Text as="p" variant="bodySm" tone="subdued">
-                {activeThemeId ? `Theme ID: ${activeThemeId}` : "No theme ID"}
-              </Text>
-            </BlockStack>
-          </Card>
-
-          <Card>
-            <BlockStack gap="150">
-              <Text as="h3" variant="headingSm">
-                Paid billing
-              </Text>
-              <Text as="p" variant="headingLg">
-                {hasActivePayment ? "Active" : "Inactive"}
-              </Text>
-              <Text as="p" variant="bodySm" tone="subdued">
-                Billing-aware state is enabled
-              </Text>
-            </BlockStack>
-          </Card>
-        </InlineGrid>
-
-        <InlineGrid columns={{ xs: 1, md: 2 }} gap="400">
-          <Card>
-            <BlockStack gap="300">
-              <Text as="h2" variant="headingMd">
-                Preview plan simulator
-              </Text>
-
-              <Text as="p" variant="bodyMd" tone="subdued">
-                Change the preview plan to inspect which features are available
-                for each tier without changing the merchant's real plan.
-              </Text>
+            <BlockStack gap="250">
+              <BlockStack gap="050">
+                <Text as="h2" variant="headingMd">
+                  Preview plan
+                </Text>
+                <Text as="p" variant="bodySm" tone="subdued">
+                  Admin-side simulation only. This does not change the merchant’s
+                  live subscription.
+                </Text>
+              </BlockStack>
 
               <Select
                 label="Preview plan"
@@ -380,36 +310,55 @@ export default function SettingsRoute() {
                 value={previewPlan}
                 onChange={setPreviewPlan}
               />
-            </BlockStack>
-          </Card>
 
-          <Card>
-            <BlockStack gap="300">
-              <Text as="h2" variant="headingMd">
-                Billing-aware state
-              </Text>
+              <InlineGrid columns={{ xs: 1, sm: 3 }} gap="200">
+                {blockSnapshots.map((block) => (
+                  <Box
+                    key={block.name}
+                    padding="300"
+                    borderRadius="300"
+                    background="bg-surface-secondary"
+                  >
+                    <BlockStack gap="100">
+                      <InlineStack align="space-between" blockAlign="center">
+                        <Text as="p" variant="bodySm" fontWeight="semibold">
+                          {block.name}
+                        </Text>
+                        <Badge tone="info">
+                          {block.availableCount}/{block.totalCount}
+                        </Badge>
+                      </InlineStack>
 
-              <List>
-                <List.Item>Current plan key: {billingStatus.currentPlan}</List.Item>
-                <List.Item>
-                  Paid plan active: {billingStatus.hasPaidPlan ? "Yes" : "No"}
-                </List.Item>
-                <List.Item>
-                  Available upgrades:{" "}
-                  {billingStatus.availableUpgrades.length > 0
-                    ? billingStatus.availableUpgrades.join(", ")
-                    : "None"}
-                </List.Item>
-              </List>
+                      <Text as="p" variant="bodySm" tone="subdued">
+                        {block.helperText}
+                      </Text>
+                    </BlockStack>
+                  </Box>
+                ))}
+              </InlineGrid>
             </BlockStack>
           </Card>
         </InlineGrid>
 
         <Card>
           <BlockStack gap="300">
-            <Text as="h2" variant="headingMd">
-              Billing actions
-            </Text>
+            <InlineStack align="space-between" blockAlign="center" wrap>
+              <BlockStack gap="050">
+                <Text as="h2" variant="headingMd">
+                  Membership
+                </Text>
+                <Text as="p" variant="bodySm" tone="subdued">
+                  Review the current plan and move between available billing tiers.
+                </Text>
+              </BlockStack>
+
+              <InlineStack gap="200" wrap>
+                <Badge tone="success">{currentPlanLabel}</Badge>
+                <Badge tone={hasActivePayment ? "success" : "attention"}>
+                  {hasActivePayment ? "Paid billing active" : "No paid billing"}
+                </Badge>
+              </InlineStack>
+            </InlineStack>
 
             <InlineGrid columns={{ xs: 1, md: 3 }} gap="300">
               {billingActions.map((item) => {
@@ -418,10 +367,16 @@ export default function SettingsRoute() {
                   item.actionState === "downgrade";
 
                 return (
-                  <Card key={item.planKey} roundedAbove="sm">
+                  <Box
+                    key={item.planKey}
+                    padding="300"
+                    borderWidth="025"
+                    borderRadius="300"
+                    background="bg-surface-secondary"
+                  >
                     <BlockStack gap="200">
                       <InlineStack align="space-between" blockAlign="center">
-                        <Text as="span" variant="bodyMd">
+                        <Text as="span" variant="bodyMd" fontWeight="semibold">
                           {item.label}
                         </Text>
                         <Badge tone={getActionTone(item.actionState)}>
@@ -448,7 +403,7 @@ export default function SettingsRoute() {
                         </Button>
                       )}
                     </BlockStack>
-                  </Card>
+                  </Box>
                 );
               })}
             </InlineGrid>
@@ -457,15 +412,14 @@ export default function SettingsRoute() {
 
         <Card>
           <BlockStack gap="300">
-            <Text as="h2" variant="headingMd">
-              Theme connection
-            </Text>
-
-            <Text as="p" variant="bodyMd" tone="subdued">
-              Merchants should still use Theme Editor for placement and
-              activation, while the main editing experience continues moving
-              inside the app.
-            </Text>
+            <BlockStack gap="050">
+              <Text as="h2" variant="headingMd">
+                Theme connection
+              </Text>
+              <Text as="p" variant="bodySm" tone="subdued">
+                Keep Theme Editor minimal: placement, app embed, and activation only.
+              </Text>
+            </BlockStack>
 
             <InlineGrid columns={{ xs: 1, md: 3 }} gap="300">
               {onboardingLinks.map((link) =>
@@ -483,101 +437,6 @@ export default function SettingsRoute() {
                 ),
               )}
             </InlineGrid>
-          </BlockStack>
-        </Card>
-
-        <Card>
-          <BlockStack gap="300">
-            <Text as="h2" variant="headingMd">
-              Block access snapshot
-            </Text>
-
-            <InlineGrid columns={{ xs: 1, md: 3 }} gap="300">
-              {blockSnapshots.map((block) => (
-                <Card key={block.name} roundedAbove="sm">
-                  <BlockStack gap="200">
-                    <InlineStack align="space-between" blockAlign="center">
-                      <Text as="h3" variant="headingSm">
-                        {block.name}
-                      </Text>
-                      <Badge tone="info">
-                        {block.availableCount}/{block.totalCount}
-                      </Badge>
-                    </InlineStack>
-
-                    <Text as="p" variant="bodyMd" tone="subdued">
-                      {block.helperText}
-                    </Text>
-                  </BlockStack>
-                </Card>
-              ))}
-            </InlineGrid>
-          </BlockStack>
-        </Card>
-
-        <InlineGrid columns={{ xs: 1, md: 2 }} gap="400">
-          <Card>
-            <BlockStack gap="300">
-              <InlineStack align="space-between" blockAlign="center">
-                <Text as="h2" variant="headingMd">
-                  Available Premium Hero Banner features
-                </Text>
-                <Badge tone="success">{availableLuxeHeroFeatures.length}</Badge>
-              </InlineStack>
-
-              {availableLuxeHeroFeatures.length > 0 ? (
-                <List>
-                  {availableLuxeHeroFeatures.map((feature) => (
-                    <List.Item key={feature.key}>{feature.label}</List.Item>
-                  ))}
-                </List>
-              ) : (
-                <Text as="p" variant="bodyMd" tone="subdued">
-                  No available features for the selected preview plan.
-                </Text>
-              )}
-            </BlockStack>
-          </Card>
-
-          <Card>
-            <BlockStack gap="300">
-              <InlineStack align="space-between" blockAlign="center">
-                <Text as="h2" variant="headingMd">
-                  Locked Premium Hero Banner features
-                </Text>
-                <Badge tone="warning">{lockedLuxeHeroFeatures.length}</Badge>
-              </InlineStack>
-
-              {lockedLuxeHeroFeatures.length > 0 ? (
-                <List>
-                  {lockedLuxeHeroFeatures.map((feature) => (
-                    <List.Item key={feature.key}>{feature.label}</List.Item>
-                  ))}
-                </List>
-              ) : (
-                <Text as="p" variant="bodyMd" tone="subdued">
-                  All Premium Hero Banner features are available for the selected
-                  preview plan.
-                </Text>
-              )}
-            </BlockStack>
-          </Card>
-        </InlineGrid>
-
-        <Card>
-          <BlockStack gap="300">
-            <Text as="h2" variant="headingMd">
-              Current app state
-            </Text>
-
-            <Box>
-              <Text as="p" variant="bodyMd" tone="subdued">
-                Settings now follow the studio direction: app-side editing is
-                becoming the main experience, plan visibility stays billing-aware,
-                preview simulation remains useful for admin-side testing, and
-                Theme Editor keeps a simpler setup role.
-              </Text>
-            </Box>
           </BlockStack>
         </Card>
       </BlockStack>
