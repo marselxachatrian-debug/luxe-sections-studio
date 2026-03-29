@@ -6,7 +6,6 @@ import {
   Box,
   Button,
   Card,
-  Divider,
   InlineGrid,
   InlineStack,
   List,
@@ -32,13 +31,13 @@ function openInTopWindow(url) {
   window.location.href = url;
 }
 
-function getDeviceWidth(device) {
+function getPreviewWidth(device) {
   if (device === "mobile") {
-    return "360px";
+    return "390px";
   }
 
   if (device === "tablet") {
-    return "760px";
+    return "720px";
   }
 
   return "100%";
@@ -69,21 +68,15 @@ function hasDedicatedEditor(handle) {
 }
 
 function getAvailabilityTone(availability) {
-  if (availability === "live") {
-    return "success";
-  }
-
-  return "attention";
+  return availability === "live" ? "success" : "attention";
 }
 
 function getAvailabilityLabel(block) {
   if (block.availability === "live") {
-    return hasDedicatedEditor(block.handle)
-      ? "Editor ready"
-      : "Live in theme";
+    return hasDedicatedEditor(block.handle) ? "Editor ready" : "Live";
   }
 
-  return block.status || "Planned next";
+  return "Planned next";
 }
 
 function renderHeroPreview(device) {
@@ -419,12 +412,7 @@ function renderTrustPaymentsPreview(device) {
             partners in one stronger conversion block.
           </div>
 
-          <div
-            style={{
-              display: "grid",
-              gap: "10px",
-            }}
-          >
+          <div style={{ display: "grid", gap: "10px" }}>
             {[
               "Verified customer confidence",
               "Secure payment support",
@@ -504,8 +492,7 @@ function renderTrustPaymentsPreview(device) {
 }
 
 function renderVideoShowcasePreview(device) {
-  const columns =
-    device === "mobile" ? "1fr" : "repeat(3, minmax(0, 1fr))";
+  const columns = device === "mobile" ? "1fr" : "repeat(3, minmax(0, 1fr))";
 
   return (
     <div
@@ -671,35 +658,19 @@ function getEditorSections(block) {
     return [
       {
         title: "Content",
-        items: [
-          "Heading and subheading",
-          "Primary and secondary CTA",
-          "Hero message structure",
-        ],
+        items: ["Heading and CTA copy", "Message structure", "Button flow"],
       },
       {
-        title: "Visual design",
-        items: [
-          "Background media direction",
-          "Overlay depth and contrast",
-          "Premium visual styling",
-        ],
+        title: "Layout",
+        items: ["Height", "Spacing", "Desktop and mobile alignment"],
       },
       {
-        title: "Layout and mobile",
-        items: [
-          "Desktop and mobile height",
-          "Spacing control",
-          "Alignment tuning",
-        ],
+        title: "Style",
+        items: ["Media treatment", "Overlay control", "Color direction"],
       },
       {
-        title: "Premium layer",
-        items: [
-          "Glow and shimmer path",
-          "Motion upgrades",
-          "Luxury presets",
-        ],
+        title: "Premium",
+        items: ["Glow path", "Motion upgrades", "Luxury presets"],
       },
     ];
   }
@@ -707,36 +678,20 @@ function getEditorSections(block) {
   if (block.handle === "trust-bar") {
     return [
       {
-        title: "Trust content",
-        items: [
-          "Trust items and reassurance copy",
-          "Heading structure",
-          "Merchant-safe proof points",
-        ],
+        title: "Content",
+        items: ["Trust points", "Heading structure", "Confidence messaging"],
       },
       {
         title: "Layout",
-        items: [
-          "Desktop column structure",
-          "Padding and spacing",
-          "Section direction",
-        ],
+        items: ["Columns", "Padding", "Responsive arrangement"],
       },
       {
-        title: "Visual style",
-        items: [
-          "Background treatment",
-          "Icon presentation",
-          "Premium polish",
-        ],
+        title: "Style",
+        items: ["Icons", "Background treatment", "Visual polish"],
       },
       {
-        title: "Mobile-ready",
-        items: [
-          "Responsive spacing",
-          "Compact reading flow",
-          "Cleaner trust visibility",
-        ],
+        title: "Mobile",
+        items: ["Compact spacing", "Readable hierarchy", "Cleaner flow"],
       },
     ];
   }
@@ -744,36 +699,20 @@ function getEditorSections(block) {
   if (block.handle === "premium-features") {
     return [
       {
-        title: "Feature content",
-        items: [
-          "Heading and subheading",
-          "Feature card titles",
-          "Feature descriptions",
-        ],
-      },
-      {
-        title: "Card design",
-        items: [
-          "Icon-led presentation",
-          "Card structure",
-          "Section style",
-        ],
+        title: "Content",
+        items: ["Heading", "Cards", "Feature descriptions"],
       },
       {
         title: "Layout",
-        items: [
-          "Desktop column count",
-          "Top and bottom padding",
-          "Heading alignment",
-        ],
+        items: ["Columns", "Section spacing", "Heading alignment"],
       },
       {
-        title: "Growth path",
-        items: [
-          "Richer icon control",
-          "Premium styling",
-          "Stronger merchandising feel",
-        ],
+        title: "Style",
+        items: ["Card treatment", "Icons", "Premium visual structure"],
+      },
+      {
+        title: "Growth",
+        items: ["Richer icon control", "Card polish", "Merchandising depth"],
       },
     ];
   }
@@ -781,36 +720,20 @@ function getEditorSections(block) {
   if (block.handle === "trust-payments-showcase") {
     return [
       {
-        title: "Trust messaging",
-        items: [
-          "Headline and support copy",
-          "Review link area",
-          "Confidence messaging",
-        ],
+        title: "Content",
+        items: ["Trust copy", "Review link", "Confidence messaging"],
       },
       {
-        title: "Payments and partners",
-        items: [
-          "Payment icons",
-          "Delivery partner icons",
-          "Link support",
-        ],
+        title: "Partners",
+        items: ["Payments", "Shipping icons", "Partner links"],
       },
       {
         title: "Layout",
-        items: [
-          "Left-right composition",
-          "Desktop and mobile control",
-          "Spacing and icon size",
-        ],
+        items: ["Two-column structure", "Responsive flow", "Spacing"],
       },
       {
-        title: "Premium layer",
-        items: [
-          "Hover effects",
-          "Glow treatment",
-          "Luxury motion polish",
-        ],
+        title: "Premium",
+        items: ["Hover effects", "Glow treatment", "Luxury motion"],
       },
     ];
   }
@@ -818,36 +741,20 @@ function getEditorSections(block) {
   if (block.handle === "video-showcase") {
     return [
       {
-        title: "Video cards",
-        items: [
-          "9:16 showcase media",
-          "Card titles and subtitles",
-          "CTA destination",
-        ],
+        title: "Content",
+        items: ["Video cards", "Titles and CTA", "Story flow"],
       },
       {
-        title: "Layout and flow",
-        items: [
-          "Desktop and mobile arrangement",
-          "Active and inactive states",
-          "Spacing control",
-        ],
+        title: "Layout",
+        items: ["Desktop and mobile flow", "Card spacing", "Active state"],
       },
       {
-        title: "Visual styling",
-        items: [
-          "Overlay and color control",
-          "Typography tuning",
-          "Premium showcase framing",
-        ],
+        title: "Style",
+        items: ["Overlay and color", "Typography", "Premium framing"],
       },
       {
-        title: "Motion system",
-        items: [
-          "Carousel feel",
-          "Spotlight transitions",
-          "Luxury movement",
-        ],
+        title: "Motion",
+        items: ["Carousel feel", "Spotlight effect", "Luxury transitions"],
       },
     ];
   }
@@ -855,114 +762,44 @@ function getEditorSections(block) {
   return [
     {
       title: "Content",
-      items: ["Core content controls", "Copy structure", "Merchant-safe setup"],
+      items: ["Core content", "Copy structure", "Merchant-safe setup"],
     },
     {
       title: "Layout",
-      items: ["Block spacing", "Desktop and mobile structure", "Alignment"],
+      items: ["Spacing", "Responsive structure", "Alignment"],
     },
     {
       title: "Style",
-      items: ["Color system", "Visual depth", "Typography direction"],
+      items: ["Color system", "Typography", "Visual depth"],
     },
     {
-      title: "Premium layer",
+      title: "Premium",
       items: ["Effects", "Motion", "Luxury presets"],
     },
   ];
 }
 
-function getGuideSteps(block, onboardingLinks) {
-  const appEmbedLink =
-    onboardingLinks.find((item) => item.key === "enable-app")?.url ?? null;
-  const addBlockLink =
-    onboardingLinks.find((item) => item.key === block.handle)?.url ?? null;
-  const editorReady = hasDedicatedEditor(block.handle);
-
-  if (block.availability === "planned") {
-    return [
-      {
-        title: "1. Prepare the block",
-        zone: "Roadmap",
-        description:
-          "This block is planned next and is being prepared for merchant-first editing inside the app.",
-      },
-      {
-        title: "2. Define the install flow",
-        zone: "Shopify",
-        description:
-          "The final flow will include adding the block to the right template and enabling any needed app support.",
-      },
-      {
-        title: "3. Edit inside the app",
-        zone: "App",
-        description:
-          "Main design, layout, color, mobile, and premium settings will live inside Luxe Sections Studio.",
-      },
-      {
-        title: "4. Preview and publish",
-        zone: "Preview",
-        description:
-          "The merchant will review desktop, tablet, and mobile presentation before publishing.",
-      },
-    ];
-  }
-
-  return [
-    {
-      title: "1. Add block to theme",
-      zone: "Shopify",
-      description:
-        "Open Theme Editor and place this app block into the correct template for the storefront.",
-      actionLabel: "Add block",
-      actionUrl: addBlockLink,
-    },
-    {
-      title: "2. Enable app support",
-      zone: "Shopify",
-      description:
-        "Open the app embeds area when needed and keep Shopify focused on placement and activation.",
-      actionLabel: "Open app embeds",
-      actionUrl: appEmbedLink,
-    },
-    {
-      title: "3. Edit inside the app",
-      zone: "App",
-      description:
-        "Use Luxe Sections Studio for the main visual editing flow, including layout, colors, mobile, and premium controls.",
-      actionPath: editorReady ? getBlockEditorPath(block.handle) : null,
-      actionLabel: editorReady ? "Open editor" : "Editor coming next",
-    },
-    {
-      title: "4. Preview and publish",
-      zone: "Preview",
-      description:
-        "Review the live preview on desktop, tablet, and mobile before publishing changes to the storefront.",
-    },
-  ];
-}
-
-function getBlockOutcomePoints(block) {
+function getOutcomePoints(block) {
   if (block.handle === "luxe-hero") {
     return [
       "Stronger first impression above the fold",
       "Cleaner CTA visibility",
-      "More premium storefront storytelling",
+      "More premium storytelling",
     ];
   }
 
   if (block.handle === "trust-bar") {
     return [
       "Clearer reassurance before purchase",
-      "Cleaner support for trust messaging",
-      "Better confidence for shoppers on mobile",
+      "Stronger shopper confidence",
+      "Cleaner mobile trust presentation",
     ];
   }
 
   if (block.handle === "premium-features") {
     return [
       "Faster benefit scanning",
-      "Cleaner product value presentation",
+      "Cleaner value presentation",
       "Stronger merchandising structure",
     ];
   }
@@ -970,15 +807,15 @@ function getBlockOutcomePoints(block) {
   if (block.handle === "trust-payments-showcase") {
     return [
       "Higher checkout confidence",
-      "Clear payment and delivery visibility",
-      "Premium conversion-focused trust layout",
+      "Better payment and shipping visibility",
+      "Premium trust-focused layout",
     ];
   }
 
   if (block.handle === "video-showcase") {
     return [
       "Stronger product attention",
-      "Richer premium storytelling",
+      "Better visual storytelling",
       "Higher mobile merchandising impact",
     ];
   }
@@ -1044,98 +881,162 @@ export default function BlocksLibraryRoute() {
     liveCatalogBlocks[0] ??
     null;
 
-  const guideSteps = selectedBlock
-    ? getGuideSteps(selectedBlock, onboardingLinks)
-    : [];
+  const addBlockUrl =
+    onboardingLinks.find((item) => item.key === selectedBlock?.handle)?.url ??
+    null;
+  const appEmbedUrl =
+    onboardingLinks.find((item) => item.key === "enable-app")?.url ?? null;
 
   const editorSections = selectedBlock ? getEditorSections(selectedBlock) : [];
-  const outcomePoints = selectedBlock ? getBlockOutcomePoints(selectedBlock) : [];
+  const outcomePoints = selectedBlock ? getOutcomePoints(selectedBlock) : [];
 
   return (
     <Page
       title="Blocks Studio"
-      subtitle="A merchant-first workspace where blocks are selected, installed, edited, previewed, and prepared for publishing."
+      subtitle="Professional block setup, app-based editing, and live preview in one merchant-first workspace."
     >
       <BlockStack gap="500">
         <Card>
-          <InlineGrid columns={{ xs: 1, md: 2 }} gap="400">
-            <BlockStack gap="250">
-              <InlineStack align="space-between" blockAlign="center">
+          <BlockStack gap="250">
+            <InlineStack align="space-between" blockAlign="center">
+              <BlockStack gap="050">
                 <Text as="h2" variant="headingLg">
-                  Premium block editing hub
+                  Premium block workspace
                 </Text>
-                <Badge tone="success">{currentPlanLabel}</Badge>
-              </InlineStack>
+                <Text as="p" variant="bodyMd" tone="subdued">
+                  Choose a block, connect it to the storefront, then do the real
+                  editing inside Luxe Sections Studio.
+                </Text>
+              </BlockStack>
 
-              <Text as="p" variant="bodyMd" tone="subdued">
-                Main editing belongs inside Luxe Sections Studio. Shopify Theme
-                Editor should stay focused on block placement, activation, and
-                only minimal fallback setup.
+              <Badge tone="success">{currentPlanLabel}</Badge>
+            </InlineStack>
+
+            <InlineStack gap="300" wrap>
+              <Text as="span" variant="bodySm" tone="subdued">
+                Plan source: {currentPlanSource}
               </Text>
-
-              <Text as="p" variant="bodyMd" tone="subdued">
-                Plan source: {currentPlanSource}. Active paid billing:{" "}
-                {hasActivePayment ? "Yes" : "No"}.
+              <Text as="span" variant="bodySm" tone="subdued">
+                Active paid billing: {hasActivePayment ? "Yes" : "No"}
               </Text>
-
-              <Text as="p" variant="bodyMd" tone="subdued">
-                Active theme: {activeThemeName ?? "Not found"}{" "}
+              <Text as="span" variant="bodySm" tone="subdued">
+                Theme: {activeThemeName ?? "Not found"}{" "}
                 {activeThemeId ? `(ID: ${activeThemeId})` : ""}
               </Text>
-            </BlockStack>
-
-            <InlineGrid columns={{ xs: 1, md: 2 }} gap="300">
-              <Card roundedAbove="sm">
-                <BlockStack gap="200">
-                  <Text as="h3" variant="headingSm">
-                    App owns the real editing
-                  </Text>
-                  <List>
-                    <List.Item>Colors, spacing, and layout structure</List.Item>
-                    <List.Item>Desktop, tablet, and mobile tuning</List.Item>
-                    <List.Item>Visual depth, effects, and premium presets</List.Item>
-                    <List.Item>Merchant-friendly editing flow with preview</List.Item>
-                  </List>
-                </BlockStack>
-              </Card>
-
-              <Card roundedAbove="sm">
-                <BlockStack gap="200">
-                  <Text as="h3" variant="headingSm">
-                    Shopify stays minimal
-                  </Text>
-                  <List>
-                    <List.Item>Add the app block to the right template</List.Item>
-                    <List.Item>Turn the block or app embed on</List.Item>
-                    <List.Item>Keep only light fallback fields in theme settings</List.Item>
-                    <List.Item>Avoid overwhelming merchants inside Theme Editor</List.Item>
-                  </List>
-                </BlockStack>
-              </Card>
-            </InlineGrid>
-          </InlineGrid>
+            </InlineStack>
+          </BlockStack>
         </Card>
 
-        <InlineGrid columns={{ xs: 1, lg: "260px 1fr 0.95fr" }} gap="400">
+        {selectedBlock ? (
+          <Card>
+            <BlockStack gap="250">
+              <InlineStack align="space-between" blockAlign="center">
+                <BlockStack gap="050">
+                  <Text as="h2" variant="headingMd">
+                    Quick setup for {selectedBlock.name}
+                  </Text>
+                  <Text as="p" variant="bodySm" tone="subdued">
+                    Two actions only: connect the block in Shopify, then edit it
+                    inside the app.
+                  </Text>
+                </BlockStack>
+
+                <Badge tone={getAvailabilityTone(selectedBlock.availability)}>
+                  {selectedBlock.availability === "live"
+                    ? "Ready to use"
+                    : "Planned next"}
+                </Badge>
+              </InlineStack>
+
+              <InlineGrid columns={{ xs: 1, md: 2 }} gap="300">
+                <Card roundedAbove="sm">
+                  <BlockStack gap="200">
+                    <InlineStack gap="200" blockAlign="center">
+                      <Badge tone="info">Step 1</Badge>
+                      <Text as="h3" variant="headingSm">
+                        Connect block in Shopify
+                      </Text>
+                    </InlineStack>
+
+                    <Text as="p" variant="bodyMd" tone="subdued">
+                      Add the block to the correct theme template. Shopify should
+                      only handle placement and activation.
+                    </Text>
+
+                    <InlineStack gap="200">
+                      {selectedBlock.availability === "live" && addBlockUrl ? (
+                        <Button onClick={() => openInTopWindow(addBlockUrl)}>
+                          Add block
+                        </Button>
+                      ) : (
+                        <Button disabled>Add block</Button>
+                      )}
+
+                      {appEmbedUrl ? (
+                        <Button
+                          variant="secondary"
+                          onClick={() => openInTopWindow(appEmbedUrl)}
+                        >
+                          App embeds
+                        </Button>
+                      ) : (
+                        <Button disabled>App embeds</Button>
+                      )}
+                    </InlineStack>
+                  </BlockStack>
+                </Card>
+
+                <Card roundedAbove="sm">
+                  <BlockStack gap="200">
+                    <InlineStack gap="200" blockAlign="center">
+                      <Badge tone="success">Step 2</Badge>
+                      <Text as="h3" variant="headingSm">
+                        Edit inside Luxe Sections Studio
+                      </Text>
+                    </InlineStack>
+
+                    <Text as="p" variant="bodyMd" tone="subdued">
+                      Use the app for colors, spacing, layout, mobile tuning,
+                      effects, and premium presentation controls.
+                    </Text>
+
+                    {hasDedicatedEditor(selectedBlock.handle) ? (
+                      <Link
+                        to={getBlockEditorPath(selectedBlock.handle)}
+                        style={{ textDecoration: "none" }}
+                      >
+                        <Button variant="primary">Open full editor</Button>
+                      </Link>
+                    ) : (
+                      <Button disabled>Editor coming next</Button>
+                    )}
+                  </BlockStack>
+                </Card>
+              </InlineGrid>
+            </BlockStack>
+          </Card>
+        ) : null}
+
+        <InlineGrid columns={{ xs: 1, lg: "250px 1fr 420px" }} gap="400">
           <BlockStack gap="300">
             <Card>
-              <BlockStack gap="250">
+              <BlockStack gap="200">
                 <InlineStack align="space-between" blockAlign="center">
                   <Text as="h2" variant="headingMd">
                     Block catalog
                   </Text>
-                  <Badge tone="info">{catalogBlocks.length} total</Badge>
+                  <Badge tone="info">{catalogBlocks.length}</Badge>
                 </InlineStack>
 
                 <Text as="p" variant="bodySm" tone="subdued">
-                  Select a block from the studio library. Live blocks already
-                  have editor pages. Planned blocks show the next expansion path.
+                  Live blocks are ready now. Planned blocks show the next premium
+                  expansion path.
                 </Text>
               </BlockStack>
             </Card>
 
             <Card>
-              <BlockStack gap="250">
+              <BlockStack gap="200">
                 <Text as="h3" variant="headingSm">
                   Live now
                 </Text>
@@ -1158,7 +1059,7 @@ export default function BlocksLibraryRoute() {
                             isSelected ? "bg-surface-secondary" : "bg-surface"
                           }
                         >
-                          <BlockStack gap="150">
+                          <BlockStack gap="100">
                             <InlineStack
                               align="space-between"
                               blockAlign="center"
@@ -1166,14 +1067,16 @@ export default function BlocksLibraryRoute() {
                               <Text as="p" variant="bodyMd" fontWeight="semibold">
                                 {block.name}
                               </Text>
-                              <Badge tone="success">
-                                {getAvailabilityLabel(block)}
-                              </Badge>
+                              <Badge tone="success">Live</Badge>
                             </InlineStack>
 
-                            <Text as="p" variant="bodySm" tone="subdued">
-                              {block.status}
-                            </Text>
+                            <InlineStack gap="150" blockAlign="center">
+                              <Badge tone="success">
+                                {hasDedicatedEditor(block.handle)
+                                  ? "Editor ready"
+                                  : "Theme only"}
+                              </Badge>
+                            </InlineStack>
                           </BlockStack>
                         </Box>
                       </Link>
@@ -1184,7 +1087,7 @@ export default function BlocksLibraryRoute() {
             </Card>
 
             <Card>
-              <BlockStack gap="250">
+              <BlockStack gap="200">
                 <Text as="h3" variant="headingSm">
                   Planned next
                 </Text>
@@ -1207,7 +1110,7 @@ export default function BlocksLibraryRoute() {
                             isSelected ? "bg-surface-secondary" : "bg-surface"
                           }
                         >
-                          <BlockStack gap="150">
+                          <BlockStack gap="100">
                             <InlineStack
                               align="space-between"
                               blockAlign="center"
@@ -1215,9 +1118,7 @@ export default function BlocksLibraryRoute() {
                               <Text as="p" variant="bodyMd" fontWeight="semibold">
                                 {block.name}
                               </Text>
-                              <Badge tone="attention">
-                                {getAvailabilityLabel(block)}
-                              </Badge>
+                              <Badge tone="attention">Planned</Badge>
                             </InlineStack>
 
                             <Text as="p" variant="bodySm" tone="subdued">
@@ -1233,67 +1134,12 @@ export default function BlocksLibraryRoute() {
             </Card>
           </BlockStack>
 
-          <BlockStack gap="400">
+          <BlockStack gap="300">
             {selectedBlock ? (
               <Card>
-                <BlockStack gap="300">
+                <BlockStack gap="250">
                   <InlineStack align="space-between" blockAlign="center">
-                    <Text as="h2" variant="headingMd">
-                      Install guide for {selectedBlock.name}
-                    </Text>
-                    <Badge tone={getAvailabilityTone(selectedBlock.availability)}>
-                      {selectedBlock.availability === "live"
-                        ? "Ready to use"
-                        : "Planned next"}
-                    </Badge>
-                  </InlineStack>
-
-                  <InlineGrid columns={{ xs: 1, md: 2, xl: 4 }} gap="300">
-                    {guideSteps.map((step) => (
-                      <Card key={step.title} roundedAbove="sm">
-                        <BlockStack gap="200">
-                          <InlineStack align="space-between" blockAlign="center">
-                            <Text as="h3" variant="headingSm">
-                              {step.title}
-                            </Text>
-                            <Badge tone="info">{step.zone}</Badge>
-                          </InlineStack>
-
-                          <Text as="p" variant="bodyMd" tone="subdued">
-                            {step.description}
-                          </Text>
-
-                          {step.actionUrl ? (
-                            <Button onClick={() => openInTopWindow(step.actionUrl)}>
-                              {step.actionLabel}
-                            </Button>
-                          ) : null}
-
-                          {step.actionPath ? (
-                            <Link
-                              to={step.actionPath}
-                              style={{ textDecoration: "none" }}
-                            >
-                              <Button variant="primary">{step.actionLabel}</Button>
-                            </Link>
-                          ) : null}
-
-                          {!step.actionUrl && !step.actionPath && step.actionLabel ? (
-                            <Button disabled>{step.actionLabel}</Button>
-                          ) : null}
-                        </BlockStack>
-                      </Card>
-                    ))}
-                  </InlineGrid>
-                </BlockStack>
-              </Card>
-            ) : null}
-
-            {selectedBlock ? (
-              <Card>
-                <BlockStack gap="300">
-                  <InlineStack align="space-between" blockAlign="center">
-                    <BlockStack gap="100">
+                    <BlockStack gap="050">
                       <InlineStack gap="200" blockAlign="center">
                         <Text as="h2" variant="headingLg">
                           {selectedBlock.name}
@@ -1307,25 +1153,43 @@ export default function BlocksLibraryRoute() {
                         {selectedBlock.description}
                       </Text>
                     </BlockStack>
+                  </InlineStack>
 
+                  <InlineStack gap="200">
                     {hasDedicatedEditor(selectedBlock.handle) ? (
                       <Link
                         to={getBlockEditorPath(selectedBlock.handle)}
                         style={{ textDecoration: "none" }}
                       >
-                        <Button variant="primary">Open full editor</Button>
+                        <Button variant="primary">Open block editor</Button>
                       </Link>
                     ) : (
                       <Button disabled>Editor coming next</Button>
                     )}
+
+                    {selectedBlock.availability === "live" && addBlockUrl ? (
+                      <Button onClick={() => openInTopWindow(addBlockUrl)}>
+                        Add in Theme Editor
+                      </Button>
+                    ) : (
+                      <Button disabled>Add in Theme Editor</Button>
+                    )}
                   </InlineStack>
+                </BlockStack>
+              </Card>
+            ) : null}
 
-                  <Divider />
+            {selectedBlock ? (
+              <Card>
+                <BlockStack gap="250">
+                  <Text as="h2" variant="headingMd">
+                    Editor workspace
+                  </Text>
 
-                  <InlineGrid columns={{ xs: 1, md: 2 }} gap="300">
+                  <InlineGrid columns={{ xs: 1, md: 2 }} gap="200">
                     {editorSections.map((section) => (
                       <Card key={section.title} roundedAbove="sm">
-                        <BlockStack gap="200">
+                        <BlockStack gap="150">
                           <Text as="h3" variant="headingSm">
                             {section.title}
                           </Text>
@@ -1339,71 +1203,44 @@ export default function BlocksLibraryRoute() {
                       </Card>
                     ))}
                   </InlineGrid>
-
-                  <InlineGrid columns={{ xs: 1, md: 2 }} gap="300">
-                    <Card roundedAbove="sm">
-                      <BlockStack gap="200">
-                        <Text as="h3" variant="headingSm">
-                          What the merchant can control
-                        </Text>
-
-                        <List>
-                          {selectedBlock.capabilityList.map((item) => (
-                            <List.Item key={item}>{item}</List.Item>
-                          ))}
-                        </List>
-                      </BlockStack>
-                    </Card>
-
-                    <Card roundedAbove="sm">
-                      <BlockStack gap="200">
-                        <Text as="h3" variant="headingSm">
-                          Storefront outcome
-                        </Text>
-
-                        <List>
-                          {outcomePoints.map((item) => (
-                            <List.Item key={item}>{item}</List.Item>
-                          ))}
-                        </List>
-                      </BlockStack>
-                    </Card>
-                  </InlineGrid>
-
-                  <InlineStack gap="200">
-                    {hasDedicatedEditor(selectedBlock.handle) ? (
-                      <Link
-                        to={getBlockEditorPath(selectedBlock.handle)}
-                        style={{ textDecoration: "none" }}
-                      >
-                        <Button variant="primary">Edit inside app</Button>
-                      </Link>
-                    ) : (
-                      <Button disabled>Editor coming next</Button>
-                    )}
-
-                    {selectedBlock.availability === "live" ? (
-                      <Button
-                        onClick={() =>
-                          openInTopWindow(
-                            onboardingLinks.find(
-                              (item) => item.key === selectedBlock.handle,
-                            )?.url,
-                          )
-                        }
-                      >
-                        Add in Theme Editor
-                      </Button>
-                    ) : (
-                      <Button disabled>Add in Theme Editor</Button>
-                    )}
-                  </InlineStack>
                 </BlockStack>
               </Card>
             ) : null}
+
+            {selectedBlock ? (
+              <InlineGrid columns={{ xs: 1, md: 2 }} gap="300">
+                <Card>
+                  <BlockStack gap="200">
+                    <Text as="h3" variant="headingSm">
+                      What the merchant controls
+                    </Text>
+
+                    <List>
+                      {selectedBlock.capabilityList.map((item) => (
+                        <List.Item key={item}>{item}</List.Item>
+                      ))}
+                    </List>
+                  </BlockStack>
+                </Card>
+
+                <Card>
+                  <BlockStack gap="200">
+                    <Text as="h3" variant="headingSm">
+                      Storefront result
+                    </Text>
+
+                    <List>
+                      {outcomePoints.map((item) => (
+                        <List.Item key={item}>{item}</List.Item>
+                      ))}
+                    </List>
+                  </BlockStack>
+                </Card>
+              </InlineGrid>
+            ) : null}
           </BlockStack>
 
-          <BlockStack gap="400">
+          <div style={{ position: "sticky", top: "24px" }}>
             <Card>
               <BlockStack gap="300">
                 <InlineStack align="space-between" blockAlign="center">
@@ -1442,13 +1279,16 @@ export default function BlocksLibraryRoute() {
                   <div
                     style={{
                       width: "100%",
+                      minHeight: "700px",
                       display: "flex",
                       justifyContent: "center",
+                      alignItems: "flex-start",
+                      overflow: "hidden",
                     }}
                   >
                     <div
                       style={{
-                        width: getDeviceWidth(device),
+                        width: getPreviewWidth(device),
                         maxWidth: "100%",
                         transition: "all 160ms ease",
                       }}
@@ -1465,41 +1305,12 @@ export default function BlocksLibraryRoute() {
                 </Box>
 
                 <Text as="p" variant="bodySm" tone="subdued">
-                  The preview on the right stays visible while the merchant moves
-                  through install, editing, and publishing steps inside the app.
+                  Preview stays fixed on the right so device switching feels
+                  stable and professional while the merchant edits the block.
                 </Text>
               </BlockStack>
             </Card>
-
-            {selectedBlock ? (
-              <Card>
-                <BlockStack gap="250">
-                  <Text as="h2" variant="headingMd">
-                    Selected block summary
-                  </Text>
-
-                  <List>
-                    <List.Item>
-                      Block type:{" "}
-                      {selectedBlock.availability === "live"
-                        ? "Live block"
-                        : "Planned block"}
-                    </List.Item>
-                    <List.Item>
-                      Main editing location:{" "}
-                      {hasDedicatedEditor(selectedBlock.handle)
-                        ? "Inside Luxe Sections Studio"
-                        : "Editor planned inside Luxe Sections Studio"}
-                    </List.Item>
-                    <List.Item>
-                      Theme Editor role: placement, activation, and light fallback
-                      setup
-                    </List.Item>
-                  </List>
-                </BlockStack>
-              </Card>
-            ) : null}
-          </BlockStack>
+          </div>
         </InlineGrid>
       </BlockStack>
     </Page>
