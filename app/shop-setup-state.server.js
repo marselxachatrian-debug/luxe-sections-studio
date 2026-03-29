@@ -59,16 +59,41 @@ function pickUpdatableFields(input) {
   return data;
 }
 
+function isMissingShopSetupTableError(error) {
+  if (!error) {
+    return false;
+  }
+
+  if (error.code === "P2021") {
+    return true;
+  }
+
+  const message = String(error.message || "");
+
+  return (
+    message.includes("ShopSetupState") &&
+    (message.includes("does not exist") || message.includes("doesn't exist"))
+  );
+}
+
 export async function getShopSetupState(shop) {
   if (!shop) {
     return normalizeShopSetupState(null);
   }
 
-  const record = await db.shopSetupState.findUnique({
-    where: { shop },
-  });
+  try {
+    const record = await db.shopSetupState.findUnique({
+      where: { shop },
+    });
 
-  return normalizeShopSetupState(record);
+    return normalizeShopSetupState(record);
+  } catch (error) {
+    if (isMissingShopSetupTableError(error)) {
+      return normalizeShopSetupState(null);
+    }
+
+    throw error;
+  }
 }
 
 export async function ensureShopSetupState(shop) {
@@ -76,16 +101,24 @@ export async function ensureShopSetupState(shop) {
     throw new Error("Shop is required.");
   }
 
-  const record = await db.shopSetupState.upsert({
-    where: { shop },
-    update: {},
-    create: {
-      shop,
-      ...DEFAULT_SHOP_SETUP_STATE,
-    },
-  });
+  try {
+    const record = await db.shopSetupState.upsert({
+      where: { shop },
+      update: {},
+      create: {
+        shop,
+        ...DEFAULT_SHOP_SETUP_STATE,
+      },
+    });
 
-  return normalizeShopSetupState(record);
+    return normalizeShopSetupState(record);
+  } catch (error) {
+    if (isMissingShopSetupTableError(error)) {
+      return normalizeShopSetupState(null);
+    }
+
+    throw error;
+  }
 }
 
 export async function updateShopSetupState(shop, input) {
@@ -101,21 +134,29 @@ export async function updateShopSetupState(shop, input) {
     ...updatedFields,
   });
 
-  const record = await db.shopSetupState.upsert({
-    where: { shop },
-    update: {
-      ...updatedFields,
-      onboardingCompleted: nextState.onboardingCompleted,
-    },
-    create: {
-      shop,
-      ...DEFAULT_SHOP_SETUP_STATE,
-      ...updatedFields,
-      onboardingCompleted: nextState.onboardingCompleted,
-    },
-  });
+  try {
+    const record = await db.shopSetupState.upsert({
+      where: { shop },
+      update: {
+        ...updatedFields,
+        onboardingCompleted: nextState.onboardingCompleted,
+      },
+      create: {
+        shop,
+        ...DEFAULT_SHOP_SETUP_STATE,
+        ...updatedFields,
+        onboardingCompleted: nextState.onboardingCompleted,
+      },
+    });
 
-  return normalizeShopSetupState(record);
+    return normalizeShopSetupState(record);
+  } catch (error) {
+    if (isMissingShopSetupTableError(error)) {
+      return nextState;
+    }
+
+    throw error;
+  }
 }
 
 export async function setShopSetupStep(shop, stepKey, value = true) {
@@ -141,16 +182,24 @@ export async function resetShopSetupState(shop) {
     throw new Error("Shop is required.");
   }
 
-  const record = await db.shopSetupState.upsert({
-    where: { shop },
-    update: {
-      ...DEFAULT_SHOP_SETUP_STATE,
-    },
-    create: {
-      shop,
-      ...DEFAULT_SHOP_SETUP_STATE,
-    },
-  });
+  try {
+    const record = await db.shopSetupState.upsert({
+      where: { shop },
+      update: {
+        ...DEFAULT_SHOP_SETUP_STATE,
+      },
+      create: {
+        shop,
+        ...DEFAULT_SHOP_SETUP_STATE,
+      },
+    });
 
-  return normalizeShopSetupState(record);
+    return normalizeShopSetupState(record);
+  } catch (error) {
+    if (isMissingShopSetupTableError(error)) {
+      return normalizeShopSetupState(null);
+    }
+
+    throw error;
+  }
 }
