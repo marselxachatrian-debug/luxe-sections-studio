@@ -1,46 +1,51 @@
-import "@shopify/polaris/build/esm/styles.css";
-import { AppProvider } from "@shopify/polaris";
-import enTranslations from "@shopify/polaris/locales/en.json";
-import {
-  Links,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-  useLoaderData,
-} from "react-router";
+import { PassThrough } from "node:stream";
+import { createReadableStreamFromReadable } from "@react-router/node";
+import { ServerRouter } from "react-router";
+import { renderToPipeableStream } from "react-dom/server";
 
-export async function loader() {
-  return {
-    shopifyApiKey: process.env.SHOPIFY_API_KEY || "",
-  };
-}
+const ABORT_DELAY = 5000;
 
-export default function App() {
-  const { shopifyApiKey } = useLoaderData();
+export default function handleRequest(
+  request,
+  responseStatusCode,
+  responseHeaders,
+  routerContext,
+) {
+  return new Promise((resolve, reject) => {
+    let shellRendered = false;
 
-  return (
-    <html lang="en">
-      <head>
-        <meta charSet="utf-8" />
-        <meta name="shopify-api-key" content={shopifyApiKey} />
-        <script src="https://cdn.shopify.com/shopifycloud/app-bridge.js"></script>
-        <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <link rel="preconnect" href="https://cdn.shopify.com/" />
-        <link
-          rel="stylesheet"
-          href="https://cdn.shopify.com/static/fonts/inter/v4/styles.css"
-        />
-        <Meta />
-        <Links />
-      </head>
-      <body>
-        <AppProvider i18n={enTranslations}>
-          <Outlet />
-        </AppProvider>
-        <ScrollRestoration />
-        <Scripts />
-      </body>
-    </html>
-  );
+    const { pipe, abort } = renderToPipeableStream(
+      <ServerRouter context={routerContext} url={request.url} />,
+      {
+        onShellReady() {
+          shellRendered = true;
+          responseHeaders.set("Content-Type", "text/html");
+
+          const body = new PassThrough();
+          const stream = createReadableStreamFromReadable(body);
+
+          resolve(
+            new Response(stream, {
+              headers: responseHeaders,
+              status: responseStatusCode,
+            }),
+          );
+
+          pipe(body);
+        },
+        onShellError(error) {
+          reject(error);
+        },
+        onError(error) {
+          responseStatusCode = 500;
+
+          if (shellRendered) {
+            console.error(error);
+          }
+        },
+      },
+    );
+
+    setTimeout(abort, ABORT_DELAY);
+  });
 }
