@@ -124,143 +124,254 @@ export default function LuxeHeroEditorRoute() {
   return (
     <Page
       title="Premium Hero Banner"
-      subtitle="First dedicated block editor with left-side controls and live preview on the right."
+      subtitle="Short setup on top, editor on the left, stable preview on the right."
     >
-      <BlockStack gap="500">
+      <BlockStack gap="400">
         <Card>
-          <InlineStack align="space-between" blockAlign="center">
-            <BlockStack gap="100">
-              <Text as="h2" variant="headingLg">
-                Premium Hero Banner editor
-              </Text>
-              <Text as="p" variant="bodyMd" tone="subdued">
-                Edit the main hero experience inside the app, then use Shopify
-                Theme Editor only for placement and activation.
-              </Text>
-              <Text as="p" variant="bodySm" tone="subdued">
-                Active theme: {activeThemeName ?? "Not found"}
-                {activeThemeId ? ` (ID: ${activeThemeId})` : ""}
-              </Text>
+          <InlineGrid columns={{ xs: 1, lg: "1.25fr auto" }} gap="300">
+            <BlockStack gap="200">
+              <BlockStack gap="100">
+                <InlineStack gap="200" blockAlign="center" wrap>
+                  <Text as="h1" variant="headingLg">
+                    Premium Hero Banner
+                  </Text>
+                  <Badge tone="success">{currentPlanLabel}</Badge>
+                </InlineStack>
+
+                <Text as="p" variant="bodyMd" tone="subdued">
+                  Two actions only: connect the block in Shopify, then edit the
+                  full hero experience inside Luxe Sections Studio.
+                </Text>
+              </BlockStack>
+
+              <InlineStack gap="200" wrap>
+                {themeEditorUrl ? (
+                  <Button
+                    variant="primary"
+                    onClick={() => openInTopWindow(themeEditorUrl)}
+                  >
+                    Connect in Shopify
+                  </Button>
+                ) : (
+                  <Button variant="primary" disabled>
+                    Connect in Shopify
+                  </Button>
+                )}
+
+                <Link to="/app/blocks" style={{ textDecoration: "none" }}>
+                  <Button>Edit inside app</Button>
+                </Link>
+              </InlineStack>
             </BlockStack>
 
-            <Badge tone="success">{currentPlanLabel}</Badge>
-          </InlineStack>
+            <BlockStack gap="150">
+              <Box
+                padding="300"
+                borderRadius="300"
+                background="bg-surface-secondary"
+              >
+                <BlockStack gap="050">
+                  <Text as="p" variant="bodySm" fontWeight="semibold">
+                    1 · Connect in Shopify
+                  </Text>
+                  <Text as="p" variant="bodySm" tone="subdued">
+                    Add the block to the template and turn it on.
+                  </Text>
+                </BlockStack>
+              </Box>
+
+              <Box
+                padding="300"
+                borderRadius="300"
+                background="bg-surface-secondary"
+              >
+                <BlockStack gap="050">
+                  <Text as="p" variant="bodySm" fontWeight="semibold">
+                    2 · Edit inside Luxe Sections Studio
+                  </Text>
+                  <Text as="p" variant="bodySm" tone="subdued">
+                    Content, layout, spacing, and mobile tuning stay here.
+                  </Text>
+                </BlockStack>
+              </Box>
+
+              <Text as="p" variant="bodySm" tone="subdued">
+                Theme: {activeThemeName ?? "Not found"}{" "}
+                {activeThemeId ? `(ID: ${activeThemeId})` : ""}
+              </Text>
+            </BlockStack>
+          </InlineGrid>
         </Card>
 
-        <InlineGrid columns={{ xs: 1, lg: "0.95fr 1.05fr" }} gap="400">
-          <BlockStack gap="400">
-            <Card>
-              <BlockStack gap="300">
-                <Text as="h2" variant="headingMd">
-                  Content
+        <InlineGrid columns={{ xs: 1, lg: "minmax(0, 1fr) 460px" }} gap="400">
+          <Card>
+            <BlockStack gap="300">
+              <BlockStack gap="050">
+                <InlineStack align="space-between" blockAlign="center" wrap>
+                  <Text as="h2" variant="headingMd">
+                    Editor controls
+                  </Text>
+                  <Badge tone="success">Editor ready</Badge>
+                </InlineStack>
+
+                <Text as="p" variant="bodySm" tone="subdued">
+                  Everything important stays in one clean editor panel for faster
+                  merchant editing.
                 </Text>
-
-                <TextField
-                  label="Badge label"
-                  value={badgeText}
-                  onChange={setBadgeText}
-                  autoComplete="off"
-                />
-
-                <TextField
-                  label="Heading"
-                  value={heading}
-                  onChange={setHeading}
-                  multiline={2}
-                  autoComplete="off"
-                />
-
-                <TextField
-                  label="Subheading"
-                  value={subheading}
-                  onChange={setSubheading}
-                  multiline={4}
-                  autoComplete="off"
-                />
-
-                <TextField
-                  label="Primary button label"
-                  value={primaryButtonLabel}
-                  onChange={setPrimaryButtonLabel}
-                  autoComplete="off"
-                />
-
-                <TextField
-                  label="Secondary button label"
-                  value={secondaryButtonLabel}
-                  onChange={setSecondaryButtonLabel}
-                  autoComplete="off"
-                />
               </BlockStack>
-            </Card>
 
+              <Box
+                padding="300"
+                borderRadius="300"
+                background="bg-surface-secondary"
+              >
+                <BlockStack gap="250">
+                  <Text as="h3" variant="headingSm">
+                    Content
+                  </Text>
+
+                  <TextField
+                    label="Badge label"
+                    value={badgeText}
+                    onChange={setBadgeText}
+                    autoComplete="off"
+                  />
+
+                  <TextField
+                    label="Heading"
+                    value={heading}
+                    onChange={setHeading}
+                    multiline={2}
+                    autoComplete="off"
+                  />
+
+                  <TextField
+                    label="Subheading"
+                    value={subheading}
+                    onChange={setSubheading}
+                    multiline={4}
+                    autoComplete="off"
+                  />
+
+                  <TextField
+                    label="Primary button label"
+                    value={primaryButtonLabel}
+                    onChange={setPrimaryButtonLabel}
+                    autoComplete="off"
+                  />
+
+                  <TextField
+                    label="Secondary button label"
+                    value={secondaryButtonLabel}
+                    onChange={setSecondaryButtonLabel}
+                    autoComplete="off"
+                  />
+                </BlockStack>
+              </Box>
+
+              <Box
+                padding="300"
+                borderRadius="300"
+                background="bg-surface-secondary"
+              >
+                <BlockStack gap="250">
+                  <Text as="h3" variant="headingSm">
+                    Layout and style
+                  </Text>
+
+                  <Select
+                    label="Content alignment"
+                    options={[
+                      { label: "Left", value: "left" },
+                      { label: "Center", value: "center" },
+                      { label: "Right", value: "right" },
+                    ]}
+                    value={contentAlignment}
+                    onChange={setContentAlignment}
+                  />
+
+                  <Select
+                    label="Background preset"
+                    options={[
+                      { label: "Midnight gold", value: "midnight" },
+                      { label: "Champagne glow", value: "champagne" },
+                      { label: "Charcoal luxe", value: "charcoal" },
+                    ]}
+                    value={backgroundPreset}
+                    onChange={setBackgroundPreset}
+                  />
+
+                  <RangeSlider
+                    label="Overlay opacity"
+                    value={overlayOpacity}
+                    onChange={setOverlayOpacity}
+                    min={0}
+                    max={80}
+                    step={1}
+                    output
+                  />
+                </BlockStack>
+              </Box>
+
+              <Box
+                padding="300"
+                borderRadius="300"
+                background="bg-surface-secondary"
+              >
+                <BlockStack gap="250">
+                  <Text as="h3" variant="headingSm">
+                    Responsive sizing
+                  </Text>
+
+                  <RangeSlider
+                    label="Desktop section height"
+                    value={desktopHeight}
+                    onChange={setDesktopHeight}
+                    min={420}
+                    max={760}
+                    step={20}
+                    output
+                  />
+
+                  <RangeSlider
+                    label="Mobile section height"
+                    value={mobileHeight}
+                    onChange={setMobileHeight}
+                    min={360}
+                    max={680}
+                    step={20}
+                    output
+                  />
+                </BlockStack>
+              </Box>
+
+              <InlineStack gap="200" wrap>
+                <Link to="/app/blocks" style={{ textDecoration: "none" }}>
+                  <Button>Back to Blocks</Button>
+                </Link>
+
+                {themeEditorUrl ? (
+                  <Button onClick={() => openInTopWindow(themeEditorUrl)}>
+                    Open Theme Editor
+                  </Button>
+                ) : (
+                  <Button disabled>Open Theme Editor</Button>
+                )}
+              </InlineStack>
+            </BlockStack>
+          </Card>
+
+          <div style={{ position: "sticky", top: "24px" }}>
             <Card>
               <BlockStack gap="300">
-                <Text as="h2" variant="headingMd">
-                  Layout and style
-                </Text>
+                <InlineStack align="space-between" blockAlign="center">
+                  <Text as="h2" variant="headingMd">
+                    Live preview
+                  </Text>
+                  <Badge tone="attention">{device}</Badge>
+                </InlineStack>
 
-                <Select
-                  label="Content alignment"
-                  options={[
-                    { label: "Left", value: "left" },
-                    { label: "Center", value: "center" },
-                    { label: "Right", value: "right" },
-                  ]}
-                  value={contentAlignment}
-                  onChange={setContentAlignment}
-                />
-
-                <Select
-                  label="Background preset"
-                  options={[
-                    { label: "Midnight gold", value: "midnight" },
-                    { label: "Champagne glow", value: "champagne" },
-                    { label: "Charcoal luxe", value: "charcoal" },
-                  ]}
-                  value={backgroundPreset}
-                  onChange={setBackgroundPreset}
-                />
-
-                <RangeSlider
-                  label="Overlay opacity"
-                  value={overlayOpacity}
-                  onChange={setOverlayOpacity}
-                  min={0}
-                  max={80}
-                  step={1}
-                  output
-                />
-
-                <RangeSlider
-                  label="Desktop section height"
-                  value={desktopHeight}
-                  onChange={setDesktopHeight}
-                  min={420}
-                  max={760}
-                  step={20}
-                  output
-                />
-
-                <RangeSlider
-                  label="Mobile section height"
-                  value={mobileHeight}
-                  onChange={setMobileHeight}
-                  min={360}
-                  max={680}
-                  step={20}
-                  output
-                />
-              </BlockStack>
-            </Card>
-
-            <Card>
-              <BlockStack gap="300">
-                <Text as="h2" variant="headingMd">
-                  Preview device
-                </Text>
-
-                <InlineStack gap="200">
+                <InlineStack gap="200" wrap>
                   <Button
                     variant={device === "desktop" ? "primary" : "secondary"}
                     onClick={() => setDevice("desktop")}
@@ -282,210 +393,169 @@ export default function LuxeHeroEditorRoute() {
                     Mobile
                   </Button>
                 </InlineStack>
-              </BlockStack>
-            </Card>
 
-            <Card>
-              <BlockStack gap="250">
-                <Text as="h2" variant="headingMd">
-                  Theme connection
-                </Text>
-
-                <Text as="p" variant="bodyMd" tone="subdued">
-                  The main editing experience is here. Use Theme Editor only to
-                  place the hero block in the right template and turn it on.
-                </Text>
-
-                <InlineStack gap="200">
-                  <Link to="/app/blocks" style={{ textDecoration: "none" }}>
-                    <Button>Back to Blocks</Button>
-                  </Link>
-
-                  {themeEditorUrl ? (
-                    <Button
-                      variant="primary"
-                      onClick={() => openInTopWindow(themeEditorUrl)}
-                    >
-                      Open Theme Editor
-                    </Button>
-                  ) : (
-                    <Button disabled variant="primary">
-                      Open Theme Editor
-                    </Button>
-                  )}
-                </InlineStack>
-              </BlockStack>
-            </Card>
-          </BlockStack>
-
-          <Card>
-            <BlockStack gap="300">
-              <InlineStack align="space-between" blockAlign="center">
-                <Text as="h2" variant="headingMd">
-                  Live preview
-                </Text>
-                <Badge tone="attention">{device}</Badge>
-              </InlineStack>
-
-              <Box
-                padding="300"
-                background="bg-surface-secondary"
-                borderRadius="300"
-              >
-                <div
-                  style={{
-                    width: "100%",
-                    display: "flex",
-                    justifyContent: "center",
-                  }}
+                <Box
+                  padding="300"
+                  background="bg-surface-secondary"
+                  borderRadius="300"
                 >
                   <div
                     style={{
-                      width: previewWidth,
-                      maxWidth: "100%",
-                      transition: "all 160ms ease",
+                      width: "100%",
+                      minHeight: "760px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "flex-start",
+                      overflow: "hidden",
                     }}
                   >
                     <div
                       style={{
-                        position: "relative",
-                        minHeight: `${previewHeight}px`,
-                        borderRadius: "28px",
-                        overflow: "hidden",
-                        background: getBackgroundStyle(backgroundPreset),
-                        boxShadow: "0 20px 44px rgba(15, 23, 42, 0.18)",
-                        display: "flex",
-                        alignItems: "stretch",
+                        width: previewWidth,
+                        maxWidth: "100%",
+                        transition: "width 160ms ease",
                       }}
                     >
                       <div
                         style={{
-                          position: "absolute",
-                          inset: 0,
-                          background: `rgba(15, 23, 42, ${overlayOpacity / 100})`,
-                        }}
-                      />
-
-                      <div
-                        style={{
                           position: "relative",
-                          zIndex: 1,
-                          width: "100%",
+                          minHeight: `${previewHeight}px`,
+                          borderRadius: "28px",
+                          overflow: "hidden",
+                          background: getBackgroundStyle(backgroundPreset),
+                          boxShadow: "0 20px 44px rgba(15, 23, 42, 0.18)",
                           display: "flex",
-                          justifyContent: horizontalAlignment,
-                          alignItems: "center",
-                          padding: isMobile ? "28px" : "42px",
+                          alignItems: "stretch",
                         }}
                       >
                         <div
                           style={{
+                            position: "absolute",
+                            inset: 0,
+                            background: `rgba(15, 23, 42, ${overlayOpacity / 100})`,
+                          }}
+                        />
+
+                        <div
+                          style={{
+                            position: "relative",
+                            zIndex: 1,
                             width: "100%",
-                            maxWidth: contentMaxWidth,
-                            textAlign: textAlignment,
+                            display: "flex",
+                            justifyContent: horizontalAlignment,
+                            alignItems: "center",
+                            padding: isMobile ? "28px" : "42px",
                           }}
                         >
                           <div
                             style={{
-                              display: "inline-flex",
-                              padding: "6px 12px",
-                              borderRadius: "999px",
-                              background: "rgba(248, 231, 176, 0.16)",
-                              color: "#f8e7b0",
-                              fontSize: "12px",
-                              fontWeight: 700,
-                              letterSpacing: "0.06em",
-                              textTransform: "uppercase",
-                              marginBottom: "18px",
-                            }}
-                          >
-                            {badgeText || "Premium storefront"}
-                          </div>
-
-                          <div
-                            style={{
-                              fontSize: titleSize,
-                              lineHeight: 1.05,
-                              fontWeight: 700,
-                              color: "#ffffff",
-                              marginBottom: "14px",
-                            }}
-                          >
-                            {heading || "Your hero heading"}
-                          </div>
-
-                          <div
-                            style={{
-                              fontSize: bodySize,
-                              lineHeight: 1.65,
-                              color: "rgba(255,255,255,0.84)",
-                              marginBottom: "24px",
-                            }}
-                          >
-                            {subheading || "Your hero subheading"}
-                          </div>
-
-                          <div
-                            style={{
-                              display: "flex",
-                              flexDirection: isMobile ? "column" : "row",
-                              gap: "14px",
-                              justifyContent:
-                                contentAlignment === "center"
-                                  ? "center"
-                                  : contentAlignment === "right"
-                                    ? "flex-end"
-                                    : "flex-start",
-                              alignItems: isMobile ? "stretch" : "center",
+                              width: "100%",
+                              maxWidth: contentMaxWidth,
+                              textAlign: textAlignment,
                             }}
                           >
                             <div
                               style={{
-                                minHeight: "48px",
-                                padding: "0 22px",
-                                borderRadius: "999px",
-                                background: "#f8e7b0",
-                                color: "#1f2937",
-                                fontWeight: 700,
-                                fontSize: "14px",
                                 display: "inline-flex",
-                                alignItems: "center",
-                                justifyContent: "center",
+                                padding: "6px 12px",
+                                borderRadius: "999px",
+                                background: "rgba(248, 231, 176, 0.16)",
+                                color: "#f8e7b0",
+                                fontSize: "12px",
+                                fontWeight: 700,
+                                letterSpacing: "0.06em",
+                                textTransform: "uppercase",
+                                marginBottom: "18px",
                               }}
                             >
-                              {primaryButtonLabel || "Primary action"}
+                              {badgeText || "Premium storefront"}
                             </div>
 
                             <div
                               style={{
-                                minHeight: "48px",
-                                padding: "0 22px",
-                                borderRadius: "999px",
-                                border: "1px solid rgba(255,255,255,0.22)",
+                                fontSize: titleSize,
+                                lineHeight: 1.05,
+                                fontWeight: 700,
                                 color: "#ffffff",
-                                fontWeight: 600,
-                                fontSize: "14px",
-                                display: "inline-flex",
-                                alignItems: "center",
-                                justifyContent: "center",
+                                marginBottom: "14px",
                               }}
                             >
-                              {secondaryButtonLabel || "Secondary action"}
+                              {heading || "Your hero heading"}
+                            </div>
+
+                            <div
+                              style={{
+                                fontSize: bodySize,
+                                lineHeight: 1.65,
+                                color: "rgba(255,255,255,0.84)",
+                                marginBottom: "24px",
+                              }}
+                            >
+                              {subheading || "Your hero subheading"}
+                            </div>
+
+                            <div
+                              style={{
+                                display: "flex",
+                                flexDirection: isMobile ? "column" : "row",
+                                gap: "14px",
+                                justifyContent:
+                                  contentAlignment === "center"
+                                    ? "center"
+                                    : contentAlignment === "right"
+                                      ? "flex-end"
+                                      : "flex-start",
+                                alignItems: isMobile ? "stretch" : "center",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  minHeight: "48px",
+                                  padding: "0 22px",
+                                  borderRadius: "999px",
+                                  background: "#f8e7b0",
+                                  color: "#1f2937",
+                                  fontWeight: 700,
+                                  fontSize: "14px",
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                {primaryButtonLabel || "Primary action"}
+                              </div>
+
+                              <div
+                                style={{
+                                  minHeight: "48px",
+                                  padding: "0 22px",
+                                  borderRadius: "999px",
+                                  border: "1px solid rgba(255,255,255,0.22)",
+                                  color: "#ffffff",
+                                  fontWeight: 600,
+                                  fontSize: "14px",
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                {secondaryButtonLabel || "Secondary action"}
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </Box>
+                </Box>
 
-              <Text as="p" variant="bodySm" tone="subdued">
-                This is the first dedicated editor shell. Next we will connect
-                Blocks Studio to this page and then continue building the same
-                pattern for the other blocks.
-              </Text>
-            </BlockStack>
-          </Card>
+                <Text as="p" variant="bodySm" tone="subdued">
+                  Preview stays fixed on the right so device switching feels
+                  stable while the merchant edits the hero block.
+                </Text>
+              </BlockStack>
+            </Card>
+          </div>
         </InlineGrid>
       </BlockStack>
     </Page>
