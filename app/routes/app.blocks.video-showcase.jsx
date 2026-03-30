@@ -307,46 +307,59 @@ export default function VideoShowcaseEditorRoute() {
                 background="bg-surface-secondary"
               >
                 <BlockStack gap="250">
-                  <Text as="h3" variant="headingSm">
-                    Video cards
-                  </Text>
+                  <InlineStack align="space-between" blockAlign="center" wrap>
+                    <Text as="h3" variant="headingSm">
+                      Video cards
+                    </Text>
+                    <Text as="p" variant="bodySm" tone="subdued">
+                      Compact merchant setup
+                    </Text>
+                  </InlineStack>
 
-                  <TextField
-                    label="Video 1 title"
-                    value={videoOneTitle}
-                    onChange={setVideoOneTitle}
-                    autoComplete="off"
-                  />
+                  <InlineGrid columns={{ xs: 1, md: 2 }} gap="200">
+                    <TextField
+                      label="Video 1 title"
+                      value={videoOneTitle}
+                      onChange={setVideoOneTitle}
+                      autoComplete="off"
+                    />
 
-                  <TextField
-                    label="Video 1 text"
-                    value={videoOneText}
-                    onChange={setVideoOneText}
-                    multiline={3}
-                    autoComplete="off"
-                  />
+                    <TextField
+                      label="Video 2 title"
+                      value={videoTwoTitle}
+                      onChange={setVideoTwoTitle}
+                      autoComplete="off"
+                    />
+                  </InlineGrid>
 
-                  <TextField
-                    label="Video 2 title"
-                    value={videoTwoTitle}
-                    onChange={setVideoTwoTitle}
-                    autoComplete="off"
-                  />
+                  <InlineGrid columns={{ xs: 1, md: 2 }} gap="200">
+                    <TextField
+                      label="Video 1 text"
+                      value={videoOneText}
+                      onChange={setVideoOneText}
+                      multiline={3}
+                      autoComplete="off"
+                    />
 
-                  <TextField
-                    label="Video 2 text"
-                    value={videoTwoText}
-                    onChange={setVideoTwoText}
-                    multiline={3}
-                    autoComplete="off"
-                  />
+                    <TextField
+                      label="Video 2 text"
+                      value={videoTwoText}
+                      onChange={setVideoTwoText}
+                      multiline={3}
+                      autoComplete="off"
+                    />
+                  </InlineGrid>
 
-                  <TextField
-                    label="Video 3 title"
-                    value={videoThreeTitle}
-                    onChange={setVideoThreeTitle}
-                    autoComplete="off"
-                  />
+                  <InlineGrid columns={{ xs: 1, md: 2 }} gap="200">
+                    <TextField
+                      label="Video 3 title"
+                      value={videoThreeTitle}
+                      onChange={setVideoThreeTitle}
+                      autoComplete="off"
+                    />
+
+                    <Box />
+                  </InlineGrid>
 
                   <TextField
                     label="Video 3 text"
