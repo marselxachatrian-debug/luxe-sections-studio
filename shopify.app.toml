@@ -13,8 +13,7 @@ dev_store_url = "casabloom-552.myshopify.com"
 include_config_on_deploy = true
 
 [access_scopes]
-scopes = "KEEP_YOUR_CURRENT_SCOPES,read_themes"
-
+scopes = "read_themes,read_metaobjects,write_metaobject_definitions,write_metaobjects,write_products"
 [access.admin]
 embedded_app_direct_api_access = true
 direct_api_mode = "online"

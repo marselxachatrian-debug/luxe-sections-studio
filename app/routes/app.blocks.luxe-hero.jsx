@@ -1,5 +1,5 @@
-import { Link, useLoaderData } from "react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Link, useFetcher, useLoaderData } from "react-router";
 import {
   Badge,
   BlockStack,
@@ -18,6 +18,12 @@ import { PLAN_LABELS } from "../plan-rules";
 import { getCurrentPlanFromRequest } from "../current-plan.server";
 import { getActiveThemeFromRequest } from "../active-theme.server";
 import { getThemeEditorOnboardingLinks } from "../theme-editor-links";
+import { authenticate } from "../shopify.server";
+import {
+  getLuxeHeroSettings,
+  normalizeLuxeHeroSettings,
+  saveLuxeHeroMetaobject,
+} from "../luxe-hero-metaobject.server";
 
 function openInTopWindow(url) {
   if (!url || typeof window === "undefined") {
@@ -56,27 +62,6 @@ function getBackgroundStyle(preset) {
   return "linear-gradient(135deg, #0f172a 0%, #182235 56%, #8a6a2f 100%)";
 }
 
-export async function loader({ request }) {
-  const currentPlanStatus = await getCurrentPlanFromRequest(request);
-  const activeThemeStatus = await getActiveThemeFromRequest(request);
-
-  const onboardingLinks = getThemeEditorOnboardingLinks(
-    activeThemeStatus.shop,
-    activeThemeStatus.themeId,
-    process.env.SHOPIFY_API_KEY,
-  );
-
-  return {
-    currentPlanLabel: PLAN_LABELS[currentPlanStatus.planKey],
-    activeThemeName: activeThemeStatus.theme?.name ?? null,
-    activeThemeId: activeThemeStatus.themeId,
-    heroThemeEditorUrl:
-      onboardingLinks.find((item) => item.key === "luxe-hero")?.url ?? null,
-    appEmbedUrl:
-      onboardingLinks.find((item) => item.key === "enable-app")?.url ?? null,
-  };
-}
-
 function DeviceSwitcher({ device, setDevice }) {
   return (
     <InlineStack gap="200" wrap>
@@ -104,28 +89,113 @@ function DeviceSwitcher({ device, setDevice }) {
   );
 }
 
+export async function loader({ request }) {
+  const currentPlanStatus = await getCurrentPlanFromRequest(request);
+  const activeThemeStatus = await getActiveThemeFromRequest(request);
+  const { admin } = await authenticate.admin(request);
+
+  const onboardingLinks = getThemeEditorOnboardingLinks(
+    activeThemeStatus.shop,
+    activeThemeStatus.themeId,
+    process.env.SHOPIFY_API_KEY,
+  );
+
+  const savedSettings = await getLuxeHeroSettings(admin);
+
+  return {
+    currentPlanLabel: PLAN_LABELS[currentPlanStatus.planKey],
+    activeThemeName: activeThemeStatus.theme?.name ?? null,
+    activeThemeId: activeThemeStatus.themeId,
+    heroThemeEditorUrl:
+      onboardingLinks.find((item) => item.key === "luxe-hero")?.url ?? null,
+    appEmbedUrl:
+      onboardingLinks.find((item) => item.key === "enable-app")?.url ?? null,
+    savedSettings,
+  };
+}
+
+export async function action({ request }) {
+  const { admin } = await authenticate.admin(request);
+  const formData = await request.formData();
+
+  try {
+    const settings = normalizeLuxeHeroSettings({
+      badgeText: formData.get("badgeText"),
+      heading: formData.get("heading"),
+      subheading: formData.get("subheading"),
+      primaryButtonLabel: formData.get("primaryButtonLabel"),
+      secondaryButtonLabel: formData.get("secondaryButtonLabel"),
+      contentAlignment: formData.get("contentAlignment"),
+      backgroundPreset: formData.get("backgroundPreset"),
+      overlayOpacity: formData.get("overlayOpacity"),
+      desktopHeight: formData.get("desktopHeight"),
+      mobileHeight: formData.get("mobileHeight"),
+    });
+
+    const saved = await saveLuxeHeroMetaobject(admin, settings);
+
+    return {
+      ok: true,
+      savedAt: new Date().toISOString(),
+      settings: saved.settings,
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to save Luxe Hero settings.",
+    };
+  }
+}
+
 export default function LuxeHeroEditorRoute() {
-  const { currentPlanLabel, activeThemeName, activeThemeId, heroThemeEditorUrl, appEmbedUrl } =
-    useLoaderData();
+  const {
+    currentPlanLabel,
+    activeThemeName,
+    activeThemeId,
+    heroThemeEditorUrl,
+    appEmbedUrl,
+    savedSettings,
+  } = useLoaderData();
 
+  const fetcher = useFetcher();
   const [device, setDevice] = useState("desktop");
-  const [badgeText, setBadgeText] = useState("Premium storefront");
-  const [heading, setHeading] = useState(
-    "A cleaner, sharper first impression for your Shopify store",
-  );
-  const [subheading, setSubheading] = useState(
-    "Show a stronger brand message, clear value, and a more premium visual style without needing to touch code.",
-  );
-  const [primaryButtonLabel, setPrimaryButtonLabel] =
-    useState("Shop the collection");
-  const [secondaryButtonLabel, setSecondaryButtonLabel] =
-    useState("Learn more");
-  const [contentAlignment, setContentAlignment] = useState("left");
-  const [backgroundPreset, setBackgroundPreset] = useState("midnight");
-  const [overlayOpacity, setOverlayOpacity] = useState(34);
-  const [desktopHeight, setDesktopHeight] = useState(560);
-  const [mobileHeight, setMobileHeight] = useState(460);
 
+  const [badgeText, setBadgeText] = useState(savedSettings.badgeText);
+  const [heading, setHeading] = useState(savedSettings.heading);
+  const [subheading, setSubheading] = useState(savedSettings.subheading);
+  const [primaryButtonLabel, setPrimaryButtonLabel] = useState(
+    savedSettings.primaryButtonLabel,
+  );
+  const [secondaryButtonLabel, setSecondaryButtonLabel] = useState(
+    savedSettings.secondaryButtonLabel,
+  );
+  const [contentAlignment, setContentAlignment] = useState(
+    savedSettings.contentAlignment,
+  );
+  const [backgroundPreset, setBackgroundPreset] = useState(
+    savedSettings.backgroundPreset,
+  );
+  const [overlayOpacity, setOverlayOpacity] = useState(
+    savedSettings.overlayOpacity,
+  );
+  const [desktopHeight, setDesktopHeight] = useState(savedSettings.desktopHeight);
+  const [mobileHeight, setMobileHeight] = useState(savedSettings.mobileHeight);
+  const [saveMessage, setSaveMessage] = useState("Saved values loaded");
+
+  useEffect(() => {
+    if (fetcher.state === "idle" && fetcher.data?.ok) {
+      setSaveMessage("Saved");
+    }
+
+    if (fetcher.state === "idle" && fetcher.data?.ok === false) {
+      setSaveMessage(fetcher.data.error || "Save failed");
+    }
+  }, [fetcher.state, fetcher.data]);
+
+  const isSaving = fetcher.state !== "idle";
   const isMobile = device === "mobile";
   const isTablet = device === "tablet";
 
@@ -166,7 +236,7 @@ export default function LuxeHeroEditorRoute() {
 
               <Text as="p" variant="bodyMd" tone="subdued">
                 Edit the hero content here, preview it live on the right, and
-                place the section in Shopify only when you are ready.
+                save the final version for your storefront.
               </Text>
             </BlockStack>
 
@@ -209,12 +279,14 @@ export default function LuxeHeroEditorRoute() {
         <InlineGrid columns={{ xs: 1, lg: "430px minmax(0, 1fr)" }} gap="300">
           <BlockStack gap="300">
             <Card>
-              <BlockStack gap="100">
+              <BlockStack gap="150">
                 <InlineStack align="space-between" blockAlign="center" wrap>
                   <Text as="h2" variant="headingMd">
                     Editor controls
                   </Text>
-                  <Badge tone="info">Live editing</Badge>
+                  <Badge tone={saveMessage === "Saved" ? "success" : "info"}>
+                    {isSaving ? "Saving..." : saveMessage}
+                  </Badge>
                 </InlineStack>
 
                 <Text as="p" variant="bodySm" tone="subdued">
@@ -224,126 +296,181 @@ export default function LuxeHeroEditorRoute() {
               </BlockStack>
             </Card>
 
-            <Card>
-              <BlockStack gap="250">
-                <Text as="h3" variant="headingSm">
-                  Content
-                </Text>
+            <fetcher.Form method="post">
+              <BlockStack gap="300">
+                <Card>
+                  <BlockStack gap="250">
+                    <Text as="h3" variant="headingSm">
+                      Content
+                    </Text>
 
-                <TextField
-                  label="Badge label"
-                  value={badgeText}
-                  onChange={setBadgeText}
-                  autoComplete="off"
-                />
+                    <TextField
+                      label="Badge label"
+                      value={badgeText}
+                      onChange={setBadgeText}
+                      autoComplete="off"
+                    />
+                    <input type="hidden" name="badgeText" value={badgeText} />
 
-                <TextField
-                  label="Heading"
-                  value={heading}
-                  onChange={setHeading}
-                  multiline={3}
-                  autoComplete="off"
-                />
+                    <TextField
+                      label="Heading"
+                      value={heading}
+                      onChange={setHeading}
+                      multiline={3}
+                      autoComplete="off"
+                    />
+                    <input type="hidden" name="heading" value={heading} />
 
-                <TextField
-                  label="Subheading"
-                  value={subheading}
-                  onChange={setSubheading}
-                  multiline={4}
-                  autoComplete="off"
-                />
+                    <TextField
+                      label="Subheading"
+                      value={subheading}
+                      onChange={setSubheading}
+                      multiline={4}
+                      autoComplete="off"
+                    />
+                    <input type="hidden" name="subheading" value={subheading} />
+                  </BlockStack>
+                </Card>
+
+                <Card>
+                  <BlockStack gap="250">
+                    <Text as="h3" variant="headingSm">
+                      Buttons
+                    </Text>
+
+                    <TextField
+                      label="Primary button label"
+                      value={primaryButtonLabel}
+                      onChange={setPrimaryButtonLabel}
+                      autoComplete="off"
+                    />
+                    <input
+                      type="hidden"
+                      name="primaryButtonLabel"
+                      value={primaryButtonLabel}
+                    />
+
+                    <TextField
+                      label="Secondary button label"
+                      value={secondaryButtonLabel}
+                      onChange={setSecondaryButtonLabel}
+                      autoComplete="off"
+                    />
+                    <input
+                      type="hidden"
+                      name="secondaryButtonLabel"
+                      value={secondaryButtonLabel}
+                    />
+                  </BlockStack>
+                </Card>
+
+                <Card>
+                  <BlockStack gap="250">
+                    <Text as="h3" variant="headingSm">
+                      Layout and style
+                    </Text>
+
+                    <Select
+                      label="Content alignment"
+                      options={[
+                        { label: "Left", value: "left" },
+                        { label: "Center", value: "center" },
+                        { label: "Right", value: "right" },
+                      ]}
+                      value={contentAlignment}
+                      onChange={setContentAlignment}
+                    />
+                    <input
+                      type="hidden"
+                      name="contentAlignment"
+                      value={contentAlignment}
+                    />
+
+                    <Select
+                      label="Background preset"
+                      options={[
+                        { label: "Midnight gold", value: "midnight" },
+                        { label: "Champagne glow", value: "champagne" },
+                        { label: "Charcoal luxe", value: "charcoal" },
+                      ]}
+                      value={backgroundPreset}
+                      onChange={setBackgroundPreset}
+                    />
+                    <input
+                      type="hidden"
+                      name="backgroundPreset"
+                      value={backgroundPreset}
+                    />
+
+                    <RangeSlider
+                      label="Overlay opacity"
+                      value={overlayOpacity}
+                      onChange={setOverlayOpacity}
+                      min={0}
+                      max={80}
+                      step={1}
+                      output
+                    />
+                    <input
+                      type="hidden"
+                      name="overlayOpacity"
+                      value={String(overlayOpacity)}
+                    />
+                  </BlockStack>
+                </Card>
+
+                <Card>
+                  <BlockStack gap="250">
+                    <Text as="h3" variant="headingSm">
+                      Responsive sizing
+                    </Text>
+
+                    <RangeSlider
+                      label="Desktop section height"
+                      value={desktopHeight}
+                      onChange={setDesktopHeight}
+                      min={420}
+                      max={760}
+                      step={20}
+                      output
+                    />
+                    <input
+                      type="hidden"
+                      name="desktopHeight"
+                      value={String(desktopHeight)}
+                    />
+
+                    <RangeSlider
+                      label="Mobile section height"
+                      value={mobileHeight}
+                      onChange={setMobileHeight}
+                      min={360}
+                      max={680}
+                      step={20}
+                      output
+                    />
+                    <input
+                      type="hidden"
+                      name="mobileHeight"
+                      value={String(mobileHeight)}
+                    />
+                  </BlockStack>
+                </Card>
+
+                <Card>
+                  <InlineStack align="space-between" blockAlign="center" wrap>
+                    <Text as="p" variant="bodySm" tone="subdued">
+                      Save stores the current hero setup as the app-managed
+                      version for this block.
+                    </Text>
+
+                    <Button submit variant="primary" loading={isSaving}>
+                      Save
+                    </Button>
+                  </InlineStack>
+                </Card>
               </BlockStack>
-            </Card>
-
-            <Card>
-              <BlockStack gap="250">
-                <Text as="h3" variant="headingSm">
-                  Buttons
-                </Text>
-
-                <TextField
-                  label="Primary button label"
-                  value={primaryButtonLabel}
-                  onChange={setPrimaryButtonLabel}
-                  autoComplete="off"
-                />
-
-                <TextField
-                  label="Secondary button label"
-                  value={secondaryButtonLabel}
-                  onChange={setSecondaryButtonLabel}
-                  autoComplete="off"
-                />
-              </BlockStack>
-            </Card>
-
-            <Card>
-              <BlockStack gap="250">
-                <Text as="h3" variant="headingSm">
-                  Layout and style
-                </Text>
-
-                <Select
-                  label="Content alignment"
-                  options={[
-                    { label: "Left", value: "left" },
-                    { label: "Center", value: "center" },
-                    { label: "Right", value: "right" },
-                  ]}
-                  value={contentAlignment}
-                  onChange={setContentAlignment}
-                />
-
-                <Select
-                  label="Background preset"
-                  options={[
-                    { label: "Midnight gold", value: "midnight" },
-                    { label: "Champagne glow", value: "champagne" },
-                    { label: "Charcoal luxe", value: "charcoal" },
-                  ]}
-                  value={backgroundPreset}
-                  onChange={setBackgroundPreset}
-                />
-
-                <RangeSlider
-                  label="Overlay opacity"
-                  value={overlayOpacity}
-                  onChange={setOverlayOpacity}
-                  min={0}
-                  max={80}
-                  step={1}
-                  output
-                />
-              </BlockStack>
-            </Card>
-
-            <Card>
-              <BlockStack gap="250">
-                <Text as="h3" variant="headingSm">
-                  Responsive sizing
-                </Text>
-
-                <RangeSlider
-                  label="Desktop section height"
-                  value={desktopHeight}
-                  onChange={setDesktopHeight}
-                  min={420}
-                  max={760}
-                  step={20}
-                  output
-                />
-
-                <RangeSlider
-                  label="Mobile section height"
-                  value={mobileHeight}
-                  onChange={setMobileHeight}
-                  min={360}
-                  max={680}
-                  step={20}
-                  output
-                />
-              </BlockStack>
-            </Card>
+            </fetcher.Form>
           </BlockStack>
 
           <div style={{ position: "sticky", top: "24px" }}>
