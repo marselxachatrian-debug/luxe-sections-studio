@@ -180,12 +180,13 @@ export default function VideoShowcaseEditorRoute() {
                     Vertical Video Showcase
                   </Text>
                   <Badge tone="success">{currentPlanLabel}</Badge>
-                  <Badge tone="attention">Planned editor</Badge>
+                  <Badge tone="info">Editor shell ready</Badge>
                 </InlineStack>
 
                 <Text as="p" variant="bodyMd" tone="subdued">
-                  Two actions only: connect the block in Shopify, then edit the
-                  video showcase inside Luxe Sections Studio.
+                  Two actions only: connect the block in Shopify, then shape
+                  video storytelling, card structure, and mobile-focused
+                  presentation inside Luxe Sections Studio.
                 </Text>
               </BlockStack>
 
@@ -256,7 +257,7 @@ export default function VideoShowcaseEditorRoute() {
                   <Text as="h2" variant="headingMd">
                     Editor controls
                   </Text>
-                  <Badge tone="success">Editor shell ready</Badge>
+                  <Badge tone="info">Editor shell ready</Badge>
                 </InlineStack>
 
                 <Text as="p" variant="bodySm" tone="subdued">
