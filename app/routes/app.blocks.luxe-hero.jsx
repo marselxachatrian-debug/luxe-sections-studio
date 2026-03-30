@@ -14,7 +14,7 @@ import {
   Text,
   TextField,
 } from "@shopify/polaris";
-import { PLAN_LABELS } from "../plan-rules";
+import { BLOCK_KEYS, PLAN_KEYS, PLAN_LABELS } from "../plan-rules";
 import { getCurrentPlanFromRequest } from "../current-plan.server";
 import { getActiveThemeFromRequest } from "../active-theme.server";
 import { getThemeEditorOnboardingLinks } from "../theme-editor-links";
@@ -24,6 +24,10 @@ import {
   normalizeLuxeHeroSettings,
   saveLuxeHeroMetaobject,
 } from "../luxe-hero-metaobject.server";
+import {
+  enforceBlockPlanSettings,
+  getFieldPlanAccess,
+} from "../block-plan-enforcement";
 
 function openInTopWindow(url) {
   if (!url || typeof window === "undefined") {
@@ -89,6 +93,36 @@ function DeviceSwitcher({ device, setDevice }) {
   );
 }
 
+function getPlanBadgeTone(requiredPlan) {
+  if (requiredPlan === PLAN_KEYS.PREMIUM) {
+    return "attention";
+  }
+
+  if (requiredPlan === PLAN_KEYS.STANDARD) {
+    return "info";
+  }
+
+  return "success";
+}
+
+function PlanRequirement({ currentPlanKey, fieldName }) {
+  const access = getFieldPlanAccess(
+    currentPlanKey,
+    BLOCK_KEYS.LUXE_HERO,
+    fieldName,
+  );
+
+  if (!access.isMapped || access.requiredPlan === PLAN_KEYS.FREE) {
+    return <Badge tone="success">Free</Badge>;
+  }
+
+  return (
+    <Badge tone={getPlanBadgeTone(access.requiredPlan)}>
+      {access.requiredPlanLabel}
+    </Badge>
+  );
+}
+
 export async function loader({ request }) {
   const currentPlanStatus = await getCurrentPlanFromRequest(request);
   const activeThemeStatus = await getActiveThemeFromRequest(request);
@@ -103,6 +137,7 @@ export async function loader({ request }) {
   const savedSettings = await getLuxeHeroSettings(admin);
 
   return {
+    currentPlanKey: currentPlanStatus.planKey,
     currentPlanLabel: PLAN_LABELS[currentPlanStatus.planKey],
     activeThemeName: activeThemeStatus.theme?.name ?? null,
     activeThemeId: activeThemeStatus.themeId,
@@ -116,10 +151,11 @@ export async function loader({ request }) {
 
 export async function action({ request }) {
   const { admin } = await authenticate.admin(request);
+  const currentPlanStatus = await getCurrentPlanFromRequest(request);
   const formData = await request.formData();
 
   try {
-    const settings = normalizeLuxeHeroSettings({
+    const normalizedSettings = normalizeLuxeHeroSettings({
       badgeText: formData.get("badgeText"),
       heading: formData.get("heading"),
       subheading: formData.get("subheading"),
@@ -132,12 +168,38 @@ export async function action({ request }) {
       mobileHeight: formData.get("mobileHeight"),
     });
 
-    const saved = await saveLuxeHeroMetaobject(admin, settings);
+    const enforcement = enforceBlockPlanSettings(
+      currentPlanStatus.planKey,
+      BLOCK_KEYS.LUXE_HERO,
+      normalizedSettings,
+    );
+
+    const existingSettings = await getLuxeHeroSettings(admin);
+    const defaultSettings = normalizeLuxeHeroSettings({});
+
+    const settingsToSave = {
+      ...defaultSettings,
+      ...existingSettings,
+      ...enforcement.allowedSettings,
+    };
+
+    for (const fieldName of enforcement.blockedFields) {
+      if (Object.prototype.hasOwnProperty.call(defaultSettings, fieldName)) {
+        settingsToSave[fieldName] = defaultSettings[fieldName];
+      }
+    }
+
+    const saved = await saveLuxeHeroMetaobject(admin, settingsToSave);
 
     return {
       ok: true,
+      currentPlanKey: currentPlanStatus.planKey,
+      currentPlanLabel: PLAN_LABELS[currentPlanStatus.planKey],
       savedAt: new Date().toISOString(),
       settings: saved.settings,
+      blockedFields: enforcement.blockedFields,
+      blockedFeatures: enforcement.blockedFeatures,
+      blockedFeatureDetails: enforcement.blockedFeatureDetails,
     };
   } catch (error) {
     return {
@@ -152,6 +214,7 @@ export async function action({ request }) {
 
 export default function LuxeHeroEditorRoute() {
   const {
+    currentPlanKey,
     currentPlanLabel,
     activeThemeName,
     activeThemeId,
@@ -186,11 +249,19 @@ export default function LuxeHeroEditorRoute() {
   const [saveMessage, setSaveMessage] = useState("Saved values loaded");
 
   useEffect(() => {
-    if (fetcher.state === "idle" && fetcher.data?.ok) {
-      setSaveMessage("Saved");
+    if (fetcher.state !== "idle") {
+      return;
     }
 
-    if (fetcher.state === "idle" && fetcher.data?.ok === false) {
+    if (fetcher.data?.ok) {
+      if ((fetcher.data.blockedFeatureDetails ?? []).length > 0) {
+        setSaveMessage("Saved with plan limits");
+      } else {
+        setSaveMessage("Saved");
+      }
+    }
+
+    if (fetcher.data?.ok === false) {
       setSaveMessage(fetcher.data.error || "Save failed");
     }
   }, [fetcher.state, fetcher.data]);
@@ -219,6 +290,8 @@ export default function LuxeHeroEditorRoute() {
   const titleSize = isMobile ? "30px" : isTablet ? "42px" : "54px";
   const bodySize = isMobile ? "14px" : "17px";
   const contentMaxWidth = isMobile ? "100%" : "620px";
+
+  const blockedFeatureDetails = fetcher.data?.blockedFeatureDetails ?? [];
 
   return (
     <Page>
@@ -290,19 +363,50 @@ export default function LuxeHeroEditorRoute() {
                 </InlineStack>
 
                 <Text as="p" variant="bodySm" tone="subdued">
-                  Keep changes focused: content first, then layout, then
-                  responsive tuning.
+                  All controls stay visible inside the editor. If your plan does
+                  not include a feature yet, you can still preview it here, but
+                  it will not be applied on save.
                 </Text>
               </BlockStack>
             </Card>
+
+            {blockedFeatureDetails.length > 0 ? (
+              <Card>
+                <BlockStack gap="150">
+                  <InlineStack gap="200" blockAlign="center" wrap>
+                    <Text as="h3" variant="headingSm">
+                      Save limits for your current plan
+                    </Text>
+                    <Badge tone="attention">{currentPlanLabel}</Badge>
+                  </InlineStack>
+
+                  <BlockStack gap="100">
+                    {blockedFeatureDetails.map((item) => (
+                      <Text
+                        key={`${item.fieldName}-${item.featureKey}`}
+                        as="p"
+                        variant="bodySm"
+                        tone="subdued"
+                      >
+                        {item.fieldName} was not saved because it requires{" "}
+                        {item.requiredPlanLabel}.
+                      </Text>
+                    ))}
+                  </BlockStack>
+                </BlockStack>
+              </Card>
+            ) : null}
 
             <fetcher.Form method="post">
               <BlockStack gap="300">
                 <Card>
                   <BlockStack gap="250">
-                    <Text as="h3" variant="headingSm">
-                      Content
-                    </Text>
+                    <InlineStack align="space-between" blockAlign="center" wrap>
+                      <Text as="h3" variant="headingSm">
+                        Content
+                      </Text>
+                      <Badge tone="success">Free</Badge>
+                    </InlineStack>
 
                     <TextField
                       label="Badge label"
@@ -334,9 +438,12 @@ export default function LuxeHeroEditorRoute() {
 
                 <Card>
                   <BlockStack gap="250">
-                    <Text as="h3" variant="headingSm">
-                      Buttons
-                    </Text>
+                    <InlineStack align="space-between" blockAlign="center" wrap>
+                      <Text as="h3" variant="headingSm">
+                        Buttons
+                      </Text>
+                      <Badge tone="success">Free</Badge>
+                    </InlineStack>
 
                     <TextField
                       label="Primary button label"
@@ -366,9 +473,17 @@ export default function LuxeHeroEditorRoute() {
 
                 <Card>
                   <BlockStack gap="250">
-                    <Text as="h3" variant="headingSm">
-                      Layout and style
-                    </Text>
+                    <InlineStack align="space-between" blockAlign="center" wrap>
+                      <Text as="h3" variant="headingSm">
+                        Layout and style
+                      </Text>
+                      <InlineStack gap="150" wrap>
+                        <PlanRequirement
+                          currentPlanKey={currentPlanKey}
+                          fieldName="contentAlignment"
+                        />
+                      </InlineStack>
+                    </InlineStack>
 
                     <Select
                       label="Content alignment"
@@ -385,6 +500,12 @@ export default function LuxeHeroEditorRoute() {
                       name="contentAlignment"
                       value={contentAlignment}
                     />
+
+                    <Text as="p" variant="bodySm" tone="subdued">
+                      Content alignment is visible for everyone, but it only
+                      saves on {PLAN_LABELS[PLAN_KEYS.STANDARD]} or{" "}
+                      {PLAN_LABELS[PLAN_KEYS.PREMIUM]}.
+                    </Text>
 
                     <Select
                       label="Background preset"
@@ -421,9 +542,12 @@ export default function LuxeHeroEditorRoute() {
 
                 <Card>
                   <BlockStack gap="250">
-                    <Text as="h3" variant="headingSm">
-                      Responsive sizing
-                    </Text>
+                    <InlineStack align="space-between" blockAlign="center" wrap>
+                      <Text as="h3" variant="headingSm">
+                        Responsive sizing
+                      </Text>
+                      <Badge tone="success">Free</Badge>
+                    </InlineStack>
 
                     <RangeSlider
                       label="Desktop section height"
@@ -460,8 +584,9 @@ export default function LuxeHeroEditorRoute() {
                 <Card>
                   <InlineStack align="space-between" blockAlign="center" wrap>
                     <Text as="p" variant="bodySm" tone="subdued">
-                      Save stores the current hero setup as the app-managed
-                      version for this block.
+                      Save applies only the features available on your current
+                      plan. Premium and Standard controls stay visible here so
+                      merchants can preview the full editor experience.
                     </Text>
 
                     <Button submit variant="primary" loading={isSaving}>
