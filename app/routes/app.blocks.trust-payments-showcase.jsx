@@ -135,8 +135,6 @@ export default function TrustPaymentsShowcaseEditorRoute() {
     onboardingLinks.find((item) => item.url)?.url ?? null;
 
   const isMobile = device === "mobile";
-  const isTablet = device === "tablet";
-
   const previewWidth = getDeviceWidth(device);
 
   const textAlign =
@@ -180,12 +178,13 @@ export default function TrustPaymentsShowcaseEditorRoute() {
                     Trust & Payment Showcase
                   </Text>
                   <Badge tone="success">{currentPlanLabel}</Badge>
-                  <Badge tone="attention">Planned editor</Badge>
+                  <Badge tone="info">Editor shell ready</Badge>
                 </InlineStack>
 
                 <Text as="p" variant="bodyMd" tone="subdued">
-                  Two actions only: connect the block in Shopify, then edit the
-                  trust and payment showcase inside Luxe Sections Studio.
+                  Two actions only: connect the block in Shopify, then shape
+                  trust messaging, payment proof, and delivery confidence inside
+                  Luxe Sections Studio.
                 </Text>
               </BlockStack>
 
@@ -235,7 +234,8 @@ export default function TrustPaymentsShowcaseEditorRoute() {
                     2 · Edit inside Luxe Sections Studio
                   </Text>
                   <Text as="p" variant="bodySm" tone="subdued">
-                    Trust content, payment labels, spacing, and visual polish stay here.
+                    Trust content, partner labels, spacing, and premium polish
+                    stay here.
                   </Text>
                 </BlockStack>
               </Box>
@@ -256,7 +256,7 @@ export default function TrustPaymentsShowcaseEditorRoute() {
                   <Text as="h2" variant="headingMd">
                     Editor controls
                   </Text>
-                  <Badge tone="success">Editor shell ready</Badge>
+                  <Badge tone="info">Editor shell ready</Badge>
                 </InlineStack>
 
                 <Text as="p" variant="bodySm" tone="subdued">
