@@ -306,23 +306,30 @@ export default function TrustPaymentsShowcaseEditorRoute() {
                 background="bg-surface-secondary"
               >
                 <BlockStack gap="250">
-                  <Text as="h3" variant="headingSm">
-                    Trust points
-                  </Text>
+                  <InlineStack align="space-between" blockAlign="center" wrap>
+                    <Text as="h3" variant="headingSm">
+                      Trust points
+                    </Text>
+                    <Text as="p" variant="bodySm" tone="subdued">
+                      Compact merchant setup
+                    </Text>
+                  </InlineStack>
 
-                  <TextField
-                    label="Trust point 1"
-                    value={trustPointOne}
-                    onChange={setTrustPointOne}
-                    autoComplete="off"
-                  />
+                  <InlineGrid columns={{ xs: 1, md: 2 }} gap="200">
+                    <TextField
+                      label="Trust point 1"
+                      value={trustPointOne}
+                      onChange={setTrustPointOne}
+                      autoComplete="off"
+                    />
 
-                  <TextField
-                    label="Trust point 2"
-                    value={trustPointTwo}
-                    onChange={setTrustPointTwo}
-                    autoComplete="off"
-                  />
+                    <TextField
+                      label="Trust point 2"
+                      value={trustPointTwo}
+                      onChange={setTrustPointTwo}
+                      autoComplete="off"
+                    />
+                  </InlineGrid>
 
                   <TextField
                     label="Trust point 3"
@@ -339,37 +346,44 @@ export default function TrustPaymentsShowcaseEditorRoute() {
                 background="bg-surface-secondary"
               >
                 <BlockStack gap="250">
-                  <Text as="h3" variant="headingSm">
-                    Payment and delivery labels
-                  </Text>
+                  <InlineStack align="space-between" blockAlign="center" wrap>
+                    <Text as="h3" variant="headingSm">
+                      Payment and delivery labels
+                    </Text>
+                    <Text as="p" variant="bodySm" tone="subdued">
+                      2 × 2 compact grid
+                    </Text>
+                  </InlineStack>
 
-                  <TextField
-                    label="Partner 1"
-                    value={paymentOne}
-                    onChange={setPaymentOne}
-                    autoComplete="off"
-                  />
+                  <InlineGrid columns={{ xs: 1, md: 2 }} gap="200">
+                    <TextField
+                      label="Partner 1"
+                      value={paymentOne}
+                      onChange={setPaymentOne}
+                      autoComplete="off"
+                    />
 
-                  <TextField
-                    label="Partner 2"
-                    value={paymentTwo}
-                    onChange={setPaymentTwo}
-                    autoComplete="off"
-                  />
+                    <TextField
+                      label="Partner 2"
+                      value={paymentTwo}
+                      onChange={setPaymentTwo}
+                      autoComplete="off"
+                    />
 
-                  <TextField
-                    label="Partner 3"
-                    value={paymentThree}
-                    onChange={setPaymentThree}
-                    autoComplete="off"
-                  />
+                    <TextField
+                      label="Partner 3"
+                      value={paymentThree}
+                      onChange={setPaymentThree}
+                      autoComplete="off"
+                    />
 
-                  <TextField
-                    label="Partner 4"
-                    value={paymentFour}
-                    onChange={setPaymentFour}
-                    autoComplete="off"
-                  />
+                    <TextField
+                      label="Partner 4"
+                      value={paymentFour}
+                      onChange={setPaymentFour}
+                      autoComplete="off"
+                    />
+                  </InlineGrid>
                 </BlockStack>
               </Box>
 
