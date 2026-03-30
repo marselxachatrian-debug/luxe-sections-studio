@@ -1,4 +1,4 @@
-import { Link, useLoaderData } from "react-router";
+import { Outlet, useLoaderData, useLocation, useNavigate } from "react-router";
 import {
   Badge,
   BlockStack,
@@ -490,7 +490,7 @@ function renderBlockArtwork(handle) {
   );
 }
 
-function BlockCard({ block, addBlockUrl }) {
+function BlockCard({ block, addBlockUrl, onCustomize }) {
   const canCustomize = hasDedicatedEditor(block.handle);
   const canAdd = block.availability === "live" && Boolean(addBlockUrl);
 
@@ -531,12 +531,7 @@ function BlockCard({ block, addBlockUrl }) {
             )}
 
             {canCustomize ? (
-              <Link
-                to={getBlockEditorPath(block.handle)}
-                style={{ textDecoration: "none" }}
-              >
-                <Button>Customize</Button>
-              </Link>
+              <Button onClick={onCustomize}>Customize</Button>
             ) : (
               <Button disabled>Customize</Button>
             )}
@@ -566,6 +561,12 @@ export async function loader({ request }) {
 
 export default function BlocksLibraryRoute() {
   const { currentPlanLabel, activeThemeName, onboardingLinks } = useLoaderData();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  if (location.pathname !== "/app/blocks") {
+    return <Outlet />;
+  }
 
   const liveCatalogBlocks = blockLibraryItems.map((block) => ({
     ...block,
@@ -629,6 +630,7 @@ export default function BlocksLibraryRoute() {
                 key={block.handle}
                 block={block}
                 addBlockUrl={addBlockUrl}
+                onCustomize={() => navigate(getBlockEditorPath(block.handle))}
               />
             );
           })}

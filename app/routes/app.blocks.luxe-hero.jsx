@@ -38,7 +38,7 @@ function getDeviceWidth(device) {
   }
 
   if (device === "tablet") {
-    return "760px";
+    return "720px";
   }
 
   return "100%";
@@ -46,34 +46,66 @@ function getDeviceWidth(device) {
 
 function getBackgroundStyle(preset) {
   if (preset === "champagne") {
-    return "linear-gradient(135deg, #2f2417 0%, #6f5631 45%, #d4b47a 100%)";
+    return "linear-gradient(135deg, #2c2014 0%, #6f5631 48%, #d6b37a 100%)";
   }
 
   if (preset === "charcoal") {
-    return "linear-gradient(135deg, #111827 0%, #1f2937 55%, #4b5563 100%)";
+    return "linear-gradient(135deg, #111827 0%, #1f2937 58%, #4b5563 100%)";
   }
 
-  return "linear-gradient(135deg, #0f172a 0%, #1f2937 58%, #8a6a2f 100%)";
+  return "linear-gradient(135deg, #0f172a 0%, #182235 56%, #8a6a2f 100%)";
 }
 
 export async function loader({ request }) {
   const currentPlanStatus = await getCurrentPlanFromRequest(request);
   const activeThemeStatus = await getActiveThemeFromRequest(request);
+
   const onboardingLinks = getThemeEditorOnboardingLinks(
     activeThemeStatus.shop,
     activeThemeStatus.themeId,
+    process.env.SHOPIFY_API_KEY,
   );
 
   return {
     currentPlanLabel: PLAN_LABELS[currentPlanStatus.planKey],
     activeThemeName: activeThemeStatus.theme?.name ?? null,
     activeThemeId: activeThemeStatus.themeId,
-    onboardingLinks,
+    heroThemeEditorUrl:
+      onboardingLinks.find((item) => item.key === "luxe-hero")?.url ?? null,
+    appEmbedUrl:
+      onboardingLinks.find((item) => item.key === "enable-app")?.url ?? null,
   };
 }
 
+function DeviceSwitcher({ device, setDevice }) {
+  return (
+    <InlineStack gap="200" wrap>
+      <Button
+        variant={device === "desktop" ? "primary" : "secondary"}
+        onClick={() => setDevice("desktop")}
+      >
+        Desktop
+      </Button>
+
+      <Button
+        variant={device === "tablet" ? "primary" : "secondary"}
+        onClick={() => setDevice("tablet")}
+      >
+        Tablet
+      </Button>
+
+      <Button
+        variant={device === "mobile" ? "primary" : "secondary"}
+        onClick={() => setDevice("mobile")}
+      >
+        Mobile
+      </Button>
+    </InlineStack>
+  );
+}
+
 export default function LuxeHeroEditorRoute() {
-  const { currentPlanLabel, activeThemeName, activeThemeId, onboardingLinks } =
+  const { currentPlanLabel, activeThemeName, activeThemeId, heroThemeEditorUrl, appEmbedUrl } =
     useLoaderData();
 
   const [device, setDevice] = useState("desktop");
@@ -93,9 +125,6 @@ export default function LuxeHeroEditorRoute() {
   const [overlayOpacity, setOverlayOpacity] = useState(34);
   const [desktopHeight, setDesktopHeight] = useState(560);
   const [mobileHeight, setMobileHeight] = useState(460);
-
-  const themeEditorUrl =
-    onboardingLinks.find((item) => item.url)?.url ?? null;
 
   const isMobile = device === "mobile";
   const isTablet = device === "tablet";
@@ -117,282 +146,217 @@ export default function LuxeHeroEditorRoute() {
         ? "right"
         : "left";
 
-  const titleSize = isMobile ? "28px" : isTablet ? "36px" : "44px";
-  const bodySize = isMobile ? "14px" : "16px";
+  const titleSize = isMobile ? "30px" : isTablet ? "42px" : "54px";
+  const bodySize = isMobile ? "14px" : "17px";
   const contentMaxWidth = isMobile ? "100%" : "620px";
 
   return (
-    <Page
-      title="Premium Hero Banner"
-      subtitle="Short setup on top, editor on the left, stable preview on the right."
-    >
-      <BlockStack gap="400">
+    <Page>
+      <BlockStack gap="300">
         <Card>
-          <InlineGrid columns={{ xs: 1, lg: "1.25fr auto" }} gap="300">
-            <BlockStack gap="200">
-              <BlockStack gap="100">
-                <InlineStack gap="200" blockAlign="center" wrap>
-                  <Text as="h1" variant="headingLg">
-                    Premium Hero Banner
-                  </Text>
-                  <Badge tone="success">{currentPlanLabel}</Badge>
-                </InlineStack>
-
-                <Text as="p" variant="bodyMd" tone="subdued">
-                  Two actions only: connect the block in Shopify, then edit the
-                  full hero experience inside Luxe Sections Studio.
+          <InlineGrid columns={{ xs: 1, md: "minmax(0, 1fr) auto" }} gap="300">
+            <BlockStack gap="150">
+              <InlineStack gap="200" blockAlign="center" wrap>
+                <Text as="h1" variant="headingLg">
+                  Premium Hero Banner
                 </Text>
-              </BlockStack>
-
-              <InlineStack gap="200" wrap>
-                {themeEditorUrl ? (
-                  <Button
-                    variant="primary"
-                    onClick={() => openInTopWindow(themeEditorUrl)}
-                  >
-                    Connect in Shopify
-                  </Button>
-                ) : (
-                  <Button variant="primary" disabled>
-                    Connect in Shopify
-                  </Button>
-                )}
-
-                <Link to="/app/blocks" style={{ textDecoration: "none" }}>
-                  <Button>Edit inside app</Button>
-                </Link>
+                <Badge tone="success">Editor ready</Badge>
+                <Badge tone="success">{currentPlanLabel}</Badge>
               </InlineStack>
+
+              <Text as="p" variant="bodyMd" tone="subdued">
+                Edit the hero content here, preview it live on the right, and
+                place the section in Shopify only when you are ready.
+              </Text>
             </BlockStack>
 
-            <BlockStack gap="150">
-              <Box
-                padding="300"
-                borderRadius="300"
-                background="bg-surface-secondary"
-              >
-                <BlockStack gap="050">
-                  <Text as="p" variant="bodySm" fontWeight="semibold">
-                    1 · Connect in Shopify
-                  </Text>
-                  <Text as="p" variant="bodySm" tone="subdued">
-                    Add the block to the template and turn it on.
-                  </Text>
-                </BlockStack>
-              </Box>
-
-              <Box
-                padding="300"
-                borderRadius="300"
-                background="bg-surface-secondary"
-              >
-                <BlockStack gap="050">
-                  <Text as="p" variant="bodySm" fontWeight="semibold">
-                    2 · Edit inside Luxe Sections Studio
-                  </Text>
-                  <Text as="p" variant="bodySm" tone="subdued">
-                    Content, layout, spacing, and mobile tuning stay here.
-                  </Text>
-                </BlockStack>
-              </Box>
-
+            <BlockStack gap="100">
               <Text as="p" variant="bodySm" tone="subdued">
                 Theme: {activeThemeName ?? "Not found"}{" "}
                 {activeThemeId ? `(ID: ${activeThemeId})` : ""}
               </Text>
+
+              <InlineStack gap="200" wrap>
+                {heroThemeEditorUrl ? (
+                  <Button
+                    variant="primary"
+                    onClick={() => openInTopWindow(heroThemeEditorUrl)}
+                  >
+                    Open in Shopify
+                  </Button>
+                ) : (
+                  <Button variant="primary" disabled>
+                    Open in Shopify
+                  </Button>
+                )}
+
+                {appEmbedUrl ? (
+                  <Button onClick={() => openInTopWindow(appEmbedUrl)}>
+                    App embeds
+                  </Button>
+                ) : (
+                  <Button disabled>App embeds</Button>
+                )}
+
+                <Link to="/app/blocks" style={{ textDecoration: "none" }}>
+                  <Button>Back to Blocks</Button>
+                </Link>
+              </InlineStack>
             </BlockStack>
           </InlineGrid>
         </Card>
 
-        <InlineGrid columns={{ xs: 1, lg: "minmax(0, 1fr) 460px" }} gap="400">
-          <Card>
-            <BlockStack gap="300">
-              <BlockStack gap="050">
+        <InlineGrid columns={{ xs: 1, lg: "430px minmax(0, 1fr)" }} gap="300">
+          <BlockStack gap="300">
+            <Card>
+              <BlockStack gap="100">
                 <InlineStack align="space-between" blockAlign="center" wrap>
                   <Text as="h2" variant="headingMd">
                     Editor controls
                   </Text>
-                  <Badge tone="success">Editor ready</Badge>
+                  <Badge tone="info">Live editing</Badge>
                 </InlineStack>
 
                 <Text as="p" variant="bodySm" tone="subdued">
-                  Everything important stays in one clean editor panel for faster
-                  merchant editing.
+                  Keep changes focused: content first, then layout, then
+                  responsive tuning.
                 </Text>
               </BlockStack>
+            </Card>
 
-              <Box
-                padding="300"
-                borderRadius="300"
-                background="bg-surface-secondary"
-              >
-                <BlockStack gap="250">
-                  <Text as="h3" variant="headingSm">
-                    Content
-                  </Text>
+            <Card>
+              <BlockStack gap="250">
+                <Text as="h3" variant="headingSm">
+                  Content
+                </Text>
 
-                  <TextField
-                    label="Badge label"
-                    value={badgeText}
-                    onChange={setBadgeText}
-                    autoComplete="off"
-                  />
+                <TextField
+                  label="Badge label"
+                  value={badgeText}
+                  onChange={setBadgeText}
+                  autoComplete="off"
+                />
 
-                  <TextField
-                    label="Heading"
-                    value={heading}
-                    onChange={setHeading}
-                    multiline={2}
-                    autoComplete="off"
-                  />
+                <TextField
+                  label="Heading"
+                  value={heading}
+                  onChange={setHeading}
+                  multiline={3}
+                  autoComplete="off"
+                />
 
-                  <TextField
-                    label="Subheading"
-                    value={subheading}
-                    onChange={setSubheading}
-                    multiline={4}
-                    autoComplete="off"
-                  />
+                <TextField
+                  label="Subheading"
+                  value={subheading}
+                  onChange={setSubheading}
+                  multiline={4}
+                  autoComplete="off"
+                />
+              </BlockStack>
+            </Card>
 
-                  <TextField
-                    label="Primary button label"
-                    value={primaryButtonLabel}
-                    onChange={setPrimaryButtonLabel}
-                    autoComplete="off"
-                  />
+            <Card>
+              <BlockStack gap="250">
+                <Text as="h3" variant="headingSm">
+                  Buttons
+                </Text>
 
-                  <TextField
-                    label="Secondary button label"
-                    value={secondaryButtonLabel}
-                    onChange={setSecondaryButtonLabel}
-                    autoComplete="off"
-                  />
-                </BlockStack>
-              </Box>
+                <TextField
+                  label="Primary button label"
+                  value={primaryButtonLabel}
+                  onChange={setPrimaryButtonLabel}
+                  autoComplete="off"
+                />
 
-              <Box
-                padding="300"
-                borderRadius="300"
-                background="bg-surface-secondary"
-              >
-                <BlockStack gap="250">
-                  <Text as="h3" variant="headingSm">
-                    Layout and style
-                  </Text>
+                <TextField
+                  label="Secondary button label"
+                  value={secondaryButtonLabel}
+                  onChange={setSecondaryButtonLabel}
+                  autoComplete="off"
+                />
+              </BlockStack>
+            </Card>
 
-                  <Select
-                    label="Content alignment"
-                    options={[
-                      { label: "Left", value: "left" },
-                      { label: "Center", value: "center" },
-                      { label: "Right", value: "right" },
-                    ]}
-                    value={contentAlignment}
-                    onChange={setContentAlignment}
-                  />
+            <Card>
+              <BlockStack gap="250">
+                <Text as="h3" variant="headingSm">
+                  Layout and style
+                </Text>
 
-                  <Select
-                    label="Background preset"
-                    options={[
-                      { label: "Midnight gold", value: "midnight" },
-                      { label: "Champagne glow", value: "champagne" },
-                      { label: "Charcoal luxe", value: "charcoal" },
-                    ]}
-                    value={backgroundPreset}
-                    onChange={setBackgroundPreset}
-                  />
+                <Select
+                  label="Content alignment"
+                  options={[
+                    { label: "Left", value: "left" },
+                    { label: "Center", value: "center" },
+                    { label: "Right", value: "right" },
+                  ]}
+                  value={contentAlignment}
+                  onChange={setContentAlignment}
+                />
 
-                  <RangeSlider
-                    label="Overlay opacity"
-                    value={overlayOpacity}
-                    onChange={setOverlayOpacity}
-                    min={0}
-                    max={80}
-                    step={1}
-                    output
-                  />
-                </BlockStack>
-              </Box>
+                <Select
+                  label="Background preset"
+                  options={[
+                    { label: "Midnight gold", value: "midnight" },
+                    { label: "Champagne glow", value: "champagne" },
+                    { label: "Charcoal luxe", value: "charcoal" },
+                  ]}
+                  value={backgroundPreset}
+                  onChange={setBackgroundPreset}
+                />
 
-              <Box
-                padding="300"
-                borderRadius="300"
-                background="bg-surface-secondary"
-              >
-                <BlockStack gap="250">
-                  <Text as="h3" variant="headingSm">
-                    Responsive sizing
-                  </Text>
+                <RangeSlider
+                  label="Overlay opacity"
+                  value={overlayOpacity}
+                  onChange={setOverlayOpacity}
+                  min={0}
+                  max={80}
+                  step={1}
+                  output
+                />
+              </BlockStack>
+            </Card>
 
-                  <RangeSlider
-                    label="Desktop section height"
-                    value={desktopHeight}
-                    onChange={setDesktopHeight}
-                    min={420}
-                    max={760}
-                    step={20}
-                    output
-                  />
+            <Card>
+              <BlockStack gap="250">
+                <Text as="h3" variant="headingSm">
+                  Responsive sizing
+                </Text>
 
-                  <RangeSlider
-                    label="Mobile section height"
-                    value={mobileHeight}
-                    onChange={setMobileHeight}
-                    min={360}
-                    max={680}
-                    step={20}
-                    output
-                  />
-                </BlockStack>
-              </Box>
+                <RangeSlider
+                  label="Desktop section height"
+                  value={desktopHeight}
+                  onChange={setDesktopHeight}
+                  min={420}
+                  max={760}
+                  step={20}
+                  output
+                />
 
-              <InlineStack gap="200" wrap>
-                <Link to="/app/blocks" style={{ textDecoration: "none" }}>
-                  <Button>Back to Blocks</Button>
-                </Link>
-
-                {themeEditorUrl ? (
-                  <Button onClick={() => openInTopWindow(themeEditorUrl)}>
-                    Open Theme Editor
-                  </Button>
-                ) : (
-                  <Button disabled>Open Theme Editor</Button>
-                )}
-              </InlineStack>
-            </BlockStack>
-          </Card>
+                <RangeSlider
+                  label="Mobile section height"
+                  value={mobileHeight}
+                  onChange={setMobileHeight}
+                  min={360}
+                  max={680}
+                  step={20}
+                  output
+                />
+              </BlockStack>
+            </Card>
+          </BlockStack>
 
           <div style={{ position: "sticky", top: "24px" }}>
             <Card>
-              <BlockStack gap="300">
-                <InlineStack align="space-between" blockAlign="center">
+              <BlockStack gap="250">
+                <InlineStack align="space-between" blockAlign="center" wrap>
                   <Text as="h2" variant="headingMd">
                     Live preview
                   </Text>
                   <Badge tone="attention">{device}</Badge>
                 </InlineStack>
 
-                <InlineStack gap="200" wrap>
-                  <Button
-                    variant={device === "desktop" ? "primary" : "secondary"}
-                    onClick={() => setDevice("desktop")}
-                  >
-                    Desktop
-                  </Button>
-
-                  <Button
-                    variant={device === "tablet" ? "primary" : "secondary"}
-                    onClick={() => setDevice("tablet")}
-                  >
-                    Tablet
-                  </Button>
-
-                  <Button
-                    variant={device === "mobile" ? "primary" : "secondary"}
-                    onClick={() => setDevice("mobile")}
-                  >
-                    Mobile
-                  </Button>
-                </InlineStack>
+                <DeviceSwitcher device={device} setDevice={setDevice} />
 
                 <Box
                   padding="300"
@@ -413,19 +377,17 @@ export default function LuxeHeroEditorRoute() {
                       style={{
                         width: previewWidth,
                         maxWidth: "100%",
-                        transition: "width 160ms ease",
+                        transition: "width 180ms ease",
                       }}
                     >
                       <div
                         style={{
                           position: "relative",
                           minHeight: `${previewHeight}px`,
-                          borderRadius: "28px",
+                          borderRadius: "30px",
                           overflow: "hidden",
                           background: getBackgroundStyle(backgroundPreset),
-                          boxShadow: "0 20px 44px rgba(15, 23, 42, 0.18)",
-                          display: "flex",
-                          alignItems: "stretch",
+                          boxShadow: "0 22px 46px rgba(15, 23, 42, 0.18)",
                         }}
                       >
                         <div
@@ -438,13 +400,29 @@ export default function LuxeHeroEditorRoute() {
 
                         <div
                           style={{
+                            position: "absolute",
+                            right: isMobile ? "-50px" : "4%",
+                            top: isMobile ? "auto" : "12%",
+                            bottom: isMobile ? "-70px" : "auto",
+                            width: isMobile ? "180px" : "320px",
+                            height: isMobile ? "180px" : "320px",
+                            borderRadius: "999px",
+                            background:
+                              "radial-gradient(circle, rgba(248,231,176,0.34) 0%, rgba(248,231,176,0.10) 38%, rgba(248,231,176,0) 72%)",
+                            filter: "blur(10px)",
+                          }}
+                        />
+
+                        <div
+                          style={{
                             position: "relative",
                             zIndex: 1,
                             width: "100%",
+                            minHeight: `${previewHeight}px`,
                             display: "flex",
                             justifyContent: horizontalAlignment,
                             alignItems: "center",
-                            padding: isMobile ? "28px" : "42px",
+                            padding: isMobile ? "28px" : "48px",
                           }}
                         >
                           <div
@@ -457,7 +435,7 @@ export default function LuxeHeroEditorRoute() {
                             <div
                               style={{
                                 display: "inline-flex",
-                                padding: "6px 12px",
+                                padding: "7px 12px",
                                 borderRadius: "999px",
                                 background: "rgba(248, 231, 176, 0.16)",
                                 color: "#f8e7b0",
@@ -474,10 +452,11 @@ export default function LuxeHeroEditorRoute() {
                             <div
                               style={{
                                 fontSize: titleSize,
-                                lineHeight: 1.05,
+                                lineHeight: 1.02,
                                 fontWeight: 700,
                                 color: "#ffffff",
-                                marginBottom: "14px",
+                                marginBottom: "16px",
+                                maxWidth: isMobile ? "100%" : "680px",
                               }}
                             >
                               {heading || "Your hero heading"}
@@ -486,9 +465,10 @@ export default function LuxeHeroEditorRoute() {
                             <div
                               style={{
                                 fontSize: bodySize,
-                                lineHeight: 1.65,
+                                lineHeight: 1.7,
                                 color: "rgba(255,255,255,0.84)",
-                                marginBottom: "24px",
+                                marginBottom: "28px",
+                                maxWidth: isMobile ? "100%" : "620px",
                               }}
                             >
                               {subheading || "Your hero subheading"}
@@ -510,8 +490,8 @@ export default function LuxeHeroEditorRoute() {
                             >
                               <div
                                 style={{
-                                  minHeight: "48px",
-                                  padding: "0 22px",
+                                  minHeight: "50px",
+                                  padding: "0 24px",
                                   borderRadius: "999px",
                                   background: "#f8e7b0",
                                   color: "#1f2937",
@@ -527,8 +507,8 @@ export default function LuxeHeroEditorRoute() {
 
                               <div
                                 style={{
-                                  minHeight: "48px",
-                                  padding: "0 22px",
+                                  minHeight: "50px",
+                                  padding: "0 24px",
                                   borderRadius: "999px",
                                   border: "1px solid rgba(255,255,255,0.22)",
                                   color: "#ffffff",
@@ -550,8 +530,8 @@ export default function LuxeHeroEditorRoute() {
                 </Box>
 
                 <Text as="p" variant="bodySm" tone="subdued">
-                  Preview stays fixed on the right so device switching feels
-                  stable while the merchant edits the hero block.
+                  Preview stays stable on the right while the merchant edits the
+                  hero section on the left.
                 </Text>
               </BlockStack>
             </Card>
