@@ -60,6 +60,10 @@ function getBlockEditorPath(handle) {
     return "/app/blocks/trust-payments-showcase";
   }
 
+  if (handle === "video-showcase") {
+    return "/app/blocks/video-showcase";
+  }
+
   return `/app/blocks?block=${handle}`;
 }
 
@@ -68,7 +72,8 @@ function hasDedicatedEditor(handle) {
     handle === "luxe-hero" ||
     handle === "trust-bar" ||
     handle === "premium-features" ||
-    handle === "trust-payments-showcase"
+    handle === "trust-payments-showcase" ||
+    handle === "video-showcase"
   );
 }
 
@@ -81,7 +86,9 @@ function getAvailabilityLabel(block) {
     return hasDedicatedEditor(block.handle) ? "Editor ready" : "Live";
   }
 
-  return hasDedicatedEditor(block.handle) ? "Editor shell ready" : "Planned next";
+  return hasDedicatedEditor(block.handle)
+    ? "Editor shell ready"
+    : "Planned next";
 }
 
 function renderHeroPreview(device) {
@@ -1021,7 +1028,9 @@ export default function BlocksLibraryRoute() {
                                   ? hasDedicatedEditor(block.handle)
                                     ? "Editor ready"
                                     : "Live block"
-                                  : "Coming next"}
+                                  : hasDedicatedEditor(block.handle)
+                                    ? "Editor shell ready"
+                                    : "Coming next"}
                               </Badge>
                             </InlineStack>
 
