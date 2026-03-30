@@ -108,7 +108,7 @@ function getCatalogStageLabel(block) {
     return "Live";
   }
 
-  return hasDedicatedEditor(block.handle) ? "Planned + editor" : "Planned";
+  return hasDedicatedEditor(block.handle) ? "Editor shell" : "Planned";
 }
 
 function getCatalogEditorTone(block) {
