@@ -56,6 +56,10 @@ function getBlockEditorPath(handle) {
     return "/app/blocks/premium-features";
   }
 
+  if (handle === "trust-payments-showcase") {
+    return "/app/blocks/trust-payments-showcase";
+  }
+
   return `/app/blocks?block=${handle}`;
 }
 
@@ -63,7 +67,8 @@ function hasDedicatedEditor(handle) {
   return (
     handle === "luxe-hero" ||
     handle === "trust-bar" ||
-    handle === "premium-features"
+    handle === "premium-features" ||
+    handle === "trust-payments-showcase"
   );
 }
 
@@ -76,7 +81,7 @@ function getAvailabilityLabel(block) {
     return hasDedicatedEditor(block.handle) ? "Editor ready" : "Live";
   }
 
-  return "Planned next";
+  return hasDedicatedEditor(block.handle) ? "Editor shell ready" : "Planned next";
 }
 
 function renderHeroPreview(device) {
