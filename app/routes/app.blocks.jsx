@@ -77,8 +77,12 @@ function hasDedicatedEditor(handle) {
   );
 }
 
-function getAvailabilityTone(availability) {
-  return availability === "live" ? "success" : "attention";
+function getAvailabilityTone(block) {
+  if (block.availability === "live") {
+    return "success";
+  }
+
+  return hasDedicatedEditor(block.handle) ? "info" : "attention";
 }
 
 function getAvailabilityLabel(block) {
@@ -89,6 +93,50 @@ function getAvailabilityLabel(block) {
   return hasDedicatedEditor(block.handle)
     ? "Editor shell ready"
     : "Planned next";
+}
+
+function getCatalogStageTone(block) {
+  if (block.availability === "live") {
+    return "success";
+  }
+
+  return hasDedicatedEditor(block.handle) ? "info" : "attention";
+}
+
+function getCatalogStageLabel(block) {
+  if (block.availability === "live") {
+    return "Live";
+  }
+
+  return hasDedicatedEditor(block.handle) ? "Planned + editor" : "Planned";
+}
+
+function getCatalogEditorTone(block) {
+  if (block.availability === "live") {
+    return hasDedicatedEditor(block.handle) ? "success" : "attention";
+  }
+
+  return hasDedicatedEditor(block.handle) ? "info" : "attention";
+}
+
+function getCatalogEditorLabel(block) {
+  if (block.availability === "live") {
+    return hasDedicatedEditor(block.handle) ? "Editor ready" : "Live block";
+  }
+
+  return hasDedicatedEditor(block.handle)
+    ? "Editor shell ready"
+    : "Coming next";
+}
+
+function getEditorButtonLabel(block) {
+  if (block.availability === "live") {
+    return "Open block editor";
+  }
+
+  return hasDedicatedEditor(block.handle)
+    ? "Open editor shell"
+    : "Editor coming next";
 }
 
 function renderHeroPreview(device) {
@@ -913,7 +961,7 @@ export default function BlocksLibraryRoute() {
                   <Text as="h1" variant="headingLg">
                     Blocks Studio
                   </Text>
-                  <Badge tone={getAvailabilityTone(selectedBlock.availability)}>
+                  <Badge tone={getAvailabilityTone(selectedBlock)}>
                     {getAvailabilityLabel(selectedBlock)}
                   </Badge>
                   <Badge tone="success">{currentPlanLabel}</Badge>
@@ -930,7 +978,11 @@ export default function BlocksLibraryRoute() {
                       Connect in Shopify
                     </Button>
                   ) : (
-                    <Button disabled>Connect in Shopify</Button>
+                    <Button disabled>
+                      {selectedBlock.availability === "live"
+                        ? "Connect in Shopify"
+                        : "Shopify connect when live"}
+                    </Button>
                   )}
 
                   {hasDedicatedEditor(selectedBlock.handle) ? (
@@ -992,7 +1044,6 @@ export default function BlocksLibraryRoute() {
                 <BlockStack gap="150">
                   {catalogBlocks.map((block) => {
                     const isSelected = selectedBlock?.handle === block.handle;
-                    const isLive = block.availability === "live";
 
                     return (
                       <Link
@@ -1017,20 +1068,14 @@ export default function BlocksLibraryRoute() {
                                 {block.name}
                               </Text>
 
-                              <Badge tone={isLive ? "success" : "attention"}>
-                                {isLive ? "Live" : "Planned"}
+                              <Badge tone={getCatalogStageTone(block)}>
+                                {getCatalogStageLabel(block)}
                               </Badge>
                             </InlineStack>
 
                             <InlineStack gap="150" wrap>
-                              <Badge tone={isLive ? "success" : "attention"}>
-                                {isLive
-                                  ? hasDedicatedEditor(block.handle)
-                                    ? "Editor ready"
-                                    : "Live block"
-                                  : hasDedicatedEditor(block.handle)
-                                    ? "Editor shell ready"
-                                    : "Coming next"}
+                              <Badge tone={getCatalogEditorTone(block)}>
+                                {getCatalogEditorLabel(block)}
                               </Badge>
                             </InlineStack>
 
@@ -1057,7 +1102,7 @@ export default function BlocksLibraryRoute() {
                         <Text as="h2" variant="headingLg">
                           {selectedBlock.name}
                         </Text>
-                        <Badge tone={getAvailabilityTone(selectedBlock.availability)}>
+                        <Badge tone={getAvailabilityTone(selectedBlock)}>
                           {getAvailabilityLabel(selectedBlock)}
                         </Badge>
                       </InlineStack>
@@ -1073,7 +1118,9 @@ export default function BlocksLibraryRoute() {
                           to={getBlockEditorPath(selectedBlock.handle)}
                           style={{ textDecoration: "none" }}
                         >
-                          <Button variant="primary">Open block editor</Button>
+                          <Button variant="primary">
+                            {getEditorButtonLabel(selectedBlock)}
+                          </Button>
                         </Link>
                       ) : (
                         <Button disabled>Editor coming next</Button>
