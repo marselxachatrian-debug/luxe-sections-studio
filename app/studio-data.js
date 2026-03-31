@@ -7,15 +7,15 @@ export const dashboardItems = [
   },
   {
     title: "Live blocks count",
-    value: "4",
+    value: "5",
     description:
-      "Premium Hero Banner, Store Trust Highlights, Feature Highlights Grid, and Trust & Payment Showcase are already live inside the theme app extension.",
+      "Premium Hero Banner, Store Trust Highlights, Feature Highlights Grid, Trust & Payment Showcase, and Vertical Video Showcase are live inside the theme app extension.",
   },
   {
     title: "Planned next blocks",
-    value: "1",
+    value: "0",
     description:
-      "Vertical Video Showcase is the next high-value merchant block in the roadmap.",
+      "The current five core blocks are now in the live library and follow the same merchant-first editing direction.",
   },
   {
     title: "Current build scope",
@@ -93,25 +93,26 @@ export const blockLibraryItems = [
       "Premium hover, glow, and luxury motion effects",
     ],
   },
-];
-
-export const roadmapBlockItems = [
   {
     name: "Vertical Video Showcase",
     handle: "video-showcase",
-    status: "Planned next",
+    status: "Live",
     description:
       "9:16 video product showcase for premium visual storytelling, stronger product attention, and richer storefront merchandising.",
-    plannedFeatures: [
+    features: [
       "Vertical product video cards",
-      "Title, subtitle, CTA, and destination link",
-      "Desktop and mobile card control",
-      "Active and inactive card styling",
-      "Spacing, colors, overlays, and typography",
-      "Premium spotlight motion and luxury carousel polish",
+      "Heading and subheading",
+      "Three video titles and descriptions",
+      "Heading alignment",
+      "Section style",
+      "Desktop column control",
+      "Video tone",
+      "Top and bottom padding",
     ],
   },
 ];
+
+export const roadmapBlockItems = [];
 
 export const planTiers = [
   {

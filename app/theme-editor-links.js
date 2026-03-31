@@ -3,6 +3,7 @@ export const THEME_BLOCK_HANDLES = {
   TRUST_BAR: "trust-bar",
   PREMIUM_FEATURES: "premium-features",
   TRUST_PAYMENTS_SHOWCASE: "trust-payments-showcase",
+  VIDEO_SHOWCASE: "video-showcase",
 };
 
 export const THEME_EMBED_HANDLES = {
@@ -14,6 +15,7 @@ export const THEME_BLOCK_LABELS = {
   [THEME_BLOCK_HANDLES.TRUST_BAR]: "Store Trust Highlights",
   [THEME_BLOCK_HANDLES.PREMIUM_FEATURES]: "Feature Highlights Grid",
   [THEME_BLOCK_HANDLES.TRUST_PAYMENTS_SHOWCASE]: "Trust & Payment Showcase",
+  [THEME_BLOCK_HANDLES.VIDEO_SHOWCASE]: "Vertical Video Showcase",
 };
 
 export const THEME_ONBOARDING_KEYS = {
@@ -22,6 +24,7 @@ export const THEME_ONBOARDING_KEYS = {
   TRUST_BAR: THEME_BLOCK_HANDLES.TRUST_BAR,
   PREMIUM_FEATURES: THEME_BLOCK_HANDLES.PREMIUM_FEATURES,
   TRUST_PAYMENTS_SHOWCASE: THEME_BLOCK_HANDLES.TRUST_PAYMENTS_SHOWCASE,
+  VIDEO_SHOWCASE: THEME_BLOCK_HANDLES.VIDEO_SHOWCASE,
 };
 
 export function buildThemeEditorBaseUrl(shop, themeId) {
@@ -134,6 +137,18 @@ export function getThemeEditorOnboardingLinks(shop, themeId, apiKey) {
         themeId,
         apiKey,
         THEME_BLOCK_HANDLES.TRUST_PAYMENTS_SHOWCASE,
+      ),
+    },
+    {
+      key: THEME_ONBOARDING_KEYS.VIDEO_SHOWCASE,
+      label: THEME_BLOCK_LABELS[THEME_BLOCK_HANDLES.VIDEO_SHOWCASE],
+      description:
+        "Add a vertical video section and connect short product storytelling to your storefront.",
+      url: buildThemeEditorAppBlockLink(
+        shop,
+        themeId,
+        apiKey,
+        THEME_BLOCK_HANDLES.VIDEO_SHOWCASE,
       ),
     },
   ];

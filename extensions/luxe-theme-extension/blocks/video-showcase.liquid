@@ -1,0 +1,269 @@
+{% liquid
+  assign showcase_content = metaobjects['video_showcase_content']['default']
+
+  assign section_eyebrow = showcase_content.eyebrow | default: 'Video showcase'
+  assign section_heading = showcase_content.heading | default: 'Turn short product videos into a premium storefront section'
+  assign section_subheading = showcase_content.subheading | default: 'Show vertical product clips with cleaner spacing, stronger focus, and a more luxury mobile presentation.'
+
+  assign video_1_title = showcase_content.video_1_title | default: 'Product story'
+  assign video_1_text = showcase_content.video_1_text | default: 'Short premium clip with a clear visual hook and cleaner product focus.'
+  assign video_2_title = showcase_content.video_2_title | default: 'Behind the details'
+  assign video_2_text = showcase_content.video_2_text | default: 'Use a second video card to show texture, features, or luxury product detail.'
+  assign video_3_title = showcase_content.video_3_title | default: 'Mobile-first CTA'
+  assign video_3_text = showcase_content.video_3_text | default: 'Guide shoppers to the next click with clearer CTA support and better visual flow.'
+
+  assign heading_alignment = showcase_content.heading_alignment | default: 'left'
+  assign section_style = showcase_content.section_style | default: 'luxe'
+  assign desktop_columns = showcase_content.desktop_columns | default: '3'
+  assign video_tone = showcase_content.video_tone | default: 'midnight'
+
+  assign padding_top = block.settings.padding_top | default: 40
+  assign padding_bottom = block.settings.padding_bottom | default: 40
+
+  case section_style
+    when 'soft'
+      assign section_background = '#ffffff'
+      assign section_border = 'rgba(15, 23, 42, 0.08)'
+      assign section_shadow = '0 18px 34px rgba(15, 23, 42, 0.08)'
+      assign heading_color = '#111827'
+      assign text_color = '#6b7280'
+      assign eyebrow_background = 'rgba(15, 23, 42, 0.06)'
+      assign eyebrow_color = '#111827'
+    when 'minimal'
+      assign section_background = '#111827'
+      assign section_border = 'rgba(255, 255, 255, 0.06)'
+      assign section_shadow = '0 16px 32px rgba(15, 23, 42, 0.16)'
+      assign heading_color = '#ffffff'
+      assign text_color = 'rgba(255, 255, 255, 0.72)'
+      assign eyebrow_background = 'rgba(248, 231, 176, 0.14)'
+      assign eyebrow_color = '#f8e7b0'
+    else
+      assign section_background = 'linear-gradient(180deg, #0f172a 0%, #111827 55%, #1f2937 100%)'
+      assign section_border = 'rgba(255, 255, 255, 0.08)'
+      assign section_shadow = '0 20px 40px rgba(15, 23, 42, 0.18)'
+      assign heading_color = '#ffffff'
+      assign text_color = 'rgba(255, 255, 255, 0.72)'
+      assign eyebrow_background = 'rgba(248, 231, 176, 0.14)'
+      assign eyebrow_color = '#f8e7b0'
+  endcase
+
+  case video_tone
+    when 'gold'
+      assign video_surface = 'linear-gradient(180deg, rgba(248,231,176,0.24) 0%, rgba(15,23,42,0.22) 100%)'
+    when 'charcoal'
+      assign video_surface = 'linear-gradient(180deg, rgba(75,85,99,0.24) 0%, rgba(15,23,42,0.26) 100%)'
+    else
+      assign video_surface = 'linear-gradient(180deg, rgba(248,231,176,0.18) 0%, rgba(15,23,42,0.20) 100%)'
+  endcase
+%}
+
+{% style %}
+  .luxe-video-showcase-{{ block.id }} {
+    padding-top: {{ padding_top }}px;
+    padding-bottom: {{ padding_bottom }}px;
+  }
+
+  .luxe-video-showcase__surface-{{ block.id }} {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 28px;
+    border-radius: 28px;
+    background: {{ section_background }};
+    border: 1px solid {{ section_border }};
+    box-shadow: {{ section_shadow }};
+  }
+
+  .luxe-video-showcase__eyebrow-wrap-{{ block.id }},
+  .luxe-video-showcase__heading-wrap-{{ block.id }},
+  .luxe-video-showcase__subheading-wrap-{{ block.id }} {
+    display: flex;
+    justify-content:
+      {% if heading_alignment == 'center' %}
+        center
+      {% elsif heading_alignment == 'right' %}
+        flex-end
+      {% else %}
+        flex-start
+      {% endif %};
+  }
+
+  .luxe-video-showcase__eyebrow-{{ block.id }} {
+    display: inline-flex;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: {{ eyebrow_background }};
+    color: {{ eyebrow_color }};
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .luxe-video-showcase__heading-{{ block.id }} {
+    margin: 0 0 10px;
+    color: {{ heading_color }};
+    font-size: 30px;
+    line-height: 1.15;
+    font-weight: 700;
+    text-align: {{ heading_alignment }};
+    max-width: 620px;
+  }
+
+  .luxe-video-showcase__subheading-{{ block.id }} {
+    margin: 0 0 22px;
+    color: {{ text_color }};
+    font-size: 15px;
+    line-height: 1.65;
+    text-align: {{ heading_alignment }};
+    max-width: 640px;
+  }
+
+  .luxe-video-showcase__grid-{{ block.id }} {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .luxe-video-showcase__card-{{ block.id }} {
+    border-radius: 22px;
+    overflow: hidden;
+    background: #0b1220;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .luxe-video-showcase__media-{{ block.id }} {
+    aspect-ratio: 9 / 16;
+    background: {{ video_surface }};
+  }
+
+  .luxe-video-showcase__body-{{ block.id }} {
+    padding: 14px;
+  }
+
+  .luxe-video-showcase__title-{{ block.id }} {
+    margin: 0 0 6px;
+    font-size: 14px;
+    line-height: 1.4;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .luxe-video-showcase__text-{{ block.id }} {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.68);
+  }
+
+  @media screen and (min-width: 750px) {
+    .luxe-video-showcase__grid-{{ block.id }} {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .luxe-video-showcase__grid-{{ block.id }} {
+      grid-template-columns: repeat({{ desktop_columns }}, minmax(0, 1fr));
+    }
+  }
+{% endstyle %}
+
+<div class="luxe-video-showcase-{{ block.id }}" {{ block.shopify_attributes }}>
+  <div class="luxe-video-showcase__surface-{{ block.id }}">
+    {% if section_eyebrow != blank %}
+      <div class="luxe-video-showcase__eyebrow-wrap-{{ block.id }}">
+        <div class="luxe-video-showcase__eyebrow-{{ block.id }}">
+          {{ section_eyebrow | escape }}
+        </div>
+      </div>
+    {% endif %}
+
+    {% if section_heading != blank %}
+      <div class="luxe-video-showcase__heading-wrap-{{ block.id }}">
+        <h2 class="luxe-video-showcase__heading-{{ block.id }}">
+          {{ section_heading | escape }}
+        </h2>
+      </div>
+    {% endif %}
+
+    {% if section_subheading != blank %}
+      <div class="luxe-video-showcase__subheading-wrap-{{ block.id }}">
+        <p class="luxe-video-showcase__subheading-{{ block.id }}">
+          {{ section_subheading | escape }}
+        </p>
+      </div>
+    {% endif %}
+
+    <div class="luxe-video-showcase__grid-{{ block.id }}">
+      {% for index in (1..3) %}
+        {% liquid
+          assign title_key = 'video_' | append: index | append: '_title'
+          assign text_key = 'video_' | append: index | append: '_text'
+          assign card_title = showcase_content[title_key]
+          assign card_text = showcase_content[text_key]
+
+          if index == 1
+            assign card_title = card_title | default: video_1_title
+            assign card_text = card_text | default: video_1_text
+          elsif index == 2
+            assign card_title = card_title | default: video_2_title
+            assign card_text = card_text | default: video_2_text
+          else
+            assign card_title = card_title | default: video_3_title
+            assign card_text = card_text | default: video_3_text
+          endif
+        %}
+
+        {% if card_title != blank or card_text != blank %}
+          <div class="luxe-video-showcase__card-{{ block.id }}">
+            <div class="luxe-video-showcase__media-{{ block.id }}"></div>
+
+            <div class="luxe-video-showcase__body-{{ block.id }}">
+              {% if card_title != blank %}
+                <h3 class="luxe-video-showcase__title-{{ block.id }}">
+                  {{ card_title | escape }}
+                </h3>
+              {% endif %}
+
+              {% if card_text != blank %}
+                <p class="luxe-video-showcase__text-{{ block.id }}">
+                  {{ card_text | escape }}
+                </p>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Vertical Video Showcase",
+  "target": "section",
+  "settings": [
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 140,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 140,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    }
+  ]
+}
+{% endschema %}
