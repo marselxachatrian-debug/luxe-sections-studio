@@ -174,20 +174,14 @@ export async function action({ request }) {
       normalizedSettings,
     );
 
-    const existingSettings = await getLuxeHeroSettings(admin);
-    const defaultSettings = normalizeLuxeHeroSettings({});
+    const existingSettings = normalizeLuxeHeroSettings(
+      await getLuxeHeroSettings(admin),
+    );
 
     const settingsToSave = {
-      ...defaultSettings,
       ...existingSettings,
       ...enforcement.allowedSettings,
     };
-
-    for (const fieldName of enforcement.blockedFields) {
-      if (Object.prototype.hasOwnProperty.call(defaultSettings, fieldName)) {
-        settingsToSave[fieldName] = defaultSettings[fieldName];
-      }
-    }
 
     const saved = await saveLuxeHeroMetaobject(admin, settingsToSave);
 
@@ -248,12 +242,29 @@ export default function LuxeHeroEditorRoute() {
   const [mobileHeight, setMobileHeight] = useState(savedSettings.mobileHeight);
   const [saveMessage, setSaveMessage] = useState("Saved values loaded");
 
+  function applySavedSettingsToEditor(nextSettings) {
+    setBadgeText(nextSettings.badgeText);
+    setHeading(nextSettings.heading);
+    setSubheading(nextSettings.subheading);
+    setPrimaryButtonLabel(nextSettings.primaryButtonLabel);
+    setSecondaryButtonLabel(nextSettings.secondaryButtonLabel);
+    setContentAlignment(nextSettings.contentAlignment);
+    setBackgroundPreset(nextSettings.backgroundPreset);
+    setOverlayOpacity(nextSettings.overlayOpacity);
+    setDesktopHeight(nextSettings.desktopHeight);
+    setMobileHeight(nextSettings.mobileHeight);
+  }
+
   useEffect(() => {
     if (fetcher.state !== "idle") {
       return;
     }
 
     if (fetcher.data?.ok) {
+      if (fetcher.data.settings) {
+        applySavedSettingsToEditor(fetcher.data.settings);
+      }
+
       if ((fetcher.data.blockedFeatureDetails ?? []).length > 0) {
         setSaveMessage("Saved with plan limits");
       } else {

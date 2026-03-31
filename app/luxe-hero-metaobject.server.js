@@ -135,7 +135,6 @@ export async function ensureLuxeHeroDefinition(admin) {
           type: LUXE_HERO_METAOBJECT_TYPE,
           displayNameKey: "heading",
           access: {
-            admin: "MERCHANT_READ_WRITE",
             storefront: "PUBLIC_READ",
           },
           fieldDefinitions: [
