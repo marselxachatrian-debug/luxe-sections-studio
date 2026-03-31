@@ -7,15 +7,15 @@ export const dashboardItems = [
   },
   {
     title: "Live blocks count",
-    value: "3",
+    value: "4",
     description:
-      "Premium Hero Banner, Store Trust Highlights, and Feature Highlights Grid are already live inside the theme app extension.",
+      "Premium Hero Banner, Store Trust Highlights, Feature Highlights Grid, and Trust & Payment Showcase are already live inside the theme app extension.",
   },
   {
     title: "Planned next blocks",
-    value: "2",
+    value: "1",
     description:
-      "Trust & Payment Showcase and Vertical Video Showcase are the next high-value merchant blocks in the roadmap.",
+      "Vertical Video Showcase is the next high-value merchant block in the roadmap.",
   },
   {
     title: "Current build scope",
@@ -77,16 +77,13 @@ export const blockLibraryItems = [
       "Expandable roadmap for links, richer icon control, and stronger card styling",
     ],
   },
-];
-
-export const roadmapBlockItems = [
   {
     name: "Trust & Payment Showcase",
     handle: "trust-payments-showcase",
-    status: "Planned next",
+    status: "Live",
     description:
       "Large two-column conversion block that combines trust messaging, review links, payment methods, and delivery partner presentation in one premium section.",
-    plannedFeatures: [
+    features: [
       "Left and right layout direction",
       "Trust text and review link",
       "Payment systems with official icons",
@@ -96,6 +93,9 @@ export const roadmapBlockItems = [
       "Premium hover, glow, and luxury motion effects",
     ],
   },
+];
+
+export const roadmapBlockItems = [
   {
     name: "Vertical Video Showcase",
     handle: "video-showcase",
