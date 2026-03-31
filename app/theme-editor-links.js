@@ -2,6 +2,7 @@ export const THEME_BLOCK_HANDLES = {
   LUXE_HERO: "luxe-hero",
   TRUST_BAR: "trust-bar",
   PREMIUM_FEATURES: "premium-features",
+  TRUST_PAYMENTS_SHOWCASE: "trust-payments-showcase",
 };
 
 export const THEME_EMBED_HANDLES = {
@@ -12,6 +13,7 @@ export const THEME_BLOCK_LABELS = {
   [THEME_BLOCK_HANDLES.LUXE_HERO]: "Premium Hero Banner",
   [THEME_BLOCK_HANDLES.TRUST_BAR]: "Store Trust Highlights",
   [THEME_BLOCK_HANDLES.PREMIUM_FEATURES]: "Feature Highlights Grid",
+  [THEME_BLOCK_HANDLES.TRUST_PAYMENTS_SHOWCASE]: "Trust & Payment Showcase",
 };
 
 export const THEME_ONBOARDING_KEYS = {
@@ -19,6 +21,7 @@ export const THEME_ONBOARDING_KEYS = {
   LUXE_HERO: THEME_BLOCK_HANDLES.LUXE_HERO,
   TRUST_BAR: THEME_BLOCK_HANDLES.TRUST_BAR,
   PREMIUM_FEATURES: THEME_BLOCK_HANDLES.PREMIUM_FEATURES,
+  TRUST_PAYMENTS_SHOWCASE: THEME_BLOCK_HANDLES.TRUST_PAYMENTS_SHOWCASE,
 };
 
 export function buildThemeEditorBaseUrl(shop, themeId) {
@@ -118,6 +121,19 @@ export function getThemeEditorOnboardingLinks(shop, themeId, apiKey) {
         themeId,
         apiKey,
         THEME_BLOCK_HANDLES.PREMIUM_FEATURES,
+      ),
+    },
+    {
+      key: THEME_ONBOARDING_KEYS.TRUST_PAYMENTS_SHOWCASE,
+      label:
+        THEME_BLOCK_LABELS[THEME_BLOCK_HANDLES.TRUST_PAYMENTS_SHOWCASE],
+      description:
+        "Add trust messaging, payment proof, and delivery reassurance in one premium section.",
+      url: buildThemeEditorAppBlockLink(
+        shop,
+        themeId,
+        apiKey,
+        THEME_BLOCK_HANDLES.TRUST_PAYMENTS_SHOWCASE,
       ),
     },
   ];
