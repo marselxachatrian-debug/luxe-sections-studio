@@ -253,7 +253,8 @@ export default function TrustBarEditorRoute() {
       : `repeat(${desktopColumns}, minmax(0, 1fr))`;
 
   const textAlignment = headingAlignment === "center" ? "center" : "left";
-  const contentAlignment = headingAlignment === "center" ? "center" : "flex-start";
+  const contentAlignment =
+    headingAlignment === "center" ? "center" : "flex-start";
 
   const sectionSurface = getSectionSurface(sectionStyle);
 
@@ -648,7 +649,7 @@ export default function TrustBarEditorRoute() {
                         <div
                           style={{
                             margin: "0 0 24px",
-                            textAlign,
+                            textAlign: textAlignment,
                             fontSize: isMobile ? "24px" : "28px",
                             lineHeight: 1.2,
                             letterSpacing: "-0.02em",
