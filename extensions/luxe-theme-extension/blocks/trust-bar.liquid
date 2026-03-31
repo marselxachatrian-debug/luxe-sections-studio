@@ -1,10 +1,21 @@
 {% liquid
-  assign section_heading = block.settings.heading
-  assign heading_alignment = block.settings.heading_alignment | default: 'center'
-  assign section_style = block.settings.section_style | default: 'soft'
-  assign desktop_columns = block.settings.desktop_columns | default: '4'
-  assign padding_top = block.settings.padding_top | default: 32
-  assign padding_bottom = block.settings.padding_bottom | default: 32
+  assign trust_bar_content = metaobjects['trust_bar_content']['default']
+
+  assign section_heading = trust_bar_content.heading | default: block.settings.heading | default: 'Why shoppers trust CasaBloom'
+  assign heading_alignment = trust_bar_content.heading_alignment | default: block.settings.heading_alignment | default: 'center'
+  assign section_style = trust_bar_content.section_style | default: block.settings.section_style | default: 'soft'
+  assign desktop_columns = trust_bar_content.desktop_columns | default: block.settings.desktop_columns | default: '4'
+  assign padding_top = trust_bar_content.padding_top | default: block.settings.padding_top | default: 32
+  assign padding_bottom = trust_bar_content.padding_bottom | default: block.settings.padding_bottom | default: 32
+
+  assign item_1_title = trust_bar_content.item_1_title | default: block.settings.item_1_title | default: 'Secure checkout'
+  assign item_1_text = trust_bar_content.item_1_text | default: block.settings.item_1_text | default: 'Encrypted payments and trusted checkout experience.'
+  assign item_2_title = trust_bar_content.item_2_title | default: block.settings.item_2_title | default: 'Fast fulfillment'
+  assign item_2_text = trust_bar_content.item_2_text | default: block.settings.item_2_text | default: 'Quick dispatch and reliable delivery updates.'
+  assign item_3_title = trust_bar_content.item_3_title | default: block.settings.item_3_title | default: 'Premium quality'
+  assign item_3_text = trust_bar_content.item_3_text | default: block.settings.item_3_text | default: 'Carefully selected materials and elevated product standards.'
+  assign item_4_title = trust_bar_content.item_4_title | default: block.settings.item_4_title | default: 'Responsive support'
+  assign item_4_text = trust_bar_content.item_4_text | default: block.settings.item_4_text | default: 'Helpful customer support when shoppers need assistance.'
 
   case section_style
     when 'dark'
@@ -96,30 +107,91 @@
     {% endif %}
 
     <div class="luxe-trust-bar__grid-{{ block.id }}">
-      {% for index in (1..4) %}
-        {% liquid
-          assign title_key = 'item_' | append: index | append: '_title'
-          assign text_key = 'item_' | append: index | append: '_text'
-          assign item_title = block.settings[title_key]
-          assign item_text = block.settings[text_key]
-        %}
+      {% liquid
+        assign item_1_has_content = false
+        if item_1_title != blank or item_1_text != blank
+          assign item_1_has_content = true
+        endif
 
-        {% if item_title != blank or item_text != blank %}
-          <div class="luxe-trust-bar__item-{{ block.id }}">
-            {% if item_title != blank %}
-              <h3 class="luxe-trust-bar__item-title-{{ block.id }}">
-                {{ item_title | escape }}
-              </h3>
-            {% endif %}
+        assign item_2_has_content = false
+        if item_2_title != blank or item_2_text != blank
+          assign item_2_has_content = true
+        endif
 
-            {% if item_text != blank %}
-              <p class="luxe-trust-bar__item-text-{{ block.id }}">
-                {{ item_text | escape }}
-              </p>
-            {% endif %}
-          </div>
-        {% endif %}
-      {% endfor %}
+        assign item_3_has_content = false
+        if item_3_title != blank or item_3_text != blank
+          assign item_3_has_content = true
+        endif
+
+        assign item_4_has_content = false
+        if item_4_title != blank or item_4_text != blank
+          assign item_4_has_content = true
+        endif
+      %}
+
+      {% if item_1_has_content %}
+        <div class="luxe-trust-bar__item-{{ block.id }}">
+          {% if item_1_title != blank %}
+            <h3 class="luxe-trust-bar__item-title-{{ block.id }}">
+              {{ item_1_title | escape }}
+            </h3>
+          {% endif %}
+
+          {% if item_1_text != blank %}
+            <p class="luxe-trust-bar__item-text-{{ block.id }}">
+              {{ item_1_text | escape }}
+            </p>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {% if item_2_has_content %}
+        <div class="luxe-trust-bar__item-{{ block.id }}">
+          {% if item_2_title != blank %}
+            <h3 class="luxe-trust-bar__item-title-{{ block.id }}">
+              {{ item_2_title | escape }}
+            </h3>
+          {% endif %}
+
+          {% if item_2_text != blank %}
+            <p class="luxe-trust-bar__item-text-{{ block.id }}">
+              {{ item_2_text | escape }}
+            </p>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {% if item_3_has_content %}
+        <div class="luxe-trust-bar__item-{{ block.id }}">
+          {% if item_3_title != blank %}
+            <h3 class="luxe-trust-bar__item-title-{{ block.id }}">
+              {{ item_3_title | escape }}
+            </h3>
+          {% endif %}
+
+          {% if item_3_text != blank %}
+            <p class="luxe-trust-bar__item-text-{{ block.id }}">
+              {{ item_3_text | escape }}
+            </p>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {% if item_4_has_content %}
+        <div class="luxe-trust-bar__item-{{ block.id }}">
+          {% if item_4_title != blank %}
+            <h3 class="luxe-trust-bar__item-title-{{ block.id }}">
+              {{ item_4_title | escape }}
+            </h3>
+          {% endif %}
+
+          {% if item_4_text != blank %}
+            <p class="luxe-trust-bar__item-text-{{ block.id }}">
+              {{ item_4_text | escape }}
+            </p>
+          {% endif %}
+        </div>
+      {% endif %}
     </div>
   </div>
 </div>
