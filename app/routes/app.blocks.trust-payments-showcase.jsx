@@ -363,8 +363,6 @@ export default function TrustPaymentsShowcaseEditorRoute() {
                     />
                     <input type="hidden" name="heading" value={heading} />
 
-                    <} />
-
                     <TextField
                       label="Subheading"
                       value={subheading}
