@@ -1,3 +1,26 @@
+const STORE_LINK_SUGGESTIONS = [
+  { label: "Home page", value: "/" },
+  { label: "All products", value: "/collections/all" },
+  { label: "Catalog", value: "/collections" },
+  { label: "Contact page", value: "/pages/contact" },
+  { label: "About page", value: "/pages/about" },
+];
+
+const HERO_COLOR_PRESETS = [
+  "#ffffff",
+  "#000000",
+  "#0f172a",
+  "#1f2937",
+  "#f8e7b0",
+  "#d6b37a",
+  "#e5e7eb",
+  "#111827",
+  "#182235",
+  "rgba(255,255,255,0.08)",
+  "rgba(255,255,255,0.16)",
+  "rgba(255,255,255,0.22)",
+];
+
 export const luxeHeroEditorSections = [
   {
     title: "Free",
@@ -28,7 +51,10 @@ export const luxeHeroEditorSections = [
           {
             fieldName: "primaryButtonLink",
             label: "Primary button link",
-            type: "text",
+            type: "link",
+            suggestions: STORE_LINK_SUGGESTIONS,
+            helpText:
+              "Choose a common store destination or paste a Shopify page path.",
           },
           {
             fieldName: "secondaryButtonLabel",
@@ -38,60 +64,127 @@ export const luxeHeroEditorSections = [
           {
             fieldName: "secondaryButtonLink",
             label: "Secondary button link",
-            type: "text",
+            type: "link",
+            suggestions: STORE_LINK_SUGGESTIONS,
+            helpText:
+              "Choose a common store destination or paste a Shopify page path.",
           },
         ],
       },
       {
         title: "Colors",
         fields: [
-          { fieldName: "textColor", label: "Text color", type: "text" },
-          { fieldName: "subtextColor", label: "Subtext color", type: "text" },
-          { fieldName: "headingColor", label: "Heading color", type: "text" },
+          {
+            fieldName: "textColor",
+            label: "Text color",
+            type: "color",
+            presets: HERO_COLOR_PRESETS,
+            fallback: "#ffffff",
+          },
+          {
+            fieldName: "subtextColor",
+            label: "Subtext color",
+            type: "color",
+            presets: HERO_COLOR_PRESETS,
+            fallback: "rgba(255,255,255,0.84)",
+          },
+          {
+            fieldName: "headingColor",
+            label: "Heading color",
+            type: "color",
+            presets: HERO_COLOR_PRESETS,
+            fallback: "#ffffff",
+          },
           {
             fieldName: "backgroundColor",
             label: "Background color",
-            type: "text",
+            type: "color",
+            presets: HERO_COLOR_PRESETS,
+            fallback: "#0f172a",
           },
-          { fieldName: "surfaceColor", label: "Surface color", type: "text" },
+          {
+            fieldName: "surfaceColor",
+            label: "Surface color",
+            type: "color",
+            presets: HERO_COLOR_PRESETS,
+            fallback: "rgba(255,255,255,0.06)",
+          },
           {
             fieldName: "cardBackgroundColor",
             label: "Card background color",
-            type: "text",
+            type: "color",
+            presets: HERO_COLOR_PRESETS,
+            fallback: "rgba(255,255,255,0.08)",
           },
-          { fieldName: "borderColor", label: "Border color", type: "text" },
-          { fieldName: "accentColor", label: "Accent color", type: "text" },
-          { fieldName: "overlayColor", label: "Overlay color", type: "text" },
-          { fieldName: "iconColor", label: "Icon color", type: "text" },
+          {
+            fieldName: "borderColor",
+            label: "Border color",
+            type: "color",
+            presets: HERO_COLOR_PRESETS,
+            fallback: "rgba(255,255,255,0.22)",
+          },
+          {
+            fieldName: "accentColor",
+            label: "Accent color",
+            type: "color",
+            presets: HERO_COLOR_PRESETS,
+            fallback: "#f8e7b0",
+          },
+          {
+            fieldName: "overlayColor",
+            label: "Overlay color",
+            type: "color",
+            presets: HERO_COLOR_PRESETS,
+            fallback: "#0f172a",
+          },
+          {
+            fieldName: "iconColor",
+            label: "Icon color",
+            type: "color",
+            presets: HERO_COLOR_PRESETS,
+            fallback: "#1f2937",
+          },
           {
             fieldName: "iconBackgroundColor",
             label: "Icon background color",
-            type: "text",
+            type: "color",
+            presets: HERO_COLOR_PRESETS,
+            fallback: "rgba(248, 231, 176, 0.16)",
           },
           {
             fieldName: "primaryButtonColor",
             label: "Primary button color",
-            type: "text",
+            type: "color",
+            presets: HERO_COLOR_PRESETS,
+            fallback: "#f8e7b0",
           },
           {
             fieldName: "primaryButtonTextColor",
             label: "Primary button text color",
-            type: "text",
+            type: "color",
+            presets: HERO_COLOR_PRESETS,
+            fallback: "#1f2937",
           },
           {
             fieldName: "secondaryButtonColor",
             label: "Secondary button color",
-            type: "text",
+            type: "color",
+            presets: HERO_COLOR_PRESETS,
+            fallback: "rgba(255,255,255,0.08)",
           },
           {
             fieldName: "secondaryButtonTextColor",
             label: "Secondary button text color",
-            type: "text",
+            type: "color",
+            presets: HERO_COLOR_PRESETS,
+            fallback: "#ffffff",
           },
           {
             fieldName: "backgroundFallbackColor",
             label: "Fallback background color",
-            type: "text",
+            type: "color",
+            presets: HERO_COLOR_PRESETS,
+            fallback: "#182235",
           },
         ],
       },
@@ -162,7 +255,11 @@ export const luxeHeroEditorSections = [
           {
             fieldName: "backgroundImage",
             label: "Background image",
-            type: "text",
+            type: "image",
+            recommendedDesktop: "1920 × 900 px",
+            recommendedMobile: "1080 × 1400 px",
+            helpText:
+              "Use a wide hero image. Keep the main product or message near the center.",
           },
           {
             fieldName: "overlayOpacity",
@@ -328,7 +425,11 @@ export const luxeHeroEditorSections = [
           {
             fieldName: "backgroundVideo",
             label: "Background video",
-            type: "text",
+            type: "video",
+            recommendedDesktop: "1920 × 900 px video",
+            recommendedMobile: "1080 × 1400 px video",
+            helpText:
+              "Use a short lightweight loop with the main visual focus centered.",
           },
           {
             fieldName: "layeredBackgroundEffects",

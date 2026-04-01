@@ -1,6 +1,16 @@
-import { Badge, BlockStack, InlineStack, Select, Text, TextField } from "@shopify/polaris";
+import {
+  Badge,
+  BlockStack,
+  InlineStack,
+  Select,
+  Text,
+  TextField,
+} from "@shopify/polaris";
 import { BLOCK_KEYS, PLAN_KEYS } from "../../plan-rules";
 import { getFieldPlanAccess } from "../../block-plan-enforcement";
+import { ColorField } from "./fields/ColorField";
+import { MediaField } from "./fields/MediaField";
+import { LinkField } from "./fields/LinkField";
 
 function getPlanBadgeTone(requiredPlan) {
   if (requiredPlan === PLAN_KEYS.PREMIUM) {
@@ -48,6 +58,71 @@ export function BlockEditorField({
       />
     </InlineStack>
   );
+
+  if (field.type === "color") {
+    return (
+      <BlockStack key={field.fieldName} gap="100">
+        {commonLabel}
+        <ColorField
+          label={field.label}
+          value={String(value ?? "")}
+          onChange={onChange}
+          presets={field.presets}
+          fallback={field.fallback}
+          helpText={field.helpText}
+        />
+      </BlockStack>
+    );
+  }
+
+  if (field.type === "image") {
+    return (
+      <BlockStack key={field.fieldName} gap="100">
+        {commonLabel}
+        <MediaField
+          label={field.label}
+          value={String(value ?? "")}
+          onChange={onChange}
+          accept="image"
+          recommendedDesktop={field.recommendedDesktop}
+          recommendedMobile={field.recommendedMobile}
+          helpText={field.helpText}
+        />
+      </BlockStack>
+    );
+  }
+
+  if (field.type === "video") {
+    return (
+      <BlockStack key={field.fieldName} gap="100">
+        {commonLabel}
+        <MediaField
+          label={field.label}
+          value={String(value ?? "")}
+          onChange={onChange}
+          accept="video"
+          recommendedDesktop={field.recommendedDesktop}
+          recommendedMobile={field.recommendedMobile}
+          helpText={field.helpText}
+        />
+      </BlockStack>
+    );
+  }
+
+  if (field.type === "link") {
+    return (
+      <BlockStack key={field.fieldName} gap="100">
+        {commonLabel}
+        <LinkField
+          label={field.label}
+          value={String(value ?? "")}
+          onChange={onChange}
+          suggestions={field.suggestions}
+          helpText={field.helpText}
+        />
+      </BlockStack>
+    );
+  }
 
   if (field.type === "select") {
     return (
