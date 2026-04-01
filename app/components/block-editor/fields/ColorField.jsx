@@ -1,13 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  BlockStack,
-  Box,
-  InlineGrid,
-  InlineStack,
-  RangeSlider,
-  Text,
-  TextField,
-} from "@shopify/polaris";
+import { BlockStack, Box, InlineGrid, RangeSlider, Text, TextField } from "@shopify/polaris";
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
@@ -56,11 +48,7 @@ function parseRgbColor(input) {
     r: clamp(Number.parseFloat(match[1]), 0, 255),
     g: clamp(Number.parseFloat(match[2]), 0, 255),
     b: clamp(Number.parseFloat(match[3]), 0, 255),
-    a: clamp(
-      match[4] == null ? 1 : Number.parseFloat(match[4]),
-      0,
-      1,
-    ),
+    a: clamp(match[4] == null ? 1 : Number.parseFloat(match[4]), 0, 1),
   };
 }
 
@@ -90,25 +78,7 @@ function formatColor({ r, g, b, a }) {
   return `rgba(${Math.round(r)},${Math.round(g)},${Math.round(b)},${formatAlpha(a)})`;
 }
 
-const DEFAULT_PRESETS = [
-  "#ffffff",
-  "#000000",
-  "#0f172a",
-  "#1f2937",
-  "#f8e7b0",
-  "#d6b37a",
-  "#e5e7eb",
-  "#111827",
-];
-
-export function ColorField({
-  label,
-  value,
-  onChange,
-  presets = DEFAULT_PRESETS,
-  fallback = "#000000",
-  helpText,
-}) {
+export function ColorField({ label, value, onChange, fallback = "#000000", helpText }) {
   const pickerRef = useRef(null);
 
   const parsed = useMemo(() => parseColor(value, fallback), [value, fallback]);
@@ -158,40 +128,19 @@ export function ColorField({
 
   function handleTextBlur() {
     const nextParsed = parseColor(textValue, fallback);
-
     setAlphaValue(Math.round(nextParsed.a * 100));
     onChange?.(formatColor(nextParsed));
   }
 
-  function applyPreset(preset) {
-    const parsedPreset = parseColor(preset, fallback);
-
-    emitColor({
-      ...parsedPreset,
-      a: alphaValue / 100,
-    });
-  }
-
   const currentHex = rgbToHex(parsed.r, parsed.g, parsed.b);
-  const previewBackground =
+  const swatchBackground =
     alphaValue < 100
       ? `linear-gradient(0deg, rgba(${Math.round(parsed.r)}, ${Math.round(parsed.g)}, ${Math.round(parsed.b)}, ${alphaValue / 100}), rgba(${Math.round(parsed.r)}, ${Math.round(parsed.g)}, ${Math.round(parsed.b)}, ${alphaValue / 100}))`
       : currentHex;
 
   return (
     <BlockStack gap="200">
-      <InlineGrid columns={{ xs: "auto 1fr auto", md: "auto 1fr auto" }} gap="200">
-        <div
-          style={{
-            width: "40px",
-            height: "40px",
-            borderRadius: "999px",
-            background: previewBackground,
-            border: "1px solid rgba(15, 23, 42, 0.12)",
-            boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.15)",
-          }}
-        />
-
+      <InlineGrid columns={{ xs: "1fr auto", md: "1fr auto" }} gap="200" alignItems="end">
         <TextField
           label={label}
           value={textValue}
@@ -200,7 +149,11 @@ export function ColorField({
           autoComplete="off"
         />
 
-        <div
+        <button
+          type="button"
+          onClick={() => pickerRef.current?.click()}
+          aria-label={`Choose ${label || "color"}`}
+          title={currentHex}
           style={{
             position: "relative",
             width: "44px",
@@ -208,11 +161,12 @@ export function ColorField({
             height: "44px",
             borderRadius: "12px",
             border: "1px solid rgba(15, 23, 42, 0.12)",
-            background: currentHex,
+            background: swatchBackground,
+            boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.18)",
             overflow: "hidden",
             cursor: "pointer",
+            padding: 0,
           }}
-          onClick={() => pickerRef.current?.click()}
         >
           <input
             ref={pickerRef}
@@ -226,46 +180,26 @@ export function ColorField({
               cursor: "pointer",
             }}
           />
-        </div>
+        </button>
       </InlineGrid>
 
-      <RangeSlider
-        label="Opacity"
-        value={alphaValue}
-        onChange={handleAlphaChange}
-        min={0}
-        max={100}
-        step={1}
-        output
-      />
-
       <BlockStack gap="100">
-        <Text as="p" variant="bodySm" tone="subdued">
-          Quick colors
-        </Text>
+        <Box>
+          <Text as="p" variant="bodySm" tone="subdued">
+            Opacity
+          </Text>
+        </Box>
 
-        <InlineStack gap="150" wrap>
-          {presets.map((preset) => (
-            <button
-              key={preset}
-              type="button"
-              onClick={() => applyPreset(preset)}
-              style={{
-                width: "28px",
-                height: "28px",
-                borderRadius: "999px",
-                border:
-                  preset.toLowerCase() === currentHex.toLowerCase()
-                    ? "2px solid #111827"
-                    : "1px solid rgba(15, 23, 42, 0.12)",
-                background: preset,
-                cursor: "pointer",
-              }}
-              aria-label={`Use color ${preset}`}
-              title={preset}
-            />
-          ))}
-        </InlineStack>
+        <RangeSlider
+          label="Opacity"
+          labelHidden
+          value={alphaValue}
+          onChange={handleAlphaChange}
+          min={0}
+          max={100}
+          step={1}
+          output
+        />
       </BlockStack>
 
       {helpText ? (

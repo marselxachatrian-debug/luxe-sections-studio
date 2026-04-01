@@ -1,4 +1,4 @@
-import { BlockStack, InlineGrid } from "@shopify/polaris";
+import { InlineGrid } from "@shopify/polaris";
 
 export function BlockEditorShell({
   header,
@@ -12,6 +12,14 @@ export function BlockEditorShell({
     <>
       <style>
         {`
+          .lss-block-editor-root {
+            min-height: 0;
+          }
+
+          .lss-block-editor-header {
+            min-height: 0;
+          }
+
           .lss-block-editor-shell {
             min-height: 0;
           }
@@ -23,12 +31,27 @@ export function BlockEditorShell({
           .lss-block-editor-sidebar,
           .lss-block-editor-preview {
             min-width: 0;
+            min-height: 0;
           }
 
           @media screen and (min-width: 1024px) {
-            .lss-block-editor-shell {
+            .lss-block-editor-root {
               height: calc(100vh - ${viewportOffset}px);
               min-height: ${minDesktopHeight}px;
+              display: flex;
+              flex-direction: column;
+              overflow: hidden;
+            }
+
+            .lss-block-editor-header {
+              flex: 0 0 auto;
+              padding-bottom: 12px;
+            }
+
+            .lss-block-editor-shell {
+              flex: 1 1 auto;
+              min-height: 0;
+              overflow: hidden;
             }
 
             .lss-block-editor-layout {
@@ -38,7 +61,9 @@ export function BlockEditorShell({
 
             .lss-block-editor-sidebar {
               height: 100%;
+              min-height: 0;
               overflow-y: auto;
+              overflow-x: hidden;
               padding-right: 10px;
               scrollbar-gutter: stable;
             }
@@ -60,14 +85,15 @@ export function BlockEditorShell({
 
             .lss-block-editor-preview {
               height: 100%;
+              min-height: 0;
               overflow: hidden;
             }
           }
         `}
       </style>
 
-      <BlockStack gap="300">
-        {header}
+      <div className="lss-block-editor-root">
+        <div className="lss-block-editor-header">{header}</div>
 
         <div className="lss-block-editor-shell">
           <InlineGrid
@@ -79,7 +105,7 @@ export function BlockEditorShell({
             <div className="lss-block-editor-preview">{preview}</div>
           </InlineGrid>
         </div>
-      </BlockStack>
+      </div>
     </>
   );
 }

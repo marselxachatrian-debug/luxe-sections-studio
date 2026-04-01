@@ -1024,7 +1024,8 @@ export default function LuxeHeroEditorRoute() {
   );
 
   return (
-    <Page>
+  <Page fullWidth>
+    <div style={{ minHeight: 0 }}>
       <BlockEditorShell
         header={header}
         sidebar={sidebar}
@@ -1033,6 +1034,6 @@ export default function LuxeHeroEditorRoute() {
         minDesktopHeight={720}
         viewportOffset={220}
       />
-    </Page>
-  );
-}
+    </div>
+  </Page>
+);
