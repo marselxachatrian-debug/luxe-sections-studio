@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useFetcher } from "react-router";
 import {
   BlockStack,
   Button,
@@ -39,30 +40,77 @@ export function MediaField({
   recommendedMobile = "1080 × 1400 px",
   helpText,
 }) {
+  const fetcher = useFetcher();
   const [localFile, setLocalFile] = useState(null);
+  const [uploadError, setUploadError] = useState("");
 
   const kind = getFileKind(accept);
+  const isUploading = fetcher.state !== "idle";
 
-  const previewUrl = useMemo(() => {
-    if (localFile) {
-      return URL.createObjectURL(localFile);
+  const localPreviewUrl = useMemo(() => {
+    if (!localFile) {
+      return "";
     }
 
-    return String(value || "").trim();
-  }, [localFile, value]);
+    return URL.createObjectURL(localFile);
+  }, [localFile]);
+
+  useEffect(() => {
+    return () => {
+      if (localPreviewUrl) {
+        URL.revokeObjectURL(localPreviewUrl);
+      }
+    };
+  }, [localPreviewUrl]);
+
+  useEffect(() => {
+    if (fetcher.state !== "idle") {
+      return;
+    }
+
+    if (fetcher.data?.ok && fetcher.data.url) {
+      onChange?.(fetcher.data.url);
+      setLocalFile(null);
+      setUploadError("");
+      return;
+    }
+
+    if (fetcher.data?.ok === false) {
+      setUploadError(fetcher.data.error || "Upload failed.");
+    }
+  }, [fetcher.state, fetcher.data, onChange]);
+
+  const previewUrl = localPreviewUrl || String(value || "").trim();
 
   function handleDrop(_droppedFiles, acceptedFiles) {
     const firstFile = acceptedFiles?.[0];
 
     if (!firstFile || !matchesAccept(firstFile, accept)) {
+      setUploadError(
+        accept === "video"
+          ? "Please choose a video file."
+          : "Please choose an image file.",
+      );
       return;
     }
 
+    setUploadError("");
     setLocalFile(firstFile);
+
+    const formData = new FormData();
+    formData.append("file", firstFile);
+    formData.append("mediaKind", kind);
+
+    fetcher.submit(formData, {
+      method: "post",
+      action: "/app/api/media-upload",
+      encType: "multipart/form-data",
+    });
   }
 
   function clearLocalSelection() {
     setLocalFile(null);
+    setUploadError("");
   }
 
   return (
@@ -90,6 +138,7 @@ export function MediaField({
             type={accept === "video" ? "video" : "image"}
             allowMultiple={false}
             onDrop={handleDrop}
+            disabled={isUploading}
           >
             <DropZone.FileUpload
               actionHint={
@@ -109,6 +158,18 @@ export function MediaField({
             </Text>
           </BlockStack>
 
+          {isUploading ? (
+            <Text as="p" variant="bodySm" tone="subdued">
+              Uploading to Shopify...
+            </Text>
+          ) : null}
+
+          {uploadError ? (
+            <Text as="p" variant="bodySm" tone="critical">
+              {uploadError}
+            </Text>
+          ) : null}
+
           {previewUrl ? (
             <div
               style={{
@@ -125,7 +186,11 @@ export function MediaField({
                   </Text>
 
                   {localFile ? (
-                    <Button size="micro" onClick={clearLocalSelection}>
+                    <Button
+                      size="micro"
+                      onClick={clearLocalSelection}
+                      disabled={isUploading}
+                    >
                       Remove local file
                     </Button>
                   ) : null}
@@ -143,16 +208,12 @@ export function MediaField({
                     }}
                   />
                 ) : (
-                  <Thumbnail
-                    source={previewUrl}
-                    alt={label}
-                    size="large"
-                  />
+                  <Thumbnail source={previewUrl} alt={label} size="large" />
                 )}
 
                 <Text as="p" variant="bodySm" tone="subdued">
                   {localFile
-                    ? `Local file selected: ${localFile.name}`
+                    ? `Selected file: ${localFile.name}`
                     : "Using saved URL value"}
                 </Text>
               </BlockStack>

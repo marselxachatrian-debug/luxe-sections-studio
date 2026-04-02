@@ -12,14 +12,19 @@
   assign section_height = hero_content.desktop_height | default: 560
   assign mobile_section_height = hero_content.mobile_height | default: 460
 
-  assign button_link = block.settings.button_link
-  assign secondary_button_link = block.settings.secondary_button_link
-  assign background_image = block.settings.background_image
-  assign background_video = block.settings.background_video
-  assign padding_top = block.settings.padding_top
-  assign padding_bottom = block.settings.padding_bottom
-  assign mobile_padding_top = block.settings.mobile_padding_top
-  assign mobile_padding_bottom = block.settings.mobile_padding_bottom
+  assign primary_button_link = hero_content.primary_button_link | default: block.settings.button_link
+  assign secondary_button_link = hero_content.secondary_button_link | default: block.settings.secondary_button_link
+
+  assign metaobject_background_image = hero_content.background_image | default: blank
+  assign metaobject_background_video = hero_content.background_video | default: blank
+
+  assign block_background_image = block.settings.background_image
+  assign block_background_video = block.settings.background_video
+
+  assign padding_top = hero_content.padding_top | default: block.settings.padding_top
+  assign padding_bottom = hero_content.padding_bottom | default: block.settings.padding_bottom
+  assign mobile_padding_top = hero_content.mobile_padding_top | default: block.settings.mobile_padding_top
+  assign mobile_padding_bottom = hero_content.mobile_padding_bottom | default: block.settings.mobile_padding_bottom
 %}
 
 {% liquid
@@ -39,26 +44,47 @@
   style="background: {{ section_background }};"
 >
   <div class="luxe-hero__background">
-    {% if background_video != blank %}
+    {% if block_background_video != blank %}
       <div class="luxe-hero__video-container">
         {{
-          background_video
+          block_background_video
           | video_tag:
             autoplay: true,
             loop: true,
             muted: true,
-            controls: false
+            controls: false,
+            class: 'luxe-hero__video'
         }}
       </div>
-    {% elsif background_image != blank %}
+    {% elsif metaobject_background_video != blank %}
+      <div class="luxe-hero__video-container">
+        <video
+          class="luxe-hero__video"
+          autoplay
+          loop
+          muted
+          playsinline
+        >
+          <source src="{{ metaobject_background_video }}">
+        </video>
+      </div>
+    {% elsif block_background_image != blank %}
       {{
-        background_image
+        block_background_image
         | image_url: width: 2400
         | image_tag:
           class: 'luxe-hero__image',
           loading: 'lazy',
-          sizes: '100vw'
+          sizes: '100vw',
+          alt: heading
       }}
+    {% elsif metaobject_background_image != blank %}
+      <img
+        class="luxe-hero__image"
+        src="{{ metaobject_background_image }}"
+        alt="{{ heading | escape }}"
+        loading="lazy"
+      >
     {% else %}
       <div class="luxe-hero__placeholder"></div>
     {% endif %}
@@ -88,8 +114,8 @@
       {% if button_label != blank or secondary_button_label != blank %}
         <div class="luxe-hero__actions">
           {% if button_label != blank %}
-            {% if button_link != blank %}
-              <a class="luxe-hero__button luxe-hero__button--primary" href="{{ button_link }}">
+            {% if primary_button_link != blank %}
+              <a class="luxe-hero__button luxe-hero__button--primary" href="{{ primary_button_link }}">
                 {{ button_label }}
               </a>
             {% else %}
@@ -140,7 +166,8 @@
     height: 100%;
   }
 
-  #LuxeHero-{{ block.id }} .luxe-hero__video-container video {
+  #LuxeHero-{{ block.id }} .luxe-hero__video-container video,
+  #LuxeHero-{{ block.id }} .luxe-hero__video {
     width: 100%;
     height: 100%;
     object-fit: cover;
