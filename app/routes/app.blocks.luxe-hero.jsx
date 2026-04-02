@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useFetcher, useLoaderData } from "react-router";
+import { Link, useFetcher, useLoaderData, useLocation } from "react-router";
 import {
   Badge,
   BlockStack,
@@ -332,10 +332,13 @@ export default function LuxeHeroEditorRoute() {
     savedSettings,
   } = useLoaderData();
 
+  const location = useLocation();
   const fetcher = useFetcher();
   const [device, setDevice] = useState("desktop");
   const [settings, setSettings] = useState(() => ({ ...savedSettings }));
   const [saveMessage, setSaveMessage] = useState("Saved values loaded");
+
+  const saveAction = `${location.pathname}${location.search}`;
 
   function updateSetting(fieldName, value) {
     setSettings((current) => ({
@@ -346,20 +349,6 @@ export default function LuxeHeroEditorRoute() {
 
   function applySavedSettingsToEditor(nextSettings) {
     setSettings({ ...nextSettings });
-  }
-
-  function handleSave() {
-    const formData = new FormData();
-
-    for (const [fieldName, value] of Object.entries(settings)) {
-      formData.append(fieldName, String(value ?? ""));
-    }
-
-    setSaveMessage("Saving...");
-    fetcher.submit(formData, {
-      method: "post",
-      action: "/app/blocks/luxe-hero",
-    });
   }
 
   useEffect(() => {
@@ -550,33 +539,48 @@ export default function LuxeHeroEditorRoute() {
         blockedFeatureDetails={blockedFeatureDetails}
       />
 
-      <BlockStack gap="300">
-        <BlockEditorGroups
-          currentPlanKey={currentPlanKey}
-          blockKey={BLOCK_KEYS.LUXE_HERO}
-          settings={settings}
-          onChange={updateSetting}
-          sections={luxeHeroEditorSections}
-        />
+      <fetcher.Form method="post" action={saveAction}>
+        <input type="hidden" name="badgeText" value={settings.badgeText} />
 
-        <Card>
-          <InlineStack align="space-between" blockAlign="center" wrap>
-            <Text as="p" variant="bodySm" tone="subdued">
-              The preview always shows the full result on the right.
-              Saving only applies features available on your current
-              plan.
-            </Text>
+        {Object.entries(settings).map(([fieldName, value]) => {
+          if (fieldName === "badgeText") {
+            return null;
+          }
 
-            <Button
-              variant="primary"
-              loading={isSaving}
-              onClick={handleSave}
-            >
-              Save
-            </Button>
-          </InlineStack>
-        </Card>
-      </BlockStack>
+          return (
+            <input
+              key={fieldName}
+              type="hidden"
+              name={fieldName}
+              value={String(value ?? "")}
+            />
+          );
+        })}
+
+        <BlockStack gap="300">
+          <BlockEditorGroups
+            currentPlanKey={currentPlanKey}
+            blockKey={BLOCK_KEYS.LUXE_HERO}
+            settings={settings}
+            onChange={updateSetting}
+            sections={luxeHeroEditorSections}
+          />
+
+          <Card>
+            <InlineStack align="space-between" blockAlign="center" wrap>
+              <Text as="p" variant="bodySm" tone="subdued">
+                The preview always shows the full result on the right.
+                Saving only applies features available on your current
+                plan.
+              </Text>
+
+              <Button submit variant="primary" loading={isSaving}>
+                Save
+              </Button>
+            </InlineStack>
+          </Card>
+        </BlockStack>
+      </fetcher.Form>
     </BlockStack>
   );
 
