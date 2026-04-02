@@ -356,7 +356,10 @@ export default function LuxeHeroEditorRoute() {
     }
 
     setSaveMessage("Saving...");
-    fetcher.submit(formData, { method: "post" });
+    fetcher.submit(formData, {
+      method: "post",
+      action: "/app/blocks/luxe-hero",
+    });
   }
 
   useEffect(() => {
