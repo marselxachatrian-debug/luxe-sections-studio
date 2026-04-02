@@ -348,6 +348,17 @@ export default function LuxeHeroEditorRoute() {
     setSettings({ ...nextSettings });
   }
 
+  function handleSave() {
+    const formData = new FormData();
+
+    for (const [fieldName, value] of Object.entries(settings)) {
+      formData.append(fieldName, String(value ?? ""));
+    }
+
+    setSaveMessage("Saving...");
+    fetcher.submit(formData, { method: "post" });
+  }
+
   useEffect(() => {
     if (fetcher.state !== "idle") {
       return;
@@ -536,48 +547,33 @@ export default function LuxeHeroEditorRoute() {
         blockedFeatureDetails={blockedFeatureDetails}
       />
 
-      <fetcher.Form method="post">
-        <input type="hidden" name="badgeText" value={settings.badgeText} />
+      <BlockStack gap="300">
+        <BlockEditorGroups
+          currentPlanKey={currentPlanKey}
+          blockKey={BLOCK_KEYS.LUXE_HERO}
+          settings={settings}
+          onChange={updateSetting}
+          sections={luxeHeroEditorSections}
+        />
 
-        {Object.entries(settings).map(([fieldName, value]) => {
-          if (fieldName === "badgeText") {
-            return null;
-          }
+        <Card>
+          <InlineStack align="space-between" blockAlign="center" wrap>
+            <Text as="p" variant="bodySm" tone="subdued">
+              The preview always shows the full result on the right.
+              Saving only applies features available on your current
+              plan.
+            </Text>
 
-          return (
-            <input
-              key={fieldName}
-              type="hidden"
-              name={fieldName}
-              value={String(value ?? "")}
-            />
-          );
-        })}
-
-        <BlockStack gap="300">
-          <BlockEditorGroups
-            currentPlanKey={currentPlanKey}
-            blockKey={BLOCK_KEYS.LUXE_HERO}
-            settings={settings}
-            onChange={updateSetting}
-            sections={luxeHeroEditorSections}
-          />
-
-          <Card>
-            <InlineStack align="space-between" blockAlign="center" wrap>
-              <Text as="p" variant="bodySm" tone="subdued">
-                The preview always shows the full result on the right.
-                Saving only applies features available on your current
-                plan.
-              </Text>
-
-              <Button submit variant="primary" loading={isSaving}>
-                Save
-              </Button>
-            </InlineStack>
-          </Card>
-        </BlockStack>
-      </fetcher.Form>
+            <Button
+              variant="primary"
+              loading={isSaving}
+              onClick={handleSave}
+            >
+              Save
+            </Button>
+          </InlineStack>
+        </Card>
+      </BlockStack>
     </BlockStack>
   );
 
@@ -1024,17 +1020,17 @@ export default function LuxeHeroEditorRoute() {
   );
 
   return (
-  <Page fullWidth>
-    <div style={{ minHeight: 0 }}>
-      <BlockEditorShell
-        header={header}
-        sidebar={sidebar}
-        preview={preview}
-        sidebarWidth="470px"
-        minDesktopHeight={720}
-        viewportOffset={220}
-      />
-    </div>
-  </Page>
-);
+    <Page fullWidth>
+      <div style={{ minHeight: 0 }}>
+        <BlockEditorShell
+          header={header}
+          sidebar={sidebar}
+          preview={preview}
+          sidebarWidth="470px"
+          minDesktopHeight={720}
+          viewportOffset={220}
+        />
+      </div>
+    </Page>
+  );
 }
