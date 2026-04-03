@@ -1,5 +1,11 @@
-export const LUXE_HERO_METAOBJECT_TYPE = "luxe_hero_content";
-export const LUXE_HERO_METAOBJECT_HANDLE = "default";
+export const LEGACY_LUXE_HERO_METAOBJECT_TYPE = "luxe_hero_content";
+export const LEGACY_LUXE_HERO_METAOBJECT_HANDLE = "default";
+
+export const LUXE_HERO_CONTENT_METAOBJECT_TYPE = "luxe_hero_content_main";
+export const LUXE_HERO_CONTENT_METAOBJECT_HANDLE = "default";
+
+export const LUXE_HERO_STYLE_METAOBJECT_TYPE = "luxe_hero_content_style";
+export const LUXE_HERO_STYLE_METAOBJECT_HANDLE = "default";
 
 export const LUXE_HERO_DEFAULTS = {
   badgeText: "Premium storefront",
@@ -93,241 +99,393 @@ const BUTTON_STYLE_VALUES = ["solid", "outline", "soft"];
 const TOGGLE_VALUES = ["enabled", "disabled"];
 const BACKGROUND_PRESET_VALUES = ["midnight", "champagne", "charcoal"];
 
-const LUXE_HERO_FIELD_DEFINITIONS = [
-  { name: "Badge text", key: "badge_text", type: "single_line_text_field" },
-  { name: "Heading", key: "heading", type: "multi_line_text_field" },
-  { name: "Subheading", key: "subheading", type: "multi_line_text_field" },
-
-  { name: "Text color", key: "text_color", type: "single_line_text_field" },
+const PRIMARY_FIELD_CONFIGS = [
   {
+    settingKey: "badgeText",
+    name: "Badge text",
+    key: "badge_text",
+    type: "single_line_text_field",
+  },
+  {
+    settingKey: "heading",
+    name: "Heading",
+    key: "heading",
+    type: "multi_line_text_field",
+  },
+  {
+    settingKey: "subheading",
+    name: "Subheading",
+    key: "subheading",
+    type: "multi_line_text_field",
+  },
+  {
+    settingKey: "textColor",
+    name: "Text color",
+    key: "text_color",
+    type: "single_line_text_field",
+  },
+  {
+    settingKey: "subtextColor",
     name: "Subtext color",
     key: "subtext_color",
     type: "single_line_text_field",
   },
   {
+    settingKey: "headingColor",
     name: "Heading color",
     key: "heading_color",
     type: "single_line_text_field",
   },
   {
+    settingKey: "backgroundColor",
     name: "Background color",
     key: "background_color",
     type: "single_line_text_field",
   },
   {
+    settingKey: "surfaceColor",
     name: "Surface color",
     key: "surface_color",
     type: "single_line_text_field",
   },
   {
+    settingKey: "cardBackgroundColor",
     name: "Card background color",
     key: "card_background_color",
     type: "single_line_text_field",
   },
   {
+    settingKey: "borderColor",
     name: "Border color",
     key: "border_color",
     type: "single_line_text_field",
   },
   {
+    settingKey: "accentColor",
     name: "Accent color",
     key: "accent_color",
     type: "single_line_text_field",
   },
   {
+    settingKey: "overlayColor",
     name: "Overlay color",
     key: "overlay_color",
     type: "single_line_text_field",
   },
-  { name: "Icon color", key: "icon_color", type: "single_line_text_field" },
   {
+    settingKey: "iconColor",
+    name: "Icon color",
+    key: "icon_color",
+    type: "single_line_text_field",
+  },
+  {
+    settingKey: "iconBackgroundColor",
     name: "Icon background color",
     key: "icon_background_color",
     type: "single_line_text_field",
   },
-
   {
+    settingKey: "primaryButtonColor",
     name: "Primary button color",
     key: "primary_button_color",
     type: "single_line_text_field",
   },
   {
+    settingKey: "primaryButtonTextColor",
     name: "Primary button text color",
     key: "primary_button_text_color",
     type: "single_line_text_field",
   },
   {
+    settingKey: "secondaryButtonColor",
     name: "Secondary button color",
     key: "secondary_button_color",
     type: "single_line_text_field",
   },
   {
+    settingKey: "secondaryButtonTextColor",
     name: "Secondary button text color",
     key: "secondary_button_text_color",
     type: "single_line_text_field",
   },
-
-  { name: "Border radius", key: "border_radius", type: "number_integer" },
-  { name: "Section style", key: "section_style", type: "single_line_text_field" },
-
-  { name: "Top padding", key: "padding_top", type: "number_integer" },
-  { name: "Bottom padding", key: "padding_bottom", type: "number_integer" },
   {
+    settingKey: "borderRadius",
+    name: "Border radius",
+    key: "border_radius",
+    type: "number_integer",
+  },
+  {
+    settingKey: "sectionStyle",
+    name: "Section style",
+    key: "section_style",
+    type: "single_line_text_field",
+  },
+  {
+    settingKey: "paddingTop",
+    name: "Top padding",
+    key: "padding_top",
+    type: "number_integer",
+  },
+  {
+    settingKey: "paddingBottom",
+    name: "Bottom padding",
+    key: "padding_bottom",
+    type: "number_integer",
+  },
+  {
+    settingKey: "mobilePaddingTop",
     name: "Mobile top padding",
     key: "mobile_padding_top",
     type: "number_integer",
   },
   {
+    settingKey: "mobilePaddingBottom",
     name: "Mobile bottom padding",
     key: "mobile_padding_bottom",
     type: "number_integer",
   },
-
-  { name: "Mobile layout", key: "mobile_layout", type: "single_line_text_field" },
-  { name: "Mobile spacing", key: "mobile_spacing", type: "number_integer" },
-  { name: "Desktop spacing", key: "desktop_spacing", type: "number_integer" },
-
   {
+    settingKey: "mobileLayout",
+    name: "Mobile layout",
+    key: "mobile_layout",
+    type: "single_line_text_field",
+  },
+  {
+    settingKey: "mobileSpacing",
+    name: "Mobile spacing",
+    key: "mobile_spacing",
+    type: "number_integer",
+  },
+  {
+    settingKey: "desktopSpacing",
+    name: "Desktop spacing",
+    key: "desktop_spacing",
+    type: "number_integer",
+  },
+  {
+    settingKey: "headingFontSize",
     name: "Heading font size",
     key: "heading_font_size",
     type: "number_integer",
   },
   {
+    settingKey: "subheadingFontSize",
     name: "Subheading font size",
     key: "subheading_font_size",
     type: "number_integer",
   },
-  { name: "Body font size", key: "body_font_size", type: "number_integer" },
-
   {
+    settingKey: "bodyFontSize",
+    name: "Body font size",
+    key: "body_font_size",
+    type: "number_integer",
+  },
+  {
+    settingKey: "backgroundImage",
     name: "Background image",
     key: "background_image",
     type: "single_line_text_field",
   },
   {
+    settingKey: "primaryButtonLabel",
     name: "Primary button label",
     key: "primary_button_label",
     type: "single_line_text_field",
   },
   {
+    settingKey: "primaryButtonLink",
     name: "Primary button link",
     key: "primary_button_link",
     type: "single_line_text_field",
   },
   {
+    settingKey: "secondaryButtonLabel",
     name: "Secondary button label",
     key: "secondary_button_label",
     type: "single_line_text_field",
   },
   {
+    settingKey: "secondaryButtonLink",
     name: "Secondary button link",
     key: "secondary_button_link",
     type: "single_line_text_field",
   },
-
-  { name: "Overlay opacity", key: "overlay_opacity", type: "number_integer" },
-  { name: "Desktop height", key: "desktop_height", type: "number_integer" },
-  { name: "Mobile height", key: "mobile_height", type: "number_integer" },
   {
+    settingKey: "overlayOpacity",
+    name: "Overlay opacity",
+    key: "overlay_opacity",
+    type: "number_integer",
+  },
+];
+
+const SECONDARY_FIELD_CONFIGS = [
+  {
+    settingKey: "desktopHeight",
+    name: "Desktop height",
+    key: "desktop_height",
+    type: "number_integer",
+  },
+  {
+    settingKey: "mobileHeight",
+    name: "Mobile height",
+    key: "mobile_height",
+    type: "number_integer",
+  },
+  {
+    settingKey: "backgroundFallbackColor",
     name: "Background fallback color",
     key: "background_fallback_color",
     type: "single_line_text_field",
   },
-
   {
+    settingKey: "contentAlignment",
     name: "Content alignment",
     key: "content_alignment",
     type: "single_line_text_field",
   },
   {
+    settingKey: "headingAlignment",
     name: "Heading alignment",
     key: "heading_alignment",
     type: "single_line_text_field",
   },
   {
+    settingKey: "desktopColumns",
     name: "Desktop columns",
     key: "desktop_columns",
     type: "single_line_text_field",
   },
-
-  { name: "Card style", key: "card_style", type: "single_line_text_field" },
-  { name: "Border width", key: "border_width", type: "number_integer" },
   {
+    settingKey: "cardStyle",
+    name: "Card style",
+    key: "card_style",
+    type: "single_line_text_field",
+  },
+  {
+    settingKey: "borderWidth",
+    name: "Border width",
+    key: "border_width",
+    type: "number_integer",
+  },
+  {
+    settingKey: "shadowStyle",
     name: "Shadow style",
     key: "shadow_style",
     type: "single_line_text_field",
   },
-  { name: "Font family", key: "font_family", type: "single_line_text_field" },
-  { name: "Font weight", key: "font_weight", type: "single_line_text_field" },
-  { name: "Letter spacing", key: "letter_spacing", type: "number_integer" },
   {
+    settingKey: "fontFamily",
+    name: "Font family",
+    key: "font_family",
+    type: "single_line_text_field",
+  },
+  {
+    settingKey: "fontWeight",
+    name: "Font weight",
+    key: "font_weight",
+    type: "single_line_text_field",
+  },
+  {
+    settingKey: "letterSpacing",
+    name: "Letter spacing",
+    key: "letter_spacing",
+    type: "number_integer",
+  },
+  {
+    settingKey: "buttonStyle",
     name: "Button style",
     key: "button_style",
     type: "single_line_text_field",
   },
-  { name: "Item gap", key: "item_gap", type: "number_integer" },
   {
+    settingKey: "itemGap",
+    name: "Item gap",
+    key: "item_gap",
+    type: "number_integer",
+  },
+  {
+    settingKey: "sectionMaxWidth",
     name: "Section max width",
     key: "section_max_width",
     type: "number_integer",
   },
   {
+    settingKey: "secondaryButtonStyle",
     name: "Secondary button style",
     key: "secondary_button_style",
     type: "single_line_text_field",
   },
   {
+    settingKey: "heroContentWidth",
     name: "Hero content width",
     key: "hero_content_width",
     type: "number_integer",
   },
-
   {
+    settingKey: "backgroundVideo",
     name: "Background video",
     key: "background_video",
     type: "single_line_text_field",
   },
   {
+    settingKey: "backgroundPreset",
     name: "Background preset",
     key: "background_preset",
     type: "single_line_text_field",
   },
   {
+    settingKey: "layeredBackgroundEffects",
     name: "Layered background effects",
     key: "layered_background_effects",
     type: "single_line_text_field",
   },
-  { name: "Glow effects", key: "glow_effects", type: "single_line_text_field" },
   {
+    settingKey: "glowEffects",
+    name: "Glow effects",
+    key: "glow_effects",
+    type: "single_line_text_field",
+  },
+  {
+    settingKey: "advancedAnimations",
     name: "Advanced animations",
     key: "advanced_animations",
     type: "single_line_text_field",
   },
   {
+    settingKey: "hoverEffects",
     name: "Hover effects",
     key: "hover_effects",
     type: "single_line_text_field",
   },
   {
+    settingKey: "animatedBorder",
     name: "Animated border",
     key: "animated_border",
     type: "single_line_text_field",
   },
   {
+    settingKey: "shimmerEffects",
     name: "Shimmer effects",
     key: "shimmer_effects",
     type: "single_line_text_field",
   },
   {
+    settingKey: "mouseFollowEffect",
     name: "Mouse follow effect",
     key: "mouse_follow_effect",
     type: "single_line_text_field",
   },
   {
+    settingKey: "premiumMotion",
     name: "Premium motion",
     key: "premium_motion",
     type: "single_line_text_field",
   },
+];
+
+const ALL_FIELD_CONFIGS = [
+  ...PRIMARY_FIELD_CONFIGS,
+  ...SECONDARY_FIELD_CONFIGS,
 ];
 
 function clampNumber(value, min, max, fallback) {
@@ -651,92 +809,6 @@ export function normalizeLuxeHeroSettings(input = {}) {
   };
 }
 
-function mapMetaobjectFields(metaobject) {
-  const fieldMap = {};
-
-  for (const field of metaobject?.fields ?? []) {
-    fieldMap[field.key] = field.value;
-  }
-
-  return normalizeLuxeHeroSettings({
-    badgeText: fieldMap.badge_text,
-    heading: fieldMap.heading,
-    subheading: fieldMap.subheading,
-
-    textColor: fieldMap.text_color,
-    subtextColor: fieldMap.subtext_color,
-    headingColor: fieldMap.heading_color,
-    backgroundColor: fieldMap.background_color,
-    surfaceColor: fieldMap.surface_color,
-    cardBackgroundColor: fieldMap.card_background_color,
-    borderColor: fieldMap.border_color,
-    accentColor: fieldMap.accent_color,
-    overlayColor: fieldMap.overlay_color,
-    iconColor: fieldMap.icon_color,
-    iconBackgroundColor: fieldMap.icon_background_color,
-
-    primaryButtonColor: fieldMap.primary_button_color,
-    primaryButtonTextColor: fieldMap.primary_button_text_color,
-    secondaryButtonColor: fieldMap.secondary_button_color,
-    secondaryButtonTextColor: fieldMap.secondary_button_text_color,
-
-    borderRadius: fieldMap.border_radius,
-    sectionStyle: fieldMap.section_style,
-
-    paddingTop: fieldMap.padding_top,
-    paddingBottom: fieldMap.padding_bottom,
-    mobilePaddingTop: fieldMap.mobile_padding_top,
-    mobilePaddingBottom: fieldMap.mobile_padding_bottom,
-
-    mobileLayout: fieldMap.mobile_layout,
-    mobileSpacing: fieldMap.mobile_spacing,
-    desktopSpacing: fieldMap.desktop_spacing,
-
-    headingFontSize: fieldMap.heading_font_size,
-    subheadingFontSize: fieldMap.subheading_font_size,
-    bodyFontSize: fieldMap.body_font_size,
-
-    backgroundImage: fieldMap.background_image,
-    primaryButtonLabel: fieldMap.primary_button_label,
-    primaryButtonLink: fieldMap.primary_button_link,
-    secondaryButtonLabel: fieldMap.secondary_button_label,
-    secondaryButtonLink: fieldMap.secondary_button_link,
-
-    overlayOpacity: fieldMap.overlay_opacity,
-    desktopHeight: fieldMap.desktop_height,
-    mobileHeight: fieldMap.mobile_height,
-    backgroundFallbackColor: fieldMap.background_fallback_color,
-
-    contentAlignment: fieldMap.content_alignment,
-    headingAlignment: fieldMap.heading_alignment,
-    desktopColumns: fieldMap.desktop_columns,
-
-    cardStyle: fieldMap.card_style,
-    borderWidth: fieldMap.border_width,
-    shadowStyle: fieldMap.shadow_style,
-    fontFamily: fieldMap.font_family,
-    fontWeight: fieldMap.font_weight,
-    letterSpacing: fieldMap.letter_spacing,
-
-    buttonStyle: fieldMap.button_style,
-    itemGap: fieldMap.item_gap,
-    sectionMaxWidth: fieldMap.section_max_width,
-    secondaryButtonStyle: fieldMap.secondary_button_style,
-    heroContentWidth: fieldMap.hero_content_width,
-
-    backgroundVideo: fieldMap.background_video,
-    backgroundPreset: fieldMap.background_preset,
-    layeredBackgroundEffects: fieldMap.layered_background_effects,
-    glowEffects: fieldMap.glow_effects,
-    advancedAnimations: fieldMap.advanced_animations,
-    hoverEffects: fieldMap.hover_effects,
-    animatedBorder: fieldMap.animated_border,
-    shimmerEffects: fieldMap.shimmer_effects,
-    mouseFollowEffect: fieldMap.mouse_follow_effect,
-    premiumMotion: fieldMap.premium_motion,
-  });
-}
-
 function getBlockingUserErrors(errors = []) {
   return errors.filter((error) => {
     const message = String(error?.message ?? "").toLowerCase();
@@ -749,10 +821,42 @@ function getBlockingUserErrors(errors = []) {
   });
 }
 
-async function getLuxeHeroDefinitionByType(admin) {
+function configsToFieldDefinitions(configs) {
+  return configs.map(({ name, key, type }) => ({
+    name,
+    key,
+    type,
+  }));
+}
+
+function serializeFieldValue(value) {
+  return String(value ?? "");
+}
+
+function mapFieldValuesFromMetaobject(metaobject, configs) {
+  const fieldMap = {};
+
+  for (const field of metaobject?.fields ?? []) {
+    fieldMap[field.key] = field.value;
+  }
+
+  const result = {};
+
+  for (const config of configs) {
+    result[config.settingKey] = fieldMap[config.key];
+  }
+
+  return result;
+}
+
+function mergeSettingsParts(...parts) {
+  return normalizeLuxeHeroSettings(Object.assign({}, ...parts));
+}
+
+async function getMetaobjectDefinitionByType(admin, type) {
   const response = await admin.graphql(
     `#graphql
-      query GetLuxeHeroDefinitionByType($type: String!) {
+      query GetMetaobjectDefinitionByType($type: String!) {
         metaobjectDefinitionByType(type: $type) {
           id
           name
@@ -766,23 +870,30 @@ async function getLuxeHeroDefinitionByType(admin) {
     `,
     {
       variables: {
-        type: LUXE_HERO_METAOBJECT_TYPE,
+        type,
       },
     },
   );
 
   const responseJson = await response.json();
-
   return responseJson.data?.metaobjectDefinitionByType ?? null;
 }
 
-export async function ensureLuxeHeroDefinition(admin) {
-  const existingDefinition = await getLuxeHeroDefinitionByType(admin);
+async function ensureMetaobjectDefinition(admin, options) {
+  const {
+    type,
+    name,
+    displayNameKey,
+    fieldDefinitions,
+    storefrontAccess = "PUBLIC_READ",
+  } = options;
+
+  const existingDefinition = await getMetaobjectDefinitionByType(admin, type);
 
   if (!existingDefinition) {
     const response = await admin.graphql(
       `#graphql
-        mutation CreateLuxeHeroDefinition($definition: MetaobjectDefinitionCreateInput!) {
+        mutation CreateMetaobjectDefinition($definition: MetaobjectDefinitionCreateInput!) {
           metaobjectDefinitionCreate(definition: $definition) {
             metaobjectDefinition {
               id
@@ -804,13 +915,13 @@ export async function ensureLuxeHeroDefinition(admin) {
       {
         variables: {
           definition: {
-            name: "Luxe Hero Content",
-            type: LUXE_HERO_METAOBJECT_TYPE,
-            displayNameKey: "heading",
+            name,
+            type,
+            displayNameKey,
             access: {
-              storefront: "PUBLIC_READ",
+              storefront: storefrontAccess,
             },
-            fieldDefinitions: LUXE_HERO_FIELD_DEFINITIONS,
+            fieldDefinitions,
           },
         },
       },
@@ -822,7 +933,7 @@ export async function ensureLuxeHeroDefinition(admin) {
 
     if (blockingErrors.length > 0) {
       throw new Error(
-        blockingErrors[0].message || "Failed to create Luxe Hero definition",
+        blockingErrors[0].message || `Failed to create definition for ${type}`,
       );
     }
 
@@ -833,7 +944,7 @@ export async function ensureLuxeHeroDefinition(admin) {
     (existingDefinition.fieldDefinitions ?? []).map((field) => field.key),
   );
 
-  const missingFieldDefinitions = LUXE_HERO_FIELD_DEFINITIONS.filter(
+  const missingFieldDefinitions = fieldDefinitions.filter(
     (field) => !existingFieldKeys.has(field.key),
   );
 
@@ -843,7 +954,7 @@ export async function ensureLuxeHeroDefinition(admin) {
 
   const response = await admin.graphql(
     `#graphql
-      mutation UpdateLuxeHeroDefinition(
+      mutation UpdateMetaobjectDefinition(
         $id: ID!
         $definition: MetaobjectDefinitionUpdateInput!
       ) {
@@ -869,7 +980,7 @@ export async function ensureLuxeHeroDefinition(admin) {
       variables: {
         id: existingDefinition.id,
         definition: {
-          displayNameKey: "heading",
+          displayNameKey,
           fieldDefinitions: missingFieldDefinitions.map((field) => ({
             create: {
               key: field.key,
@@ -888,17 +999,17 @@ export async function ensureLuxeHeroDefinition(admin) {
 
   if (blockingErrors.length > 0) {
     throw new Error(
-      blockingErrors[0].message || "Failed to update Luxe Hero definition",
+      blockingErrors[0].message || `Failed to update definition for ${type}`,
     );
   }
 
   return payload?.metaobjectDefinition ?? existingDefinition;
 }
 
-export async function getLuxeHeroMetaobject(admin) {
+async function getMetaobjectByHandle(admin, type, handle) {
   const response = await admin.graphql(
     `#graphql
-      query GetLuxeHeroMetaobject($handle: MetaobjectHandleInput!) {
+      query GetMetaobjectByHandle($handle: MetaobjectHandleInput!) {
         metaobjectByHandle(handle: $handle) {
           id
           handle
@@ -913,36 +1024,21 @@ export async function getLuxeHeroMetaobject(admin) {
     {
       variables: {
         handle: {
-          type: LUXE_HERO_METAOBJECT_TYPE,
-          handle: LUXE_HERO_METAOBJECT_HANDLE,
+          type,
+          handle,
         },
       },
     },
   );
 
   const responseJson = await response.json();
-  const metaobject = responseJson.data?.metaobjectByHandle ?? null;
-
-  if (!metaobject) {
-    return null;
-  }
-
-  return {
-    id: metaobject.id,
-    handle: metaobject.handle,
-    type: metaobject.type,
-    settings: mapMetaobjectFields(metaobject),
-  };
+  return responseJson.data?.metaobjectByHandle ?? null;
 }
 
-export async function saveLuxeHeroMetaobject(admin, input) {
-  await ensureLuxeHeroDefinition(admin);
-
-  const settings = normalizeLuxeHeroSettings(input);
-
+async function upsertMetaobjectByHandle(admin, type, handle, configs, settings) {
   const response = await admin.graphql(
     `#graphql
-      mutation UpsertLuxeHeroMetaobject(
+      mutation UpsertMetaobject(
         $handle: MetaobjectHandleInput!
         $metaobject: MetaobjectUpsertInput!
       ) {
@@ -967,147 +1063,14 @@ export async function saveLuxeHeroMetaobject(admin, input) {
     {
       variables: {
         handle: {
-          type: LUXE_HERO_METAOBJECT_TYPE,
-          handle: LUXE_HERO_METAOBJECT_HANDLE,
+          type,
+          handle,
         },
         metaobject: {
-          fields: [
-            { key: "badge_text", value: settings.badgeText },
-            { key: "heading", value: settings.heading },
-            { key: "subheading", value: settings.subheading },
-
-            { key: "text_color", value: settings.textColor },
-            { key: "subtext_color", value: settings.subtextColor },
-            { key: "heading_color", value: settings.headingColor },
-            { key: "background_color", value: settings.backgroundColor },
-            { key: "surface_color", value: settings.surfaceColor },
-            {
-              key: "card_background_color",
-              value: settings.cardBackgroundColor,
-            },
-            { key: "border_color", value: settings.borderColor },
-            { key: "accent_color", value: settings.accentColor },
-            { key: "overlay_color", value: settings.overlayColor },
-            { key: "icon_color", value: settings.iconColor },
-            {
-              key: "icon_background_color",
-              value: settings.iconBackgroundColor,
-            },
-
-            {
-              key: "primary_button_color",
-              value: settings.primaryButtonColor,
-            },
-            {
-              key: "primary_button_text_color",
-              value: settings.primaryButtonTextColor,
-            },
-            {
-              key: "secondary_button_color",
-              value: settings.secondaryButtonColor,
-            },
-            {
-              key: "secondary_button_text_color",
-              value: settings.secondaryButtonTextColor,
-            },
-
-            { key: "border_radius", value: String(settings.borderRadius) },
-            { key: "section_style", value: settings.sectionStyle },
-
-            { key: "padding_top", value: String(settings.paddingTop) },
-            { key: "padding_bottom", value: String(settings.paddingBottom) },
-            {
-              key: "mobile_padding_top",
-              value: String(settings.mobilePaddingTop),
-            },
-            {
-              key: "mobile_padding_bottom",
-              value: String(settings.mobilePaddingBottom),
-            },
-
-            { key: "mobile_layout", value: settings.mobileLayout },
-            { key: "mobile_spacing", value: String(settings.mobileSpacing) },
-            { key: "desktop_spacing", value: String(settings.desktopSpacing) },
-
-            {
-              key: "heading_font_size",
-              value: String(settings.headingFontSize),
-            },
-            {
-              key: "subheading_font_size",
-              value: String(settings.subheadingFontSize),
-            },
-            { key: "body_font_size", value: String(settings.bodyFontSize) },
-
-            { key: "background_image", value: settings.backgroundImage },
-            {
-              key: "primary_button_label",
-              value: settings.primaryButtonLabel,
-            },
-            { key: "primary_button_link", value: settings.primaryButtonLink },
-            {
-              key: "secondary_button_label",
-              value: settings.secondaryButtonLabel,
-            },
-            {
-              key: "secondary_button_link",
-              value: settings.secondaryButtonLink,
-            },
-
-            { key: "overlay_opacity", value: String(settings.overlayOpacity) },
-            { key: "desktop_height", value: String(settings.desktopHeight) },
-            { key: "mobile_height", value: String(settings.mobileHeight) },
-            {
-              key: "background_fallback_color",
-              value: settings.backgroundFallbackColor,
-            },
-
-            { key: "content_alignment", value: settings.contentAlignment },
-            { key: "heading_alignment", value: settings.headingAlignment },
-            { key: "desktop_columns", value: settings.desktopColumns },
-
-            { key: "card_style", value: settings.cardStyle },
-            { key: "border_width", value: String(settings.borderWidth) },
-            { key: "shadow_style", value: settings.shadowStyle },
-            { key: "font_family", value: settings.fontFamily },
-            { key: "font_weight", value: settings.fontWeight },
-            { key: "letter_spacing", value: String(settings.letterSpacing) },
-
-            { key: "button_style", value: settings.buttonStyle },
-            { key: "item_gap", value: String(settings.itemGap) },
-            {
-              key: "section_max_width",
-              value: String(settings.sectionMaxWidth),
-            },
-            {
-              key: "secondary_button_style",
-              value: settings.secondaryButtonStyle,
-            },
-            {
-              key: "hero_content_width",
-              value: String(settings.heroContentWidth),
-            },
-
-            { key: "background_video", value: settings.backgroundVideo },
-            { key: "background_preset", value: settings.backgroundPreset },
-            {
-              key: "layered_background_effects",
-              value: settings.layeredBackgroundEffects,
-            },
-            { key: "glow_effects", value: settings.glowEffects },
-            {
-              key: "advanced_animations",
-              value: settings.advancedAnimations,
-            },
-            { key: "hover_effects", value: settings.hoverEffects },
-            { key: "animated_border", value: settings.animatedBorder },
-            { key: "shimmer_effects", value: settings.shimmerEffects },
-            {
-              key: "mouse_follow_effect",
-              value: settings.mouseFollowEffect,
-            },
-            { key: "premium_motion", value: settings.premiumMotion },
-          ],
+          fields: configs.map((config) => ({
+            key: config.key,
+            value: serializeFieldValue(settings[config.settingKey]),
+          })),
         },
       },
     },
@@ -1118,14 +1081,127 @@ export async function saveLuxeHeroMetaobject(admin, input) {
   const userErrors = payload?.userErrors ?? [];
 
   if (userErrors.length > 0) {
-    throw new Error(userErrors[0].message || "Failed to save Luxe Hero");
+    throw new Error(userErrors[0].message || `Failed to save ${type}`);
   }
 
+  return payload?.metaobject ?? null;
+}
+
+export async function ensureLuxeHeroDefinition(admin) {
+  await ensureMetaobjectDefinition(admin, {
+    type: LUXE_HERO_CONTENT_METAOBJECT_TYPE,
+    name: "Luxe Hero Content",
+    displayNameKey: "heading",
+    fieldDefinitions: configsToFieldDefinitions(PRIMARY_FIELD_CONFIGS),
+  });
+
+  await ensureMetaobjectDefinition(admin, {
+    type: LUXE_HERO_STYLE_METAOBJECT_TYPE,
+    name: "Luxe Hero Style",
+    displayNameKey: "background_preset",
+    fieldDefinitions: configsToFieldDefinitions(SECONDARY_FIELD_CONFIGS),
+  });
+
+  return true;
+}
+
+export async function getLuxeHeroMetaobject(admin) {
+  const [contentMetaobject, styleMetaobject, legacyMetaobject] =
+    await Promise.all([
+      getMetaobjectByHandle(
+        admin,
+        LUXE_HERO_CONTENT_METAOBJECT_TYPE,
+        LUXE_HERO_CONTENT_METAOBJECT_HANDLE,
+      ),
+      getMetaobjectByHandle(
+        admin,
+        LUXE_HERO_STYLE_METAOBJECT_TYPE,
+        LUXE_HERO_STYLE_METAOBJECT_HANDLE,
+      ),
+      getMetaobjectByHandle(
+        admin,
+        LEGACY_LUXE_HERO_METAOBJECT_TYPE,
+        LEGACY_LUXE_HERO_METAOBJECT_HANDLE,
+      ),
+    ]);
+
+  const hasSplitMetaobjects = Boolean(contentMetaobject || styleMetaobject);
+  const hasLegacyMetaobject = Boolean(legacyMetaobject);
+
+  if (!hasSplitMetaobjects && !hasLegacyMetaobject) {
+    return null;
+  }
+
+  const legacySettingsPart =
+    !hasSplitMetaobjects && hasLegacyMetaobject
+      ? mapFieldValuesFromMetaobject(legacyMetaobject, ALL_FIELD_CONFIGS)
+      : !contentMetaobject || !styleMetaobject
+        ? mapFieldValuesFromMetaobject(legacyMetaobject, ALL_FIELD_CONFIGS)
+        : {};
+
+  const contentSettingsPart = mapFieldValuesFromMetaobject(
+    contentMetaobject,
+    PRIMARY_FIELD_CONFIGS,
+  );
+
+  const styleSettingsPart = mapFieldValuesFromMetaobject(
+    styleMetaobject,
+    SECONDARY_FIELD_CONFIGS,
+  );
+
   return {
-    id: payload?.metaobject?.id ?? null,
-    handle: payload?.metaobject?.handle ?? LUXE_HERO_METAOBJECT_HANDLE,
-    type: payload?.metaobject?.type ?? LUXE_HERO_METAOBJECT_TYPE,
-    settings: mapMetaobjectFields(payload?.metaobject),
+    id:
+      contentMetaobject?.id ??
+      styleMetaobject?.id ??
+      legacyMetaobject?.id ??
+      null,
+    handle:
+      contentMetaobject?.handle ??
+      styleMetaobject?.handle ??
+      legacyMetaobject?.handle ??
+      LUXE_HERO_CONTENT_METAOBJECT_HANDLE,
+    type: "luxe_hero_content_combined",
+    settings: mergeSettingsParts(
+      legacySettingsPart,
+      contentSettingsPart,
+      styleSettingsPart,
+    ),
+  };
+}
+
+export async function saveLuxeHeroMetaobject(admin, input) {
+  await ensureLuxeHeroDefinition(admin);
+
+  const settings = normalizeLuxeHeroSettings(input);
+
+  const [savedContentMetaobject, savedStyleMetaobject] = await Promise.all([
+    upsertMetaobjectByHandle(
+      admin,
+      LUXE_HERO_CONTENT_METAOBJECT_TYPE,
+      LUXE_HERO_CONTENT_METAOBJECT_HANDLE,
+      PRIMARY_FIELD_CONFIGS,
+      settings,
+    ),
+    upsertMetaobjectByHandle(
+      admin,
+      LUXE_HERO_STYLE_METAOBJECT_TYPE,
+      LUXE_HERO_STYLE_METAOBJECT_HANDLE,
+      SECONDARY_FIELD_CONFIGS,
+      settings,
+    ),
+  ]);
+
+  return {
+    id: savedContentMetaobject?.id ?? savedStyleMetaobject?.id ?? null,
+    handle:
+      savedContentMetaobject?.handle ??
+      savedStyleMetaobject?.handle ??
+      LUXE_HERO_CONTENT_METAOBJECT_HANDLE,
+    type: "luxe_hero_content_combined",
+    settings: mergeSettingsParts(
+      mapFieldValuesFromMetaobject(savedContentMetaobject, PRIMARY_FIELD_CONFIGS),
+      mapFieldValuesFromMetaobject(savedStyleMetaobject, SECONDARY_FIELD_CONFIGS),
+    ),
   };
 }
 
