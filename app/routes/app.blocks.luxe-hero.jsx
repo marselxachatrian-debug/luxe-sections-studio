@@ -337,6 +337,7 @@ export default function LuxeHeroEditorRoute() {
   const [device, setDevice] = useState("desktop");
   const [settings, setSettings] = useState(() => ({ ...savedSettings }));
   const [saveMessage, setSaveMessage] = useState("Saved values loaded");
+  const [hasSubmittedSave, setHasSubmittedSave] = useState(false);
 
   const saveAction = `${location.pathname}${location.search}`;
 
@@ -356,24 +357,35 @@ export default function LuxeHeroEditorRoute() {
       return;
     }
 
-    if (fetcher.data?.ok) {
+    if (!hasSubmittedSave) {
+      return;
+    }
+
+    if (fetcher.data?.ok === true) {
+      if (fetcher.data.settings) {
+        applySavedSettingsToEditor(fetcher.data.settings);
+      }
+
       const blockedCount = (fetcher.data.blockedFeatureDetails ?? []).length;
 
-      if (blockedCount > 0) {
-        setSaveMessage("Upgrade required to save some settings");
-      } else {
-        if (fetcher.data.settings) {
-          applySavedSettingsToEditor(fetcher.data.settings);
-        }
+      setSaveMessage(
+        blockedCount > 0
+          ? "Save returned data. Partially saved — some settings require upgrade"
+          : "Save returned data. Saved",
+      );
 
-        setSaveMessage("Saved");
-      }
+      return;
     }
 
     if (fetcher.data?.ok === false) {
-      setSaveMessage(fetcher.data.error || "Save failed");
+      setSaveMessage(
+        `Save returned error: ${fetcher.data.error || "Unknown error"}`,
+      );
+      return;
     }
-  }, [fetcher.state, fetcher.data]);
+
+    setSaveMessage("Save request finished but route returned no data");
+  }, [fetcher.state, fetcher.data, hasSubmittedSave]);
 
   const blockedFeatureDetails = fetcher.data?.blockedFeatureDetails ?? [];
   const isSaving = fetcher.state !== "idle";
@@ -416,9 +428,11 @@ export default function LuxeHeroEditorRoute() {
   const saveBadgeTone =
     blockedFeatureDetails.length > 0
       ? "attention"
-      : saveMessage === "Saved"
-        ? "success"
-        : "info";
+      : saveMessage.includes("error")
+        ? "critical"
+        : saveMessage.includes("Saved")
+          ? "success"
+          : "info";
 
   const sectionSurfaceStyle = getSectionSurfaceStyle(
     settings.sectionStyle,
@@ -539,7 +553,14 @@ export default function LuxeHeroEditorRoute() {
         blockedFeatureDetails={blockedFeatureDetails}
       />
 
-      <fetcher.Form method="post" action={saveAction}>
+      <fetcher.Form
+        method="post"
+        action={saveAction}
+        onSubmit={() => {
+          setHasSubmittedSave(true);
+          setSaveMessage("Submitting save request...");
+        }}
+      >
         <input type="hidden" name="badgeText" value={settings.badgeText} />
 
         {Object.entries(settings).map(([fieldName, value]) => {
