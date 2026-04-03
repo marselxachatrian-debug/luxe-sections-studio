@@ -1,30 +1,56 @@
 {% liquid
-  assign hero_content = metaobjects['luxe_hero_content']['default']
+  assign hero_content_main = metaobjects['luxe_hero_content_main']['default']
+  assign hero_content_style = metaobjects['luxe_hero_content_style']['default']
+  assign hero_content_legacy = metaobjects['luxe_hero_content']['default']
 
-  assign badge_text = hero_content.badge_text | default: 'Premium storefront'
-  assign heading = hero_content.heading | default: 'A cleaner, sharper first impression for your Shopify store'
-  assign subheading = hero_content.subheading | default: 'Show a stronger brand message, clear value, and a more premium visual style without needing to touch code.'
-  assign button_label = hero_content.primary_button_label | default: 'Shop the collection'
-  assign secondary_button_label = hero_content.secondary_button_label | default: 'Learn more'
-  assign content_alignment = hero_content.content_alignment | default: 'left'
-  assign background_preset = hero_content.background_preset | default: 'midnight'
-  assign overlay_opacity = hero_content.overlay_opacity | default: 34 | times: 0.01
-  assign section_height = hero_content.desktop_height | default: 560
-  assign mobile_section_height = hero_content.mobile_height | default: 460
+  assign badge_text = hero_content_main.badge_text | default: hero_content_legacy.badge_text | default: 'Premium storefront'
+  assign heading = hero_content_main.heading | default: hero_content_legacy.heading | default: 'A cleaner, sharper first impression for your Shopify store'
+  assign subheading = hero_content_main.subheading | default: hero_content_legacy.subheading | default: 'Show a stronger brand message, clear value, and a more premium visual style without needing to touch code.'
 
-  assign primary_button_link = hero_content.primary_button_link | default: block.settings.button_link
-  assign secondary_button_link = hero_content.secondary_button_link | default: block.settings.secondary_button_link
+  assign text_color = hero_content_main.text_color | default: hero_content_legacy.text_color | default: '#ffffff'
+  assign subtext_color = hero_content_main.subtext_color | default: hero_content_legacy.subtext_color | default: 'rgba(255,255,255,0.84)'
+  assign heading_color = hero_content_main.heading_color | default: hero_content_legacy.heading_color | default: '#ffffff'
+  assign background_color = hero_content_main.background_color | default: hero_content_legacy.background_color | default: '#0f172a'
+  assign surface_color = hero_content_main.surface_color | default: hero_content_legacy.surface_color | default: 'rgba(255,255,255,0.06)'
+  assign border_color = hero_content_main.border_color | default: hero_content_legacy.border_color | default: 'rgba(255,255,255,0.22)'
+  assign accent_color = hero_content_main.accent_color | default: hero_content_legacy.accent_color | default: '#f8e7b0'
+  assign overlay_color = hero_content_main.overlay_color | default: hero_content_legacy.overlay_color | default: '#0f172a'
+  assign icon_background_color = hero_content_main.icon_background_color | default: hero_content_legacy.icon_background_color | default: 'rgba(248, 231, 176, 0.16)'
 
-  assign metaobject_background_image = hero_content.background_image | default: blank
-  assign metaobject_background_video = hero_content.background_video | default: blank
+  assign primary_button_color = hero_content_main.primary_button_color | default: hero_content_legacy.primary_button_color | default: '#f8e7b0'
+  assign primary_button_text_color = hero_content_main.primary_button_text_color | default: hero_content_legacy.primary_button_text_color | default: '#1f2937'
+  assign secondary_button_color = hero_content_main.secondary_button_color | default: hero_content_legacy.secondary_button_color | default: 'rgba(255,255,255,0.08)'
+  assign secondary_button_text_color = hero_content_main.secondary_button_text_color | default: hero_content_legacy.secondary_button_text_color | default: '#ffffff'
+
+  assign border_radius = hero_content_main.border_radius | default: hero_content_legacy.border_radius | default: 28
+  assign padding_top = hero_content_main.padding_top | default: hero_content_legacy.padding_top | default: block.settings.padding_top
+  assign padding_bottom = hero_content_main.padding_bottom | default: hero_content_legacy.padding_bottom | default: block.settings.padding_bottom
+  assign mobile_padding_top = hero_content_main.mobile_padding_top | default: hero_content_legacy.mobile_padding_top | default: block.settings.mobile_padding_top
+  assign mobile_padding_bottom = hero_content_main.mobile_padding_bottom | default: hero_content_legacy.mobile_padding_bottom | default: block.settings.mobile_padding_bottom
+
+  assign button_label = hero_content_main.primary_button_label | default: hero_content_legacy.primary_button_label | default: 'Shop the collection'
+  assign secondary_button_label = hero_content_main.secondary_button_label | default: hero_content_legacy.secondary_button_label | default: 'Learn more'
+  assign primary_button_link = hero_content_main.primary_button_link | default: hero_content_legacy.primary_button_link | default: block.settings.button_link
+  assign secondary_button_link = hero_content_main.secondary_button_link | default: hero_content_legacy.secondary_button_link | default: block.settings.secondary_button_link
+
+  assign metaobject_background_image = hero_content_main.background_image | default: hero_content_legacy.background_image | default: blank
+
+  assign overlay_opacity = hero_content_main.overlay_opacity | default: hero_content_legacy.overlay_opacity | default: 34 | times: 0.01
+
+  assign content_alignment = hero_content_style.content_alignment | default: hero_content_legacy.content_alignment | default: 'left'
+  assign background_preset = hero_content_style.background_preset | default: hero_content_legacy.background_preset | default: 'midnight'
+  assign section_height = hero_content_style.desktop_height | default: hero_content_legacy.desktop_height | default: 560
+  assign mobile_section_height = hero_content_style.mobile_height | default: hero_content_legacy.mobile_height | default: 460
+  assign background_fallback_color = hero_content_style.background_fallback_color | default: hero_content_legacy.background_fallback_color | default: '#182235'
+  assign hero_content_width = hero_content_style.hero_content_width | default: hero_content_legacy.hero_content_width | default: 620
+  assign section_max_width = hero_content_style.section_max_width | default: hero_content_legacy.section_max_width | default: 1200
+  assign item_gap = hero_content_style.item_gap | default: hero_content_legacy.item_gap | default: 14
+  assign background_glow_enabled = hero_content_style.glow_effects | default: hero_content_legacy.glow_effects | default: 'enabled'
+
+  assign metaobject_background_video = hero_content_style.background_video | default: hero_content_legacy.background_video | default: blank
 
   assign block_background_image = block.settings.background_image
   assign block_background_video = block.settings.background_video
-
-  assign padding_top = hero_content.padding_top | default: block.settings.padding_top
-  assign padding_bottom = hero_content.padding_bottom | default: block.settings.padding_bottom
-  assign mobile_padding_top = hero_content.mobile_padding_top | default: block.settings.mobile_padding_top
-  assign mobile_padding_bottom = hero_content.mobile_padding_bottom | default: block.settings.mobile_padding_bottom
 %}
 
 {% liquid
@@ -41,7 +67,7 @@
 <div
   id="LuxeHero-{{ block.id }}"
   class="luxe-hero-section"
-  style="background: {{ section_background }};"
+  style="background-color: {{ background_fallback_color }}; background-image: {{ section_background }};"
 >
   <div class="luxe-hero__background">
     {% if block_background_video != blank %}
@@ -95,7 +121,9 @@
     ></div>
   </div>
 
-  <div class="luxe-hero__ambient-glow"></div>
+  {% if background_glow_enabled == 'enabled' %}
+    <div class="luxe-hero__ambient-glow"></div>
+  {% endif %}
 
   <div class="luxe-hero__content-wrapper page-width">
     <div class="luxe-hero__content luxe-hero__content--{{ content_alignment }}">
@@ -146,9 +174,9 @@
   #LuxeHero-{{ block.id }} {
     position: relative;
     min-height: {{ section_height }}px;
-    border-radius: 28px;
+    border-radius: {{ border_radius }}px;
     overflow: hidden;
-    color: #ffffff;
+    color: {{ text_color }};
     isolation: isolate;
   }
 
@@ -186,7 +214,7 @@
   #LuxeHero-{{ block.id }} .luxe-hero__overlay {
     position: absolute;
     inset: 0;
-    background: #0f172a;
+    background: {{ overlay_color }};
   }
 
   #LuxeHero-{{ block.id }} .luxe-hero__ambient-glow {
@@ -197,7 +225,7 @@
     height: 320px;
     border-radius: 999px;
     background:
-      radial-gradient(circle, rgba(248,231,176,0.34) 0%, rgba(248,231,176,0.10) 38%, rgba(248,231,176,0) 72%);
+      radial-gradient(circle, {{ accent_color }}55 0%, {{ accent_color }}1A 38%, rgba(248,231,176,0) 72%);
     filter: blur(10px);
     z-index: 1;
     pointer-events: none;
@@ -211,11 +239,17 @@
     min-height: {{ section_height }}px;
     padding-top: {{ padding_top }}px;
     padding-bottom: {{ padding_bottom }}px;
+    max-width: min(100%, {{ section_max_width }}px);
   }
 
   #LuxeHero-{{ block.id }} .luxe-hero__content {
     width: 100%;
-    max-width: 620px;
+    max-width: {{ hero_content_width }}px;
+    padding: 28px;
+    border-radius: {{ border_radius }}px;
+    background: {{ surface_color }};
+    border: 1px solid {{ border_color }};
+    backdrop-filter: blur(6px);
   }
 
   #LuxeHero-{{ block.id }} .luxe-hero__content--left {
@@ -238,8 +272,8 @@
     display: inline-flex;
     padding: 7px 12px;
     border-radius: 999px;
-    background: rgba(248, 231, 176, 0.16);
-    color: #f8e7b0;
+    background: {{ icon_background_color }};
+    color: {{ accent_color }};
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.06em;
@@ -252,14 +286,14 @@
     font-size: clamp(40px, 6vw, 68px);
     line-height: 1.02;
     letter-spacing: -0.03em;
-    color: #ffffff;
+    color: {{ heading_color }};
   }
 
   #LuxeHero-{{ block.id }} .luxe-hero__subheading {
-    max-width: 620px;
+    max-width: {{ hero_content_width }}px;
     font-size: 17px;
     line-height: 1.7;
-    color: rgba(255,255,255,0.84);
+    color: {{ subtext_color }};
   }
 
   #LuxeHero-{{ block.id }} .luxe-hero__content--center .luxe-hero__subheading {
@@ -274,7 +308,7 @@
   #LuxeHero-{{ block.id }} .luxe-hero__actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 14px;
+    gap: {{ item_gap }}px;
     margin-top: 28px;
   }
 
@@ -304,15 +338,15 @@
   }
 
   #LuxeHero-{{ block.id }} .luxe-hero__button--primary {
-    background: #f8e7b0;
-    color: #1f2937;
+    background: {{ primary_button_color }};
+    color: {{ primary_button_text_color }};
     font-weight: 700;
   }
 
   #LuxeHero-{{ block.id }} .luxe-hero__button--secondary {
-    background: rgba(255, 255, 255, 0.08);
-    color: #ffffff;
-    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: {{ secondary_button_color }};
+    color: {{ secondary_button_text_color }};
+    border: 1px solid {{ border_color }};
     backdrop-filter: blur(6px);
     font-weight: 600;
   }
@@ -320,7 +354,6 @@
   @media screen and (max-width: 749px) {
     #LuxeHero-{{ block.id }} {
       min-height: auto;
-      border-radius: 20px;
     }
 
     #LuxeHero-{{ block.id }} .luxe-hero__ambient-glow {
@@ -335,6 +368,10 @@
       min-height: {{ mobile_section_height }}px;
       padding-top: {{ mobile_padding_top }}px;
       padding-bottom: {{ mobile_padding_bottom }}px;
+    }
+
+    #LuxeHero-{{ block.id }} .luxe-hero__content {
+      padding: 22px;
     }
 
     #LuxeHero-{{ block.id }} .luxe-hero__heading {
