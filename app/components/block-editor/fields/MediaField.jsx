@@ -82,7 +82,7 @@ export function MediaField({
 
   const previewUrl = localPreviewUrl || String(value || "").trim();
 
-  function handleDrop(_droppedFiles, acceptedFiles) {
+  function handleDrop(_dropFiles, acceptedFiles) {
     const firstFile = acceptedFiles?.[0];
 
     if (!firstFile || !matchesAccept(firstFile, accept)) {
@@ -230,3 +230,5 @@ export function MediaField({
     </BlockStack>
   );
 }
+
+export default MediaField;
